@@ -7,6 +7,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -78,6 +79,16 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     {
         // TODO: Implement canAccessPanel() method.
         return true /*str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail() */;
+    }
+
+    public function nivel(): BelongsTo
+    {
+        return $this->belongsTo(Nivel::class, 'id_nivel', 'id');
+    }
+
+    public function entidad(): BelongsTo
+    {
+        return $this->belongsTo(Entidad::class, 'id_entidad', 'id');
     }
 
 }
