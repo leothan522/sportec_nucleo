@@ -10,8 +10,9 @@ class Entidad extends Model
     //
     protected $table = 'estados';
     protected $fillable = [
-        'nombre',
         'codigoe',
+        'nombre',
+        'short_nombre',
         'capital',
         'ruta_bandera',
         'ruta_escudo',

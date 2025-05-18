@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('estados', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
             $table->string('codigoe');
+            $table->string('nombre');
+            $table->string('short_nombre')->nullable();
             $table->string('capital')->nullable();
             $table->text('ruta_bandera')->nullable();
             $table->text('ruta_escudo')->nullable();
