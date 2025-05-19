@@ -35,7 +35,8 @@ class UserResource extends Resource
                     ->password()
                     ->required()
                     ->maxLength(255)
-                    ->revealable(),
+                    ->revealable()
+                    ->hiddenOn('edit'),
                 Forms\Components\TextInput::make('telefono')
                     ->label('Teléfono')
                     ->tel()
@@ -53,6 +54,8 @@ class UserResource extends Resource
                 Forms\Components\Textarea::make('descripcion')
                     ->label('Descripción')
                     ->default(null),
+                Forms\Components\Toggle::make('activo')
+                    ->hiddenOn('create'),
             ]);
     }
 
@@ -66,24 +69,26 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('telefono')
+                    ->label('Teléfono')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('entidad.nombre')
-                    ->numeric()
-                    ->sortable()
+                    ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('nivel.nivel')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\IconColumn::make('activo')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('visitas')
                     ->numeric()
-                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('descripcion')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('telefono')
-                    ->searchable()
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
