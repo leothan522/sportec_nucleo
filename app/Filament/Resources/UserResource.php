@@ -36,8 +36,8 @@ class UserResource extends Resource
                     ->password()
                     ->required()
                     ->maxLength(255)
-                    ->revealable()
-                    ->hiddenOn('edit'),
+                    ->revealable(),
+                    //->hiddenOn('edit'),
                 Forms\Components\TextInput::make('telefono')
                     ->label('Teléfono')
                     ->tel()
