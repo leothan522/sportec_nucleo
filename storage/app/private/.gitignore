@@ -1,5 +1,11 @@
 *
-!init.sql
+!init_cargos.sql
+!init_estados.sql
+!init_niveles.sql
+!init_permisos.sql
+!init_seguridad.sql
+!init_socios.sql
+!init_user.sql
 !sql
 !.gitignore
 
