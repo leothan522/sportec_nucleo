@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -56,6 +57,7 @@ class UserResource extends Resource
                     ->default(null),
                 Forms\Components\Toggle::make('activo')
                     ->hiddenOn('create'),
+                //Select::make('roles')->relationship('roles', 'name')
             ]);
     }
 
