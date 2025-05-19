@@ -12,9 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         //
-        \Illuminate\Support\Facades\DB::unprepared(
-            file_get_contents(storage_path('app/private/sql/init_seguridad.sql'))
-        );
+        if (env('CARGAR_INIT_SEGURIDAD', true)){
+            \Illuminate\Support\Facades\DB::unprepared(
+                file_get_contents(storage_path('app/private/sql/init_seguridad.sql'))
+            );
+        }
     }
 
     /**
