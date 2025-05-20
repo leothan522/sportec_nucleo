@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transporte', function (Blueprint $table) {
+        Schema::create('codigo_area', function (Blueprint $table) {
             $table->id();
-            $table->string('transporte')->unique();
+            $table->string('descripcion_area');
             $table->timestamps();
         });
     }
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transporte');
+        Schema::dropIfExists('codigo_area');
     }
 };
