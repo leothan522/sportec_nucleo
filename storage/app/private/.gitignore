@@ -21,6 +21,9 @@
 !init_codigo_area.sql
 !init_acceso.sql
 !init_codigo_cargo.sql
+!init_letra.sql
+!init_color.sql
+!init_palco.sql
 !sql
 !.gitignore
 
