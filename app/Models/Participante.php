@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Participante extends Model
@@ -50,4 +51,20 @@ class Participante extends Model
         'carnet_socio',
         'id_tipo_socio',
     ];
+
+    public function deporteinicial(): BelongsTo
+    {
+        return $this->belongsTo(Deporte::class, 'deporteini', 'id');
+    }
+
+    public function cargo(): BelongsTo
+    {
+        return $this->belongsTo(Cargo::class, 'id_cargo', 'id');
+    }
+
+    public function entidad(): BelongsTo
+    {
+        return $this->belongsTo(Entidad::class, 'id_entidad', 'id');
+    }
+
 }

@@ -23,4 +23,9 @@ class Entidad extends Model
         return $this->hasMany(User::class, 'id_entidad', 'id');
     }
 
+    public function participantes(): HasMany
+    {
+        return $this->hasMany(Participante::class, 'id_entidad', 'id');
+    }
+
 }

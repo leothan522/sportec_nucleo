@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Deporte extends Model
 {
@@ -32,4 +33,12 @@ class Deporte extends Model
         'secundario',
         'sport',
     ];
+
+
+    public function participantes(): HasMany
+    {
+        return $this->hasMany(Participante::class, 'deporteini', 'id');
+    }
+
+
 }

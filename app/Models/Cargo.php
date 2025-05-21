@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cargo extends Model
 {
@@ -35,4 +36,9 @@ class Cargo extends Model
         'imagen',
         'internet',
     ];
+
+    public function participantes(): HasMany
+    {
+        return $this->hasMany(Participante::class, 'id_cargo', 'id');
+    }
 }
