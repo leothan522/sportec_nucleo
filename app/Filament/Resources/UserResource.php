@@ -36,8 +36,8 @@ class UserResource extends Resource
                     ->password()
                     ->required()
                     ->maxLength(255)
-                    ->revealable(),
-                    //->hiddenOn('edit'),
+                    ->revealable()
+                    ->hiddenOn('edit'),
                 Forms\Components\TextInput::make('telefono')
                     ->label('Teléfono')
                     ->tel()
@@ -80,8 +80,7 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('nivel.nivel')
                     ->searchable(),
-                Tables\Columns\IconColumn::make('activo')
-                    ->boolean(),
+                Tables\Columns\ToggleColumn::make('activo'),
                 Tables\Columns\TextColumn::make('visitas')
                     ->numeric()
                     ->toggleable(isToggledHiddenByDefault: true),

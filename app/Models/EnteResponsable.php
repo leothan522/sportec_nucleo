@@ -4,13 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Permiso extends Model
+class EnteResponsable extends Model
 {
     //
-    protected $table = 'permisos';
+    protected $table = 'entes_responsables';
     protected $fillable = [
-        'cargos',
-        'nombre_permiso',
+        'nombre_ente',
     ];
-
 }

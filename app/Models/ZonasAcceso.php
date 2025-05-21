@@ -4,13 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Permiso extends Model
+class ZonasAcceso extends Model
 {
     //
-    protected $table = 'permisos';
+    protected $table = 'zonas_acceso';
     protected $fillable = [
-        'cargos',
-        'nombre_permiso',
+        'zona',
+        'autorizacion',
     ];
-
 }
