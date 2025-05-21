@@ -13,6 +13,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Columns\Column;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class ParticipanteResource extends Resource
 {
@@ -38,16 +41,25 @@ class ParticipanteResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('primer_nombre')
                     ->label('Nombres')
-                    ->formatStateUsing(function ($state, Participante $participante){
-                        return $participante->primer_nombre.' '.$participante->segundo_nombre;
+                    ->formatStateUsing(function ($state, Participante $participante) {
+                        return $participante->primer_nombre . ' ' . $participante->segundo_nombre;
                     })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('primer_apellido')
                     ->label('Apellidos')
-                    ->formatStateUsing(function ($state, Participante $participante){
-                        return $participante->primer_apellido.' '.$participante->segundo_apellido;
+                    ->formatStateUsing(function ($state, Participante $participante) {
+                        return $participante->primer_apellido . ' ' . $participante->segundo_apellido;
                     })
                     ->searchable(),
+                Tables\Columns\TextColumn::make('sexo')
+                    ->label('Sexo')
+                    ->formatStateUsing(function ($state, Participante $participante) {
+                        if (!$participante->sexo){
+                            return mb_strtoupper('Masculino');
+                        }else{
+                            return mb_strtoupper('Femenino');
+                        }
+                    }),
                 Tables\Columns\TextColumn::make('deporteinicial.deporte')
                     ->label('Deporte')
                     ->limit(15),
@@ -71,8 +83,28 @@ class ParticipanteResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make()
+                    Tables\Actions\DeleteBulkAction::make()
                 ]),
+                ExportBulkAction::make()->exports([
+                    ExcelExport::make()->withColumns([
+                        Column::make('cedula'),
+                        Column::make('primer_nombre'),
+                        Column::make('segundo_nombre'),
+                        Column::make('primer_apellido'),
+                        Column::make('segundo_apellido'),
+                        Column::make('sexo')
+                            ->formatStateUsing(function ($state, Participante $participante) {
+                                if (!$participante->sexo){
+                                    return mb_strtoupper('Masculino');
+                                }else{
+                                    return mb_strtoupper('Femenino');
+                                }
+                            }),
+                        Column::make('deporteinicial.deporte')->heading('Deporte'),
+                        Column::make('cargo.cargo')->heading('Cargo'),
+                        Column::make('entidad.short_nombre')->heading('Entidad'),
+                    ])
+                ])
             ]);
     }
 
