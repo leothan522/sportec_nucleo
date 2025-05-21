@@ -9,6 +9,7 @@ class Prensa extends Model
     //
     protected $table = 'prensa';
     protected $fillable = [
+        'id_participante',
         'cedula',
         'id_medio',
         'certificado',

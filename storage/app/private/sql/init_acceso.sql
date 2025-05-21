@@ -14,26 +14,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
--- Volcando estructura de base de datos para morrosroot_sportec_nucleo
-CREATE DATABASE IF NOT EXISTS `morrosroot_sportec_nucleo` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;
-USE `morrosroot_sportec_nucleo`;
-
--- Volcando estructura para tabla morrosroot_sportec_nucleo.acceso
-CREATE TABLE IF NOT EXISTS `acceso` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `cedula` varchar(255) NOT NULL,
-  `comedor` tinyint(1) NOT NULL DEFAULT 0,
-  `ceremonia` tinyint(1) NOT NULL DEFAULT 0,
-  `anti_doping` tinyint(1) NOT NULL DEFAULT 0,
-  `villa` tinyint(1) NOT NULL DEFAULT 0,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `acceso_cedula_foreign` (`cedula`),
-  CONSTRAINT `acceso_cedula_foreign` FOREIGN KEY (`cedula`) REFERENCES `participantes` (`cedula`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- Volcando datos para la tabla morrosroot_sportec_nucleo.acceso: ~177 rows (aproximadamente)
 INSERT INTO `acceso` (`id`, `cedula`, `comedor`, `ceremonia`, `anti_doping`, `villa`, `created_at`, `updated_at`) VALUES
 	(1, '13500690', 0, 0, 0, 0, '2025-05-20 20:21:26', '2025-05-20 20:21:26'),

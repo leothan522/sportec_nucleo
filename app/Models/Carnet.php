@@ -9,6 +9,7 @@ class Carnet extends Model
     //
     protected $table = 'carnets';
     protected $fillable = [
+        'id_participante',
         'PIN',
         'active',
         'fecha_emision',

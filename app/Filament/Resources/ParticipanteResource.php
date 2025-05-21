@@ -28,6 +28,8 @@ class ParticipanteResource extends Resource
         return $form
             ->schema([
                 //
+                Forms\Components\TextInput::make('cedula')
+                    ->required(),
             ]);
     }
 

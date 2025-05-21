@@ -9,6 +9,7 @@ class Voluntario extends Model
     //
     protected $table = 'voluntarios';
     protected $fillable = [
+        'id_participante',
         'cedula',
         'experiencia_deporte',
         'profesion',

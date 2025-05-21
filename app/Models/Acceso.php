@@ -9,6 +9,7 @@ class Acceso extends Model
     //
     protected $table = 'acceso';
     protected $fillable = [
+        'id_participante',
         'cedula',
         'comedor',
         'ceremonia',

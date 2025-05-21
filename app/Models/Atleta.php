@@ -9,6 +9,7 @@ class Atleta extends Model
     //
     protected $table = 'atletas';
     protected $fillable = [
+        'id_participante',
         'cedula',
         'id_deporte',
         'id_modalidad',

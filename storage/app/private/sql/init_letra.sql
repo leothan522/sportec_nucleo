@@ -14,21 +14,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
--- Volcando estructura de base de datos para morrosroot_sportec_nucleo
-CREATE DATABASE IF NOT EXISTS `morrosroot_sportec_nucleo` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;
-USE `morrosroot_sportec_nucleo`;
-
--- Volcando estructura para tabla morrosroot_sportec_nucleo.letra
-CREATE TABLE IF NOT EXISTS `letra` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `letra` varchar(255) NOT NULL,
-  `letra_imagen` text DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- Volcando datos para la tabla morrosroot_sportec_nucleo.letra: ~14 rows (aproximadamente)
 INSERT INTO `letra` (`id`, `letra`, `letra_imagen`, `created_at`, `updated_at`) VALUES
 	(0, 'Sin definir', ' ', '2025-05-20 22:15:29', '2025-05-20 22:15:29'),

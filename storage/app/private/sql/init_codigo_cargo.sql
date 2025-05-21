@@ -14,22 +14,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
--- Volcando estructura de base de datos para morrosroot_sportec_nucleo
-CREATE DATABASE IF NOT EXISTS `morrosroot_sportec_nucleo` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;
-USE `morrosroot_sportec_nucleo`;
-
--- Volcando estructura para tabla morrosroot_sportec_nucleo.codigo_cargo
-CREATE TABLE IF NOT EXISTS `codigo_cargo` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `cod_cargo` varchar(255) NOT NULL,
-  `descripcion_cargo` varchar(255) DEFAULT NULL,
-  `logo` text DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- Volcando datos para la tabla morrosroot_sportec_nucleo.codigo_cargo: ~37 rows (aproximadamente)
 INSERT INTO `codigo_cargo` (`id`, `cod_cargo`, `descripcion_cargo`, `logo`, `created_at`, `updated_at`) VALUES
 	(1, '1', 'Presidente de la República', NULL, '2025-05-20 20:24:22', '2025-05-20 20:24:22'),

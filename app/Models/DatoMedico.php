@@ -9,6 +9,7 @@ class DatoMedico extends Model
     //
     protected $table = 'datos_medicos';
     protected $fillable = [
+        'id_participante',
         'cedula',
         'RH',
         'alergico',
