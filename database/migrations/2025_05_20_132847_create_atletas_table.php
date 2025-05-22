@@ -18,7 +18,6 @@ return new class extends Migration
             $table->bigInteger('id_modalidad')->unsigned();
             $table->string('marca')->nullable();
             $table->string('obs')->nullable();
-            $table->foreign('cedula')->references('cedula')->on('participantes')->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }

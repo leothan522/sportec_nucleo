@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('experiencia_juegos')->nullable();
             $table->string('internet')->nullable();
             $table->string('apoyo_medico')->nullable();
-            $table->foreign('cedula')->references('cedula')->on('participantes')->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }

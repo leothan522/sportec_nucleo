@@ -18,7 +18,6 @@ return new class extends Migration
             $table->boolean('ceremonia')->default(false);
             $table->boolean('anti_doping')->default(false);
             $table->boolean('villa')->default(false);
-            $table->foreign('cedula')->references('cedula')->on('participantes')->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }

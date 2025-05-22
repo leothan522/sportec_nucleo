@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::table('datos_medicos', function (Blueprint $table) {
             //
             $table->bigInteger('id_participante')->unsigned()->nullable()->after('id');
-            $table->dropForeign('datos_medicos_cedula_foreign');
-            $table->dropIndex('datos_medicos_cedula_foreign');
             $table->foreign('id_participante')->references('id')->on('participantes')->cascadeOnDelete();
         });
 

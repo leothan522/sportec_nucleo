@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::table('carnets', function (Blueprint $table) {
             //
             $table->bigInteger('id_participante')->unsigned()->nullable()->after('id');
-            $table->dropForeign('carnets_cedula_asociada_foreign');
-            $table->dropIndex('carnets_cedula_asociada_foreign');
             $table->foreign('id_participante')->references('id')->on('participantes')->cascadeOnDelete();
         });
 

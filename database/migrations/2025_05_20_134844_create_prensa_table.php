@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('certificado')->nullable();
             $table->integer('cpn')->nullable();
             $table->string('descrip')->nullable();
-            $table->foreign('cedula')->references('cedula')->on('participantes')->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }

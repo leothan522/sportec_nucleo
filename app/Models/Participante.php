@@ -67,4 +67,9 @@ class Participante extends Model
         return $this->belongsTo(Entidad::class, 'id_entidad', 'id');
     }
 
+    public function tipoSocio(): BelongsTo
+    {
+        return $this->belongsTo(TipoSocio::class, 'id_tipo_socio', 'id');
+    }
+
 }

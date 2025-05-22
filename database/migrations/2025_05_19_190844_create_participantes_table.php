@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('participantes', function (Blueprint $table) {
             $table->id();
-            $table->string('cedula')->unique();
+            $table->string('cedula');
             $table->bigInteger('id_entidad')->unsigned();
             $table->bigInteger('id_entidad_responsable')->unsigned()->nullable();
             $table->bigInteger('id_cargo')->unsigned()->nullable()->nullable();

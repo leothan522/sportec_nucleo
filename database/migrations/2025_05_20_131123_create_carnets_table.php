@@ -17,7 +17,6 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->date('fecha_emision')->nullable();
             $table->string('cedula_asociada');
-            $table->foreign('cedula_asociada')->references('cedula')->on('participantes')->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('avisar_a')->nullable();
             $table->string('telefono')->nullable();
             $table->text('obs')->nullable();
-            $table->foreign('cedula')->references('cedula')->on('participantes')->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }

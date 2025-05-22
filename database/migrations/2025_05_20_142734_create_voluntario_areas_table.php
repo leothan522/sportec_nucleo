@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('cedula');
             $table->bigInteger('cod_area')->unsigned();
-            $table->foreign('cedula')->references('cedula')->on('participantes')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreign('cod_area')->references('id')->on('codigo_area')->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
