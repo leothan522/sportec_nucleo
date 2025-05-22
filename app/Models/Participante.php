@@ -50,6 +50,14 @@ class Participante extends Model
         'image_cedula',
         'carnet_socio',
         'id_tipo_socio',
+        'rh',
+        'alergico',
+        'ant_medicos',
+        'alergias',
+        'antecedentes',
+        'avisar_a',
+        'telefono_medico',
+        'obs_medicas',
     ];
 
     public function deporteinicial(): BelongsTo

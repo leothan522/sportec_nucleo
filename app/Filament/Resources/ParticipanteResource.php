@@ -34,7 +34,7 @@ class ParticipanteResource extends Resource
                 Forms\Components\Section::make('Datos Personales')
                     ->schema([
                         Forms\Components\Select::make('id_entidad')
-                            ->relationship('entidad', 'id')
+                            ->relationship('entidad', 'nombre')
                             ->required()
                             ->searchable()
                             ->preload()->columnSpanFull(),
@@ -49,7 +49,7 @@ class ParticipanteResource extends Resource
                                     $id_entidad = $get('id_entidad');
                                     $cedula = $value;
                                     $key = $component->getRecord()?->getKey();
-                                    if (env('chequear_listado_socios', false)){
+                                    if (env('chequear_listado_socios', false)) {
                                         $exite = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
                                         if (!$exite && !$key) {
                                             //$fail("The {$attribute} is invalid.");
@@ -71,7 +71,7 @@ class ParticipanteResource extends Resource
                                     $set('segundo_apellido', $exite->segundo_apellido);
                                     $set('sexo', $exite->sexo);
                                     $set('fecha_nacimiento', $exite->fecha_nacimiento);
-                                }else{
+                                } else {
                                     $set('carnet_socio', '');
                                     $set('id_tipo_socio', '');
                                     $set('primer_nombre', '');
@@ -182,7 +182,8 @@ class ParticipanteResource extends Resource
                     ->formatStateUsing(fn(string $state) => mb_strtoupper($state))
                     ->limit(15),
                 Tables\Columns\TextColumn::make('entidad.short_nombre')
-                    ->formatStateUsing(fn(string $state) => mb_strtoupper($state)),
+                    ->formatStateUsing(fn(string $state) => mb_strtoupper($state))
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -194,9 +195,10 @@ class ParticipanteResource extends Resource
                     ->relationship('entidad', 'short_nombre'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->before(fn($record) => $record->update(['cedula' => '*'.$record->cedula]))
+                    ->before(fn($record) => $record->update(['cedula' => '*' . $record->cedula]))
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -239,6 +241,8 @@ class ParticipanteResource extends Resource
             'index' => Pages\ListParticipantes::route('/'),
             'create' => Pages\CreateParticipante::route('/create'),
             'edit' => Pages\EditParticipante::route('/{record}/edit'),
+            'view' => Pages\ViewParticipante::route('/{record}'),
         ];
     }
+
 }
