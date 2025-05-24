@@ -23,11 +23,11 @@ class AppServiceProvider extends ServiceProvider
     {
         //Customizing the asset URL Livewire's
         Livewire::setUpdateRoute(function ($handle) {
-            return Route::post('/'.env('APP_ASSET_LIVEWIRE', 'laravel/public').'/livewire/update', $handle)->name('assetlivewire.update');
+            return Route::post(env('APP_ASSET_LIVEWIRE', '').'/livewire/update', $handle)->name('assetlivewire.update');
         });
 
         Livewire::setScriptRoute(function ($handle) {
-            return Route::get('/'.env('APP_ASSET_LIVEWIRE', 'laravel/public').'/livewire/livewire.js', $handle);
+            return Route::get(env('APP_ASSET_LIVEWIRE', '').'/livewire/livewire.js', $handle);
         });
     }
 }

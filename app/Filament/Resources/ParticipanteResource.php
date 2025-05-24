@@ -7,6 +7,8 @@ use App\Filament\Resources\ParticipanteResource\RelationManagers;
 use App\Models\Participante;
 use App\Models\Socio;
 use Closure;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
@@ -33,114 +35,175 @@ class ParticipanteResource extends Resource
                 //
                 Forms\Components\Section::make('Datos Personales')
                     ->schema([
+
                         Forms\Components\Select::make('id_entidad')
                             ->relationship('entidad', 'nombre')
                             ->required()
                             ->searchable()
                             ->preload()->columnSpanFull(),
-                        Forms\Components\TextInput::make('cedula')
-                            ->unique(ignoreRecord: true)
-                            ->live(onBlur: true)
-                            ->required()
-                            ->suffixIcon('heroicon-m-magnifying-glass')
-                            ->suffixIconColor('warning')
-                            ->rules([
-                                fn(Get $get, Component $component): Closure => function (string $attribute, $value, Closure $fail) use ($get, $component) {
-                                    $id_entidad = $get('id_entidad');
-                                    $cedula = $value;
-                                    $key = $component->getRecord()?->getKey();
-                                    if (env('chequear_listado_socios', false)) {
+                        Forms\Components\Fieldset::make()
+                            ->schema([
+                                Forms\Components\TextInput::make('cedula')
+                                    ->unique(ignoreRecord: true)
+                                    ->live(onBlur: true)
+                                    ->required()
+                                    ->suffixIcon('heroicon-m-magnifying-glass')
+                                    ->suffixIconColor('warning')
+                                    ->rules([
+                                        fn(Get $get, Component $component): Closure => function (string $attribute, $value, Closure $fail) use ($get, $component) {
+                                            $id_entidad = $get('id_entidad');
+                                            $cedula = $value;
+                                            $key = $component->getRecord()?->getKey();
+                                            if (env('chequear_listado_socios', false)) {
+                                                $exite = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
+                                                if (!$exite && !$key) {
+                                                    //$fail("The {$attribute} is invalid.");
+                                                    $fail("La cedula no esta en el listado de Socios.");
+                                                }
+                                            }
+                                        },
+                                    ])
+                                    ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state, Forms\Contracts\HasForms $livewire, Forms\Components\TextInput $input) {
+                                        $id_entidad = $get('id_entidad');
+                                        $cedula = $state;
                                         $exite = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
-                                        if (!$exite && !$key) {
-                                            //$fail("The {$attribute} is invalid.");
-                                            $fail("La cedula no esta en el listado de Socios.");
+                                        if ($exite) {
+                                            $set('carnet_socio', $exite->carnet);
+                                            $set('id_tipo_socio', $exite->tiposocio);
+                                            $set('primer_nombre', $exite->primer_nombre);
+                                            $set('segundo_nombre', $exite->segundo_nombre);
+                                            $set('primer_apellido', $exite->primer_apellido);
+                                            $set('segundo_apellido', $exite->segundo_apellido);
+                                            $set('sexo', $exite->sexo);
+                                            $set('fecha_nacimiento', $exite->fecha_nacimiento);
+                                        } else {
+                                            $set('carnet_socio', '');
+                                            $set('id_tipo_socio', '');
+                                            $set('primer_nombre', '');
+                                            $set('segundo_nombre', '');
+                                            $set('primer_apellido', '');
+                                            $set('segundo_apellido', '');
+                                            $set('sexo', '');
+                                            $set('fecha_nacimiento', '');
                                         }
-                                    }
-                                },
-                            ])
-                            ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state, Forms\Contracts\HasForms $livewire, Forms\Components\TextInput $input) {
-                                $id_entidad = $get('id_entidad');
-                                $cedula = $state;
-                                $exite = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
-                                if ($exite) {
-                                    $set('carnet_socio', $exite->carnet);
-                                    $set('id_tipo_socio', $exite->tiposocio);
-                                    $set('primer_nombre', $exite->primer_nombre);
-                                    $set('segundo_nombre', $exite->segundo_nombre);
-                                    $set('primer_apellido', $exite->primer_apellido);
-                                    $set('segundo_apellido', $exite->segundo_apellido);
-                                    $set('sexo', $exite->sexo);
-                                    $set('fecha_nacimiento', $exite->fecha_nacimiento);
-                                } else {
-                                    $set('carnet_socio', '');
-                                    $set('id_tipo_socio', '');
-                                    $set('primer_nombre', '');
-                                    $set('segundo_nombre', '');
-                                    $set('primer_apellido', '');
-                                    $set('segundo_apellido', '');
-                                    $set('sexo', '');
-                                    $set('fecha_nacimiento', '');
-                                }
-                                $livewire->validateOnly($input->getStatePath());
-                            }),
-                        Forms\Components\TextInput::make('carnet_socio')
-                            ->label('Carnet')
-                            ->integer()
-                            ->required(),
-                        Forms\Components\Select::make('id_tipo_socio')
-                            ->relationship('tipoSocio', 'tipo_socio')
-                            ->required(),
-                        Forms\Components\TextInput::make('primer_nombre')
-                            ->required(),
-                        Forms\Components\TextInput::make('segundo_nombre'),
-                        Forms\Components\TextInput::make('primer_apellido')
-                            ->required(),
-                        Forms\Components\TextInput::make('segundo_apellido'),
-                        Forms\Components\TextInput::make('email')
-                            ->email(),
-                        Forms\Components\TextInput::make('telefono')
-                            ->tel()
-                            ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/'),
-                        Forms\Components\Select::make('sexo')
-                            ->options([
-                                0 => mb_strtoupper('Masculino'),
-                                1 => mb_strtoupper('Femenino'),
-                            ])
-                            ->required(),
-                        Forms\Components\DatePicker::make('fecha_nacimiento')
-                            ->label('Fecha de Nacimiento')
-                            ->required(),
-                        Forms\Components\Select::make('deporteini')
-                            ->label('Deporte')
-                            ->relationship('deporteinicial', 'deporte')
-                            ->searchable()
-                            ->preload()
-                            ->required(),
-                        Forms\Components\Select::make('id_cargo')
-                            ->relationship('cargo', 'cargo')
-                            ->searchable()
-                            ->preload()
-                            ->required(),
-                        Forms\Components\FileUpload::make('fotografia')
-                            ->label('Foto del Carnet')
-                            ->image()
-                            ->imageEditor()
-                            ->maxSize(3072),
-                        Forms\Components\FileUpload::make('image_cedula')
-                            ->label('Foto de la Cedula')
-                            ->image()
-                            ->imageEditor()
-                            ->maxSize(3072),
+                                        $livewire->validateOnly($input->getStatePath());
+                                    }),
 
+                                Forms\Components\TextInput::make('carnet_socio')
+                                    ->label('Carnet')
+                                    ->integer()
+                                    ->required(),
+                                Forms\Components\Select::make('id_tipo_socio')
+                                    ->relationship('tipoSocio', 'tipo_socio')
+                                    ->required(),
+                            ])
+                            ->columns(3),
+                        Forms\Components\Fieldset::make()
+                            ->schema([
+                                Forms\Components\TextInput::make('primer_nombre')
+                                    ->required(),
+                                Forms\Components\TextInput::make('segundo_nombre'),
+                                Forms\Components\TextInput::make('primer_apellido')
+                                    ->required(),
+                                Forms\Components\TextInput::make('segundo_apellido'),
+                            ]),
+                        Forms\Components\Fieldset::make()
+                            ->schema([
+                                Forms\Components\Select::make('sexo')
+                                    ->options([
+                                        0 => mb_strtoupper('Masculino'),
+                                        1 => mb_strtoupper('Femenino'),
+                                    ])
+                                    ->required(),
+                                Forms\Components\TextInput::make('email')
+                                    ->email(),
+                                Forms\Components\TextInput::make('telefono')
+                                    ->tel()
+                                    ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/'),
+                            ])
+                            ->columns(3),
+                        Forms\Components\Fieldset::make()
+                            ->schema([
+                                Forms\Components\DatePicker::make('fecha_nacimiento')
+                                    ->label('Fecha de Nacimiento')
+                                    ->required(),
+                                Forms\Components\Select::make('deporteini')
+                                    ->label('Deporte')
+                                    ->relationship('deporteinicial', 'deporte')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
+                                Forms\Components\Select::make('id_cargo')
+                                    ->relationship('cargo', 'cargo')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
+                            ])
+                            ->columns(3),
+                        Forms\Components\Fieldset::make()
+                            ->schema([
+                                Forms\Components\FileUpload::make('fotografia')
+                                    ->label('Foto del Carnet')
+                                    ->image()
+                                    ->imageEditor()
+                                    ->maxSize(3072),
+                                Forms\Components\FileUpload::make('image_cedula')
+                                    ->label('Foto de la Cedula')
+                                    ->image()
+                                    ->imageEditor()
+                                    ->maxSize(3072),
+                            ]),
                     ])
                     ->columns(3)
                     ->collapsible(),
-                /*Forms\Components\Section::make('Datos Medicos')
+                Forms\Components\Section::make('Datos Medicos')
                     ->schema([
-                        //TextInput::make('primer_nombre')
+                        Forms\Components\TextInput::make('rh')
+                            ->label('HR'),
+                        Forms\Components\Fieldset::make('Alergias')
+                            ->schema([
+                                Forms\Components\Toggle::make('alergico')
+                                    ->label('Es alérgico')
+                                    ->inline(false)
+                                    ->live()
+                                    ->afterStateUpdated(function (Get $get, Set $set) {
+                                        $isAlergico = $get('alergico');
+                                        if (!$isAlergico) {
+                                            $set('alergias', '');
+                                        }
+                                    }),
+                                Forms\Components\TextInput::make('alergias')
+                                    ->requiredIf('alergico', true)
+                                    ->readOnly(fn(Get $get) => !$get('alergico')),
+                            ]),
+                        Forms\Components\Fieldset::make('Antecedentes Medicos')
+                            ->schema([
+                                Forms\Components\Toggle::make('ant_medicos')
+                                    ->label('Con Antecedentes')
+                                    ->inline(false)
+                                    ->live()
+                                    ->afterStateUpdated(function (Get $get, Set $set) {
+                                        $ConAntecedentes = $get('ant_medicos');
+                                        if (!$ConAntecedentes) {
+                                            $set('antecedentes', '');
+                                        }
+                                    }),
+                                Forms\Components\TextInput::make('antecedentes')
+                                    ->requiredIf('ant_medicos', true)
+                                    ->readOnly(fn(Get $get) => !$get('ant_medicos')),
+                            ]),
+                        Forms\Components\Fieldset::make('Avisar a')
+                            ->schema([
+                                Forms\Components\TextInput::make('avisar_a')
+                                    ->label('Nombre'),
+                                Forms\Components\TextInput::make('telefono_medico')
+                                    ->label('Telefono')
+                                    ->tel()
+                                    ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/'),
+                            ]),
                     ])
-                    ->columns(2)
-                    ->collapsible(),*/
+                    ->columns(3)
+                    ->collapsible(),
             ]);
     }
 
@@ -157,13 +220,15 @@ class ParticipanteResource extends Resource
                     ->formatStateUsing(function ($state, Participante $participante) {
                         return mb_strtoupper($participante->primer_nombre . ' ' . $participante->segundo_nombre);
                     })
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(15),
                 Tables\Columns\TextColumn::make('primer_apellido')
                     ->label('Apellidos')
                     ->formatStateUsing(function ($state, Participante $participante) {
                         return mb_strtoupper($participante->primer_apellido . ' ' . $participante->segundo_apellido);
                     })
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(15),
                 Tables\Columns\TextColumn::make('sexo')
                     ->label('Sexo')
                     ->formatStateUsing(function ($state, Participante $participante) {
@@ -176,7 +241,8 @@ class ParticipanteResource extends Resource
                 Tables\Columns\TextColumn::make('deporteinicial.deporte')
                     ->label('Deporte')
                     ->limit(15)
-                    ->formatStateUsing(fn(string $state) => mb_strtoupper($state)),
+                    ->formatStateUsing(fn(string $state) => mb_strtoupper($state))
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('cargo.cargo')
                     ->label('Cargo')
                     ->formatStateUsing(fn(string $state) => mb_strtoupper($state))
@@ -195,7 +261,7 @@ class ParticipanteResource extends Resource
                     ->relationship('entidad', 'short_nombre'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                //Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
                     ->before(fn($record) => $record->update(['cedula' => '*' . $record->cedula]))
@@ -241,8 +307,10 @@ class ParticipanteResource extends Resource
             'index' => Pages\ListParticipantes::route('/'),
             'create' => Pages\CreateParticipante::route('/create'),
             'edit' => Pages\EditParticipante::route('/{record}/edit'),
-            'view' => Pages\ViewParticipante::route('/{record}'),
+            //'view' => Pages\ViewParticipante::route('/{record}'),
         ];
     }
+
+
 
 }
