@@ -146,12 +146,14 @@ class ParticipanteResource extends Resource
                                     ->label('Foto del Carnet')
                                     ->image()
                                     ->imageEditor()
-                                    ->maxSize(3072),
+                                    ->maxSize(3072)
+                                    ->directory('participantes-photos'),
                                 Forms\Components\FileUpload::make('image_cedula')
                                     ->label('Foto de la Cedula')
                                     ->image()
                                     ->imageEditor()
-                                    ->maxSize(3072),
+                                    ->maxSize(3072)
+                                    ->directory('participantes-photos'),
                             ]),
                     ])
                     ->columns(3)
@@ -310,7 +312,6 @@ class ParticipanteResource extends Resource
             //'view' => Pages\ViewParticipante::route('/{record}'),
         ];
     }
-
 
 
 }
