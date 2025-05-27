@@ -158,10 +158,10 @@ class ParticipanteResource extends Resource
                     ])
                     ->columns(3)
                     ->collapsible(),
-                Forms\Components\Section::make('Datos Medicos')
+                Forms\Components\Section::make('Datos Médicos')
                     ->schema([
                         Forms\Components\TextInput::make('rh')
-                            ->label('HR'),
+                            ->label('Grupo Sanguineo y RH'),
                         Forms\Components\Fieldset::make('Alergias')
                             ->schema([
                                 Forms\Components\Toggle::make('alergico')
