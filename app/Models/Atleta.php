@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Atleta extends Model
 {
@@ -16,4 +17,15 @@ class Atleta extends Model
         'marca',
         'obs',
     ];
+
+    public function participante(): BelongsTo
+    {
+        return $this->belongsTo(Participante::class, 'id_participante', 'id');
+    }
+
+    public function deporte(): BelongsTo
+    {
+        return $this->belongsTo(Deporte::class, 'id_deporte', 'id');
+    }
+
 }

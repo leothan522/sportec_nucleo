@@ -301,7 +301,7 @@ class ParticipanteResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\AtletasRelationManager::class,
         ];
     }
 

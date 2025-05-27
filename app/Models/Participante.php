@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Participante extends Model
@@ -78,6 +79,11 @@ class Participante extends Model
     public function tipoSocio(): BelongsTo
     {
         return $this->belongsTo(TipoSocio::class, 'id_tipo_socio', 'id');
+    }
+
+    public function atletas(): HasMany
+    {
+        return $this->hasMany(Atleta::class, 'id_participante', 'id');
     }
 
 }

@@ -40,5 +40,15 @@ class Deporte extends Model
         return $this->hasMany(Participante::class, 'deporteini', 'id');
     }
 
+    public function atletas(): HasMany
+    {
+        return $this->hasMany(Atleta::class, 'id_deporte', 'id');
+    }
+
+    public function modalidades(): HasMany
+    {
+        return $this->hasMany(ModalidadDeportiva::class, 'id_deporte', 'id');
+    }
+
 
 }

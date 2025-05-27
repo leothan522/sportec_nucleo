@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ModalidadDeportiva extends Model
 {
@@ -26,4 +27,11 @@ class ModalidadDeportiva extends Model
         'IdCategAccess',
         'Orden',
     ];
+
+    public function deporte(): BelongsTo
+    {
+        return $this->belongsTo(Deporte::class, 'id_deporte', 'id');
+    }
+
+
 }
