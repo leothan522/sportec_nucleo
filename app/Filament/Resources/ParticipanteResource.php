@@ -263,10 +263,12 @@ class ParticipanteResource extends Resource
                     ->relationship('entidad', 'short_nombre'),
             ])
             ->actions([
-                //Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
-                    ->before(fn($record) => $record->update(['cedula' => '*' . $record->cedula]))
+                Tables\Actions\ActionGroup::make([
+                    //Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->before(fn($record) => $record->update(['cedula' => '*' . $record->cedula]))
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
