@@ -4,6 +4,8 @@ namespace App\Filament\Resources\ParticipanteResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,9 +21,35 @@ class AtletasRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('cedula')
+                Forms\Components\Hidden::make('cedula')
+                    ->default(function (RelationManager $livewire): string{
+                        return $livewire->getOwnerRecord()->cedula;
+                    }),
+                Forms\Components\Select::make('id_deporte')
+                ->label('Deporte')
+                ->relationship('deporte', 'deporte')
+                    ->default(function (RelationManager $livewire): string{
+                        return $livewire->getOwnerRecord()->deporteini;
+                    })
+                    ->searchable()
+                    ->preload()
                     ->required()
-                    ->maxLength(255),
+                    ->live()
+                    ->afterStateUpdated(fn(Set $set) => $set('id_modalidad', '')),
+                Forms\Components\Select::make('id_modalidad')
+                    ->label('Modalidad')
+                    ->relationship(
+                        'modalidad',
+                        'modalidad',
+                        fn(Builder $query, Get $get) => $query->where('id_deporte', $get('id_deporte'))
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->required(),
+                Forms\Components\TextInput::make('marca')
+                ->label('Marca Personal'),
+                Forms\Components\TextInput::make('obs')
+                ->label('Observaciones'),
             ]);
     }
 
@@ -30,7 +58,16 @@ class AtletasRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('cedula')
             ->columns([
-                Tables\Columns\TextColumn::make('cedula'),
+                Tables\Columns\TextColumn::make('deporte.deporte')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('modalidad.modalidad')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('marca')
+                ->label('Marca Personal')
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('obs')
+                ->label('Observaciones')
+                ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -41,8 +78,10 @@ class AtletasRelationManager extends RelationManager
                 ->modalHeading('Agregar Deporte y Modalidad'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

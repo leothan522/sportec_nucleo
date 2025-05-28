@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ModalidadDeportiva extends Model
 {
@@ -31,6 +32,11 @@ class ModalidadDeportiva extends Model
     public function deporte(): BelongsTo
     {
         return $this->belongsTo(Deporte::class, 'id_deporte', 'id');
+    }
+
+    public function atletas(): HasMany
+    {
+        return $this->hasMany(Atleta::class, 'id_modalidad', 'id');
     }
 
 

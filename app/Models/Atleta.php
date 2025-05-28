@@ -28,4 +28,9 @@ class Atleta extends Model
         return $this->belongsTo(Deporte::class, 'id_deporte', 'id');
     }
 
+    public function modalidad(): BelongsTo
+    {
+        return $this->belongsTo(ModalidadDeportiva::class, 'id_modalidad', 'id');
+    }
+
 }
