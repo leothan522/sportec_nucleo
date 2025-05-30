@@ -10,7 +10,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AtletasRelationManager extends RelationManager
 {
@@ -22,15 +21,15 @@ class AtletasRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\Hidden::make('cedula')
-                    ->default(function (RelationManager $livewire): string{
+                    ->default(function (RelationManager $livewire): string {
                         return $livewire->getOwnerRecord()->cedula;
                     }),
                 Forms\Components\Select::make('id_deporte')
-                ->label('Deporte')
-                ->relationship('deporte', 'deporte')
-                    ->default(function (RelationManager $livewire): string{
-                        return $livewire->getOwnerRecord()->deporteini;
-                    })
+                    ->label('Deporte')
+                    ->relationship(
+                        'deporte',
+                        'deporte',
+                        fn(Builder $query, Get $get) => $query->where('en_uso', 1))
                     ->searchable()
                     ->preload()
                     ->required()
@@ -41,15 +40,28 @@ class AtletasRelationManager extends RelationManager
                     ->relationship(
                         'modalidad',
                         'modalidad',
-                        fn(Builder $query, Get $get) => $query->where('id_deporte', $get('id_deporte'))
+                        function (Builder $query, Get $get, RelationManager $livewire){
+                            $query->where('id_deporte', $get('id_deporte'));
+                            $sexo = $livewire->getOwnerRecord()->sexo;
+                            $fecha_nacimiento = $livewire->getOwnerRecord()->fecha_nacimiento;
+                            if ($sexo){
+                                $query->where('femenino', 1);
+                            }else{
+                                $query->where('masculino', 1);
+                            }
+                            return $query->where('puntuable', 1)
+                                ->where('en_practica', 1)
+                                ->where('rango_minimo', '>=', $fecha_nacimiento)
+                                ->where('rango_maximo', '<=', $fecha_nacimiento);
+                        }
                     )
                     ->searchable()
                     ->preload()
                     ->required(),
                 Forms\Components\TextInput::make('marca')
-                ->label('Marca Personal'),
+                    ->label('Marca Personal'),
                 Forms\Components\TextInput::make('obs')
-                ->label('Observaciones'),
+                    ->label('Observaciones'),
             ]);
     }
 
@@ -59,23 +71,29 @@ class AtletasRelationManager extends RelationManager
             ->recordTitleAttribute('cedula')
             ->columns([
                 Tables\Columns\TextColumn::make('deporte.deporte')
-                ->searchable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('modalidad.modalidad')
-                ->searchable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('marca')
-                ->label('Marca Personal')
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Marca Personal')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('obs')
-                ->label('Observaciones')
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Observaciones')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                ->label('Agregar')
-                ->modalHeading('Agregar Deporte y Modalidad'),
+                    ->label('Agregar')
+                    ->modalHeading('Agregar Deporte y Modalidad')
+                    ->disabled(function (RelationManager $livewire){
+                        if ($livewire->getOwnerRecord()->fecha_nacimiento){
+                            return false;
+                        }
+                        return true;
+                    }),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
