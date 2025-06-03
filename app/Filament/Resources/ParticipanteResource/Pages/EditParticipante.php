@@ -16,4 +16,11 @@ class EditParticipante extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            ParticipanteResource\Widgets\ModalidadDeportivaWidget::class,
+        ];
+    }
 }

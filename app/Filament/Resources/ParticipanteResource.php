@@ -4,11 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ParticipanteResource\Pages;
 use App\Filament\Resources\ParticipanteResource\RelationManagers;
+use App\Filament\Resources\ParticipanteResource\Widgets\ModalidadDeportivaWidget;
 use App\Models\Participante;
 use App\Models\Socio;
 use Closure;
-use Filament\Actions\Action;
-use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
@@ -301,7 +300,7 @@ class ParticipanteResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\AtletasRelationManager::class,
+            //RelationManagers\AtletasRelationManager::class,
         ];
     }
 
@@ -312,6 +311,13 @@ class ParticipanteResource extends Resource
             'create' => Pages\CreateParticipante::route('/create'),
             'edit' => Pages\EditParticipante::route('/{record}/edit'),
             //'view' => Pages\ViewParticipante::route('/{record}'),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            ModalidadDeportivaWidget::class,
         ];
     }
 
