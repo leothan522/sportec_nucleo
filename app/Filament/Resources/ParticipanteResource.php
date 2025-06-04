@@ -16,6 +16,7 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Columns\Column;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
@@ -39,7 +40,18 @@ class ParticipanteResource extends Resource
                             ->relationship('entidad', 'nombre')
                             ->required()
                             ->searchable()
-                            ->preload()->columnSpanFull(),
+                            ->preload()
+                            ->columnSpanFull()
+                            ->hidden(function (Set $set){
+                                $id_nivel = auth()->user()->id_nivel;
+                                $id_entidad = auth()->user()->id_entidad;
+                                $is_root = auth()->user()->is_root;
+                                if ($id_nivel != 1 && !$is_root){
+                                    $set('id_entidad', $id_entidad);
+                                    return true;
+                                }
+                                return false;
+                            }),
                         Forms\Components\Fieldset::make()
                             ->schema([
                                 Forms\Components\TextInput::make('cedula')
@@ -55,16 +67,17 @@ class ParticipanteResource extends Resource
                                             $key = $component->getRecord()?->getKey();
                                             if (env('chequear_listado_socios', false)) {
                                                 $exite = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
-                                                if (!$exite && !$key) {
+                                                if (!$exite /*&& !$key*/) {
                                                     //$fail("The {$attribute} is invalid.");
                                                     $fail("La cedula no esta en el listado de Socios.");
                                                 }
                                             }
                                         },
                                     ])
-                                    ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state, Forms\Contracts\HasForms $livewire, Forms\Components\TextInput $input) {
+                                    ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state, Forms\Contracts\HasForms $livewire, Forms\Components\TextInput $input,Component $component) {
                                         $id_entidad = $get('id_entidad');
                                         $cedula = $state;
+                                        $key = $component->getRecord()?->getKey();
                                         $exite = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
                                         if ($exite) {
                                             $set('carnet_socio', $exite->carnet);
@@ -76,14 +89,16 @@ class ParticipanteResource extends Resource
                                             $set('sexo', $exite->sexo);
                                             $set('fecha_nacimiento', $exite->fecha_nacimiento);
                                         } else {
-                                            $set('carnet_socio', '');
-                                            $set('id_tipo_socio', '');
-                                            $set('primer_nombre', '');
-                                            $set('segundo_nombre', '');
-                                            $set('primer_apellido', '');
-                                            $set('segundo_apellido', '');
-                                            $set('sexo', '');
-                                            $set('fecha_nacimiento', '');
+                                            if (!$key){
+                                                $set('carnet_socio', '');
+                                                $set('id_tipo_socio', '');
+                                                $set('primer_nombre', '');
+                                                $set('segundo_nombre', '');
+                                                $set('primer_apellido', '');
+                                                $set('segundo_apellido', '');
+                                                $set('sexo', '');
+                                                $set('fecha_nacimiento', '');
+                                            }
                                         }
                                         $livewire->validateOnly($input->getStatePath());
                                     }),
@@ -294,7 +309,15 @@ class ParticipanteResource extends Resource
                     ])
                 ])
             ])
-            ->defaultSort('created_at', 'DESC');
+            ->defaultSort('created_at', 'DESC')
+            ->modifyQueryUsing(function (Builder $query){
+                $id_nivel = auth()->user()->id_nivel;
+                $id_entidad = auth()->user()->id_entidad;
+                $is_root = auth()->user()->is_root;
+                if ($id_nivel != 1 && !$is_root){
+                    return $query->where('id_entidad', $id_entidad);
+                }
+            });
     }
 
     public static function getRelations(): array

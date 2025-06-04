@@ -60,7 +60,8 @@ class UserResource extends Resource
                 /*Forms\Components\Toggle::make('activo')
                     ->hiddenOn('create'),*/
                 Forms\Components\Select::make('roles')
-                    ->relationship('roles', 'name'),
+                    ->relationship('roles', 'name')
+                    ->hidden(!auth()->user()->is_root),
             ]);
     }
 
