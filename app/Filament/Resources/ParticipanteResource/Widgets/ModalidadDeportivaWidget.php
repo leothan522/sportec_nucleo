@@ -39,8 +39,10 @@ class ModalidadDeportivaWidget extends BaseWidget
             })
             ->heading('Deportes y Modalidades')
             ->columns([
-                Tables\Columns\TextColumn::make('deporte.deporte'),
-                Tables\Columns\TextColumn::make('modalidad'),
+                Tables\Columns\TextColumn::make('deporte.deporte')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('modalidad')
+                ->searchable(),
             ])
             ->actions([
                 Tables\Actions\Action::make('seleccionar')
