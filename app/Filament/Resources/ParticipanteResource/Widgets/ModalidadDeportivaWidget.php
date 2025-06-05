@@ -96,6 +96,11 @@ class ModalidadDeportivaWidget extends BaseWidget
     #[On('updatePage')]
     public function updatePage(): void
     {
+        $id_participante = $this->record->id;
+        $atletas = Atleta::where('id_participante', $id_participante)->get();
+        foreach ($atletas as $atleta){
+            $atleta->delete();
+        }
         $this->resetPage();
     }
 }
