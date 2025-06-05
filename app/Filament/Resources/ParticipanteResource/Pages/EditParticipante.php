@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ParticipanteResource\Pages;
 use App\Filament\Resources\ParticipanteResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Livewire\Attributes\On;
 
 class EditParticipante extends EditRecord
 {
@@ -23,4 +24,11 @@ class EditParticipante extends EditRecord
             ParticipanteResource\Widgets\ModalidadDeportivaWidget::class,
         ];
     }
+
+    protected function beforeSave(): void
+    {
+        // Runs before the form fields are saved to the database.
+        $this->dispatch('updatePage');
+    }
+
 }

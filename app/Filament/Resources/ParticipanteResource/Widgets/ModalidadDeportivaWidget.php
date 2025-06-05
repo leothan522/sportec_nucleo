@@ -9,6 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Model;
+use Livewire\Attributes\On;
 
 class ModalidadDeportivaWidget extends BaseWidget
 {
@@ -21,6 +22,7 @@ class ModalidadDeportivaWidget extends BaseWidget
             ->query(function () {
                 $sexo = $this->record->sexo;
                 $fecha_nacimiento = $this->record->fecha_nacimiento;
+                $id_cargo = $this->record->id_cargo;
                 $query = ModalidadDeportiva::query();
                 if ($sexo) {
                     $query->where('femenino', 1);
@@ -31,6 +33,10 @@ class ModalidadDeportivaWidget extends BaseWidget
                 if ($fecha_nacimiento) {
                     $query->where('rango_minimo', '>=', $fecha_nacimiento)
                         ->where('rango_maximo', '<=', $fecha_nacimiento);
+                }
+
+                if ($id_cargo != 4){
+                    $query->where('id', -1);
                 }
 
                 return $query->whereRelation('deporte', 'en_uso', 1)
@@ -82,6 +88,14 @@ class ModalidadDeportivaWidget extends BaseWidget
                             $atleta->save();
                         }
                     })
-            ], position: Tables\Enums\ActionsPosition::BeforeColumns);
+            ], position: Tables\Enums\ActionsPosition::BeforeColumns)
+            ->emptyStateHeading('Solo aplica para Atletas')
+            ->emptyStateIcon('heroicon-o-exclamation-circle');
+    }
+
+    #[On('updatePage')]
+    public function updatePage(): void
+    {
+        $this->resetPage();
     }
 }

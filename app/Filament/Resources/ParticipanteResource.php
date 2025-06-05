@@ -13,6 +13,7 @@ use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -42,11 +43,11 @@ class ParticipanteResource extends Resource
                             ->searchable()
                             ->preload()
                             ->columnSpanFull()
-                            ->hidden(function (Set $set){
+                            ->hidden(function (Set $set) {
                                 $id_nivel = auth()->user()->id_nivel;
                                 $id_entidad = auth()->user()->id_entidad;
                                 $is_root = auth()->user()->is_root;
-                                if ($id_nivel != 1 && !$is_root){
+                                if ($id_nivel != 1 && !$is_root) {
                                     $set('id_entidad', $id_entidad);
                                     return true;
                                 }
@@ -74,7 +75,7 @@ class ParticipanteResource extends Resource
                                             }
                                         },
                                     ])
-                                    ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state, Forms\Contracts\HasForms $livewire, Forms\Components\TextInput $input,Component $component) {
+                                    ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state, Forms\Contracts\HasForms $livewire, Forms\Components\TextInput $input, Component $component) {
                                         $id_entidad = $get('id_entidad');
                                         $cedula = $state;
                                         $key = $component->getRecord()?->getKey();
@@ -89,7 +90,15 @@ class ParticipanteResource extends Resource
                                             $set('sexo', $exite->sexo);
                                             $set('fecha_nacimiento', $exite->fecha_nacimiento);
                                         } else {
-                                            if (!$key){
+                                            Notification::make()
+                                                ->title('La cedula '.$cedula)
+                                                ->body('no esta en el listado de Socios')
+                                                ->icon('heroicon-c-exclamation-circle')
+                                                ->iconColor('warning')
+                                                ->color('warning')
+                                                ->persistent()
+                                                ->send();
+                                            if (!$key) {
                                                 $set('carnet_socio', '');
                                                 $set('id_tipo_socio', '');
                                                 $set('primer_nombre', '');
@@ -263,6 +272,7 @@ class ParticipanteResource extends Resource
                     ->label('Cargo')
                     ->formatStateUsing(fn(string $state) => mb_strtoupper($state))
                     ->limit(15),
+                Tables\Columns\CheckboxColumn::make('asiste'),
                 Tables\Columns\TextColumn::make('entidad.short_nombre')
                     ->formatStateUsing(fn(string $state) => mb_strtoupper($state))
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -310,11 +320,11 @@ class ParticipanteResource extends Resource
                 ])
             ])
             ->defaultSort('created_at', 'DESC')
-            ->modifyQueryUsing(function (Builder $query){
+            ->modifyQueryUsing(function (Builder $query) {
                 $id_nivel = auth()->user()->id_nivel;
                 $id_entidad = auth()->user()->id_entidad;
                 $is_root = auth()->user()->is_root;
-                if ($id_nivel != 1 && !$is_root){
+                if ($id_nivel != 1 && !$is_root) {
                     return $query->where('id_entidad', $id_entidad);
                 }
             });
