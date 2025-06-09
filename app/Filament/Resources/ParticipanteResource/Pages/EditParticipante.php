@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ParticipanteResource\Pages;
 
 use App\Filament\Resources\ParticipanteResource;
+use App\Models\Participante;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Livewire\Attributes\On;
@@ -14,6 +15,10 @@ class EditParticipante extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('Imprimir')
+                ->label('Imprimir')
+                ->url(fn(Participante $record) => route('export.participante', $record->getKey()))
+                ->openUrlInNewTab(),
             Actions\DeleteAction::make(),
         ];
     }

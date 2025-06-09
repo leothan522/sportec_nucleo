@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 class ExportController extends Controller
 {
+    public $participantes_id;
     public function exportParticipante($id)
     {
         $participante = Participante::find($id);
@@ -44,18 +45,18 @@ class ExportController extends Controller
 
         $modalidades = $modalidades->get();
 
+        $this->participantes_id = $id;
         $modalidades->each(function ($modalidad){
-            $id_participante = $modalidad->id;
             $id_deporte = $modalidad->id_deporte;
             $id_modalidad = $modalidad->id;
-            $atleta = Atleta::where('id_participante', $id_participante)
+            $atleta = Atleta::where('id_participante', $this->participantes_id)
                 ->where('id_deporte', $id_deporte)
                 ->where('id_modalidad', $id_modalidad)
                 ->first();
             if ($atleta) {
-                return 'heroicon-m-check-circle';
+                $modalidad->ver = true;
             } else {
-                return 'heroicon-o-stop';
+                $modalidad->ver = false;
             }
         });
 

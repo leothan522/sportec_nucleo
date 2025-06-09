@@ -29,7 +29,7 @@
                                     <td class="border-r pr-4">
                                         <div>
                                             <p class="whitespace-nowrap text-slate-400 text-right">Fecha de Nacimiento</p>
-                                            <p class="whitespace-nowrap font-bold text-main text-right">{{ $participante->fecha_nacmiento ? getFecha($participante->fecha_nacimiento) : 'No suministrado' }}</p>
+                                            <p class="whitespace-nowrap font-bold text-main text-right text-uppercase">{{ $participante->fecha_nacmiento ? getFecha($participante->fecha_nacimiento) : 'No suministrado' }}</p>
                                         </div>
                                     </td>
                                     <td class="pl-4">
@@ -86,23 +86,33 @@
             </table>
         </div>
 
-        <div class="px-14 py-10 text-sm text-neutral-700">
-            <table class="w-full border-collapse border-spacing-0">
-                <thead>
-                <tr>
-                    <td colspan="2" class="border-b-2 border-main pb-3 pl-3 font-bold text-main text-center text-uppercase">Deportes y Modalidades</td>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($modalidades as $modalidad)
+        @if($participante->id_cargo == 4)
+            <div class="px-14 py-10 text-sm text-neutral-700">
+                <table class="w-full border-collapse border-spacing-0">
+                    <thead>
                     <tr>
-                        <td class="border-b py-3 pl-3 text-uppercase">{{ $modalidad->deporte->deporte }}</td>
-                        <td class="border-b py-3 pl-2 text-uppercase">{{ $modalidad->modalidad }}</td>
+                        <td colspan="2" class="border-b-2 border-main pb-3 pl-3 font-bold text-main text-center text-uppercase">Deportes y Modalidades</td>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                    @php($i = 0)
+                    @foreach($modalidades as $modalidad)
+                        @if(!$modalidad->ver) @continue @endif
+                        @php($i++)
+                        <tr>
+                            <td class="border-b py-3 pl-3 text-uppercase">{{ $modalidad->deporte->deporte }}</td>
+                            <td class="border-b py-3 pl-2 text-uppercase">{{ $modalidad->modalidad }}</td>
+                        </tr>
+                    @endforeach
+                    @if(!$i)
+                        <tr>
+                            <td colspan="2" class="border-b py-3 pl-3 text-uppercase">NO suministrado</td>
+                        </tr>
+                    @endif
+                    </tbody>
+                </table>
+            </div>
+        @endif
 
         {{--<div class="px-14 py-6 text-sm">
             <table class="w-full border-collapse border-spacing-0">
