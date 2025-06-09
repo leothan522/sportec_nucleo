@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,3 +20,5 @@ Route::middleware([
 Route::get('/bootstrap', function () {
     return view('bootstrap');
 });
+
+Route::get('export/{id}/participante', [ExportController::class, 'exportParticipante'])->name('export.participante');

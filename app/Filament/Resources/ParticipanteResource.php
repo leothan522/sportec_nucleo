@@ -289,6 +289,11 @@ class ParticipanteResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     //Tables\Actions\ViewAction::make(),
+                    Tables\Actions\Action::make('imprimir')
+                    ->label('Imprimir')
+                    ->icon('heroicon-o-identification')
+                    ->url(fn(Participante $record) => route('export.participante', $record->getKey()))
+                    ->openUrlInNewTab(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
                         ->before(fn($record) => $record->update(['cedula' => '*' . $record->cedula]))
