@@ -157,6 +157,7 @@ class ParticipanteResource extends Resource
                                         'deporte',
                                         fn(Builder $query) => $query->where('en_uso', 1),
                                     )
+                                    ->default(98)
                                     ->searchable()
                                     ->preload()
                                     ->required(),
