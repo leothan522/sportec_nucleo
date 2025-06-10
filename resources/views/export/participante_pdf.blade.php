@@ -54,7 +54,7 @@
                 <tr>
                     <td class="w-1/2 align-top">
                         <div class="text-sm text-neutral-600">
-                            <p class="font-bold text-uppercase">{{ $participante->entidad->nombre }}</p>
+                            <p class="font-bold text-main text-uppercase">{{ $participante->entidad->nombre }}</p>
                             <br>
                             <p class="text-uppercase"><span class="font-bold">Carnet</span>: {{ $participante->carnet_socio ?? 'No suministrado' }}</p>
                             <p class="text-uppercase"><span class="font-bold">Tipo socio</span>: {{ $participante->id_tipo_socio ? $participante->tipoSocio->tipo_socio : 'No suministrado' }}</p>
@@ -113,6 +113,23 @@
                 </table>
             </div>
         @endif
+
+        <div class="px-14 py-6 text-sm">
+            <table class="w-full border-collapse border-spacing-0">
+                <tbody>
+                <tr>
+                    <td class="align-top text-right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td class="w-1/2 align-top">
+                        <p><span class="">Imagen Cedula:</span></p>
+                        <div class="">
+                            <img src="{{ verImagen($participante->image_cedula) }}" class="img_cedula" alt="Cedula"/>
+                        </div>
+                    </td>
+                    <td class="align-top text-right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
         {{--<div class="px-14 py-6 text-sm">
             <table class="w-full border-collapse border-spacing-0">
