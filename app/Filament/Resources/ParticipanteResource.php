@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ParticipanteResource\Pages;
 use App\Filament\Resources\ParticipanteResource\RelationManagers;
 use App\Filament\Resources\ParticipanteResource\Widgets\ModalidadDeportivaWidget;
+use App\Models\Nivel;
 use App\Models\Participante;
+use App\Models\Permiso;
 use App\Models\Socio;
 use Closure;
 use Filament\Forms;
@@ -162,7 +164,24 @@ class ParticipanteResource extends Resource
                                     ->preload()
                                     ->required(),
                                 Forms\Components\Select::make('id_cargo')
-                                    ->relationship('cargo', 'cargo')
+                                    ->relationship(
+                                        'cargo',
+                                        'cargo',
+                                        function (Builder $query){
+                                            $nivel = Nivel::find(auth()->user()->id_nivel);
+                                            if ($nivel && !auth()->user()->is_root){
+                                                $id_permiso = $nivel->id_permiso;
+                                                $permiso = Permiso::find($id_permiso);
+                                                if ($permiso){
+                                                    $cargos = explode(',', $permiso->cargos);
+                                                    foreach ($cargos as $cargo){
+                                                        $query->orWhere('id', $cargo);
+                                                    }
+                                                }
+                                            }
+                                            return $query;
+                                        }
+                                    )
                                     ->searchable()
                                     ->preload()
                                     ->required(),
