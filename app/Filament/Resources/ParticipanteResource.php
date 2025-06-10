@@ -152,7 +152,11 @@ class ParticipanteResource extends Resource
                                     ->required(),
                                 Forms\Components\Select::make('deporteini')
                                     ->label('Deporte')
-                                    ->relationship('deporteinicial', 'deporte')
+                                    ->relationship(
+                                        'deporteinicial',
+                                        'deporte',
+                                        fn(Builder $query) => $query->where('en_uso', 1),
+                                    )
                                     ->searchable()
                                     ->preload()
                                     ->required(),
