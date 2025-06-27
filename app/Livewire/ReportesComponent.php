@@ -94,12 +94,12 @@ class ReportesComponent extends Component implements HasForms, HasTable
                 if ($id_nivel != 1 && !$is_root) {
                     $query->where('id_entidad', $id_entidad);
                 }
-                if ($this->reporte == 'deporte'){
+                if ($this->reporte == 'deporte') {
                     $query->where('deporteini', $this->id_reporte);
                 }
                 return $query;
             })
-            ->paginated(false)
+            //->paginated($this->reporte == 'general')
             ->defaultSort('id_entidad');
     }
 

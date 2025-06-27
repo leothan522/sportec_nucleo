@@ -12,4 +12,9 @@ class ReporteModalidad extends Page
     protected static ?string $title = 'Inscritos por Deporte y Modalidad';
     protected static ?string $navigationGroup = "Reportes";
     protected static ?int $navigationSort = 96;
+
+    public static function canAccess(): bool
+    {
+        return false;
+    }
 }
