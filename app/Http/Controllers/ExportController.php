@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Atleta;
+use App\Models\Deporte;
+use App\Models\Entidad;
 use App\Models\ModalidadDeportiva;
 use App\Models\Participante;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -69,6 +71,8 @@ class ExportController extends Controller
 
     public function exportReportes($reporte, $id =null)
     {
+        $deporte = null;
+        $entidad = null;
         $query = Participante::query();
         $id_nivel = auth()->user()->id_nivel;
         $id_entidad = auth()->user()->id_entidad;
@@ -76,11 +80,22 @@ class ExportController extends Controller
         if ($id_nivel != 1 && !$is_root) {
             $query->where('id_entidad', $id_entidad);
         }
+        if ($reporte == 'deporte'){
+            $query->where('deporteini', $id);
+            $deporte = Deporte::find($id);
+        }
+
+        if (auth()->user()->id_nivel != 1 && !auth()->user()->is_root){
+            $entidad = Entidad::find(auth()->user()->id_entidad);
+        }
 
         $participantes = $query->orderBy('id_entidad')->get();
 
         return Pdf::loadView('export.reporte_pdf', [
             'participantes' => $participantes,
+            'reporte' => $reporte,
+            'deporte' => $deporte,
+            'entidad' => $entidad,
         ])
             ->stream('Participantes.pdf');
     }

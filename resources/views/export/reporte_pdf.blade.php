@@ -71,7 +71,21 @@
                 <tr>
                     <td colspan="@if(auth()->user()->id_nivel == 1 || auth()->user()->is_root) 6 @else 5 @endif" class="align-top">
                         <div class="text-sm text-neutral-600">
-                            <p class="font-bold pb-3 text-main text-center text-uppercase">Listado General de Inscritos</p>
+                            <p class="font-bold pb-3 text-main text-center text-uppercase">
+                                Listado @if($reporte == 'general') General @endif de Inscritos @if($reporte == 'deporte') por Deporte @endif
+                            </p>
+                            @if($entidad)
+                                <p class="pb-3 text-uppercase">
+                                    <span class="font-bold">Club</span>: {{ $entidad->nombre }}
+                                </p>
+                            @endif
+                            @if($deporte)
+                                <p class="pb-3 text-uppercase">
+                                    <span class="font-bold">Deporte</span>: {{ $deporte->deporte }}
+                                    {{--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span class="font-bold">Modalidad</span>: Domino--}}
+                                </p>
+                            @endif
                             {{--<p class="pb-3 text-uppercase">
                                 <span class="font-bold">Deporte</span>: Domino
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -109,7 +123,7 @@
                 @endforeach
                 @if(!$i)
                     <tr>
-                        <td colspan="2" class="border-b py-3 pl-3 text-uppercase">NO suministrado</td>
+                        <td colspan="@if(auth()->user()->id_nivel == 1 || auth()->user()->is_root) 6 @else 5 @endif" class="border-b py-3 pl-3 text-uppercase">NO Encontrado</td>
                     </tr>
                 @endif
                 </tbody>
@@ -162,7 +176,7 @@
 
         <footer
             class="fixed bottom-0 left-0 bg-slate-100 w-full text-neutral-600 text-center text-xs py-3 text-uppercase">
-            Listado General de Inscritos
+            Listado @if($reporte == 'general') General @endif de Inscritos @if($deporte) | Deporte: {{ $deporte->deporte }} @endif | Total: {{ formatoMillares($participantes->count(), 0) }}
             {{-- @if($empresa->email)
                  <span class="text-slate-300 px-2">|</span>
                   $empresa->email

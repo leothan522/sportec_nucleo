@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Deporte;
 use App\Models\Participante;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -31,7 +32,9 @@ class ReportesComponent extends Component implements HasForms, HasTable
 
     public function render()
     {
-        return view('livewire.reportes-component');
+        $deportes = Deporte::where('en_uso', 1)->get();
+        return view('livewire.reportes-component')
+            ->with('listarDeportes', $deportes);
     }
 
     public function table(Table $table): Table
@@ -91,17 +94,29 @@ class ReportesComponent extends Component implements HasForms, HasTable
                 if ($id_nivel != 1 && !$is_root) {
                     $query->where('id_entidad', $id_entidad);
                 }
+                if ($this->reporte == 'deporte'){
+                    $query->where('deporteini', $this->id_reporte);
+                }
                 return $query;
             })
             ->paginated(false)
             ->defaultSort('id_entidad');
     }
 
-    public function initTable($title, $description)
+    public function initTable($title, $id): int
     {
+        $query = Participante::query();
+        $id_nivel = auth()->user()->id_nivel;
+        $id_entidad = auth()->user()->id_entidad;
+        $is_root = auth()->user()->is_root;
+        if ($id_nivel != 1 && !$is_root) {
+            $query->where('id_entidad', $id_entidad);
+        }
+        $this->id_reporte = $id;
         $this->titleTable = $title;
-        $this->descriptionTable = $description;
+        $this->descriptionTable = 'Listado de Inscritos';
         $this->resetTable();
+        return $query->where('deporteini', $this->id_reporte)->count();
     }
 
 }
