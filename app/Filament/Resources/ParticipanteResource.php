@@ -38,8 +38,8 @@ class ParticipanteResource extends Resource
                 //
                 Forms\Components\Section::make('Datos Personales')
                     ->schema([
-
                         Forms\Components\Select::make('id_entidad')
+                            ->label('Club')
                             ->relationship('entidad', 'nombre')
                             ->required()
                             ->searchable()
@@ -190,13 +190,14 @@ class ParticipanteResource extends Resource
                         Forms\Components\Fieldset::make()
                             ->schema([
                                 Forms\Components\FileUpload::make('fotografia')
-                                    ->label('Foto del Carnet')
+                                    ->label('Foto tipo carnet del Participante')
                                     ->image()
                                     ->imageEditor()
                                     ->maxSize(3072)
-                                    ->directory('participantes-photos'),
+                                    ->directory('participantes-photos')
+                                    ->required(),
                                 Forms\Components\FileUpload::make('image_cedula')
-                                    ->label('Foto de la Cedula')
+                                    ->label('Foto del Carnet')
                                     ->image()
                                     ->imageEditor()
                                     ->maxSize(3072)
@@ -298,6 +299,7 @@ class ParticipanteResource extends Resource
                     ->limit(15),
                 Tables\Columns\CheckboxColumn::make('asiste'),
                 Tables\Columns\TextColumn::make('entidad.short_nombre')
+                    ->label('Club')
                     ->formatStateUsing(fn(string $state) => mb_strtoupper($state))
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -308,6 +310,7 @@ class ParticipanteResource extends Resource
                 Tables\Filters\SelectFilter::make('Cargo')
                     ->relationship('cargo', 'cargo'),
                 Tables\Filters\SelectFilter::make('Entidad')
+                    ->label('Club')
                     ->relationship('entidad', 'short_nombre'),
             ])
             ->actions([

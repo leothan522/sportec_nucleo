@@ -4,7 +4,8 @@ use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('dashboard');
+    //return view('welcome');
 })->name('web.index');
 
 Route::middleware([

@@ -120,7 +120,7 @@
                 <tr>
                     <td class="align-top text-right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td class="w-1/2 align-top">
-                        <p><span class="">Imagen Cedula:</span></p>
+                        <p><span class="">Foto del Carnet:</span></p>
                         <div class="">
                             <img src="{{ verImagen($participante->image_cedula) }}" class="img_cedula" alt="Cedula"/>
                         </div>
