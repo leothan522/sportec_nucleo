@@ -347,7 +347,7 @@ class ParticipanteResource extends Resource
                             }),
                         Column::make('deporteinicial.deporte')->heading('Deporte'),
                         Column::make('cargo.cargo')->heading('Cargo'),
-                        Column::make('entidad.short_nombre')->heading('Entidad'),
+                        Column::make('entidad.short_nombre')->heading('Club'),
                     ])
                 ])
             ])

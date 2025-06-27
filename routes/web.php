@@ -23,3 +23,4 @@ Route::get('/bootstrap', function () {
 });
 
 Route::get('export/{id}/participante', [ExportController::class, 'exportParticipante'])->name('export.participante');
+Route::get('export/{reporte}/reportes/{id?}', [ExportController::class, 'exportReportes'])->name('export.reportes');

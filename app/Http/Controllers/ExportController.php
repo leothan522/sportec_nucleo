@@ -66,4 +66,22 @@ class ExportController extends Controller
         ])
             ->stream('Participante.pdf');
     }
+
+    public function exportReportes($reporte, $id =null)
+    {
+        $query = Participante::query();
+        $id_nivel = auth()->user()->id_nivel;
+        $id_entidad = auth()->user()->id_entidad;
+        $is_root = auth()->user()->is_root;
+        if ($id_nivel != 1 && !$is_root) {
+            $query->where('id_entidad', $id_entidad);
+        }
+
+        $participantes = $query->orderBy('id_entidad')->get();
+
+        return Pdf::loadView('export.reporte_pdf', [
+            'participantes' => $participantes,
+        ])
+            ->stream('Participantes.pdf');
+    }
 }
