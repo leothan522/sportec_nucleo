@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\Builder;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Columns\Column;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Collection;
 use function Pest\Laravel\options;
 
 class ParticipanteResource extends Resource
@@ -323,12 +325,31 @@ class ParticipanteResource extends Resource
                     ->openUrlInNewTab(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
-                        ->before(fn($record) => $record->update(['cedula' => '*' . $record->cedula]))
+                        ->before(function ($record){
+                            $i = 0;
+                            do{
+                                $repeat = Str::repeat('*',++$i);
+                                $cedula = $repeat . $record->cedula;
+                                $existe = Participante::withTrashed()->where('cedula', $cedula)->first();
+                            }while($existe);
+                            $record->update(['cedula' => $cedula]);
+                        })
                 ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
+                        ->before(function (Collection $records){
+                            foreach ($records as $record){
+                                $i = 0;
+                                do{
+                                    $repeat = Str::repeat('*',++$i);
+                                    $cedula = $repeat . $record->cedula;
+                                    $existe = Participante::withTrashed()->where('cedula', $cedula)->first();
+                                }while($existe);
+                                $record->update(['cedula' => $cedula]);
+                            }
+                        })
                 ]),
                 ExportBulkAction::make()->exports([
                     ExcelExport::make()->withColumns([
