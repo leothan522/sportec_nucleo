@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Auth;
 
 class UserPolicy
 {
@@ -36,7 +37,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->id_nivel == 1 || $user->hasRole('admin') || $user->is_root;
+        return $model->id != Auth::id() && !$model->is_root && ($user->id_nivel == 1 || $user->hasRole('admin') || $user->is_root);
     }
 
     /**
@@ -44,7 +45,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->id_nivel == 1 || $user->hasRole('admin') || $user->is_root;
+        return $model->id != Auth::id() && !$model->is_root && ($user->id_nivel == 1 || $user->hasRole('admin') || $user->is_root);
     }
 
     /**
@@ -60,6 +61,6 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model): bool
     {
-        return $user->id_nivel == 1 || $user->hasRole('admin') || $user->is_root;
+        return $model->id != Auth::id() && !$model->is_root && ($user->id_nivel == 1 || $user->hasRole('admin') || $user->is_root);
     }
 }
