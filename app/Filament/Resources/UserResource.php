@@ -61,11 +61,6 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('descripcion')
                     ->label('Descripción')
                     ->default(null),
-                /*Forms\Components\Toggle::make('activo')
-                    ->hiddenOn('create'),*/
-                Forms\Components\Select::make('roles')
-                    ->relationship('roles', 'name')
-                    ->hidden(!auth()->user()->is_root),
             ]);
     }
 
