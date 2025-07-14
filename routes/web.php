@@ -4,8 +4,7 @@ use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('dashboard');
-    //return view('welcome');
+    return view('inicio');
 })->name('web.index');
 
 Route::middleware([
@@ -16,10 +15,6 @@ Route::middleware([
     Route::get('/home', function () {
         return view('home');
     })->name('home');
-});
-
-Route::get('/bootstrap', function () {
-    return view('bootstrap');
 });
 
 Route::get('export/{id}/participante', [ExportController::class, 'exportParticipante'])->name('export.participante');

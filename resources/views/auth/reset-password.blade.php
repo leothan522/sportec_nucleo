@@ -1,9 +1,9 @@
-@extends('layouts.auth-bootstrap')
+@extends('layouts.bootstrap')
 
 @section('title', __('Reset Password'))
 
 @section('content')
-    <form class="needs-validation position-relative" method="POST" action="{{ route('password.update') }}" novalidate>
+    <form class="needs-validation" method="POST" action="{{ route('password.update') }}" novalidate>
         @csrf
 
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
@@ -21,7 +21,7 @@
         @endif
 
         <div class="form-floating mb-3 has-validation">
-            <input id="email" type="email" class="form-control" name="email" value="{{ old('email', $request->email) }}" placeholder="name@example.com" required autofocus />
+            <input id="email" type="email" class="form-control" name="email" value="{{ old('email', $request->email) }}" placeholder="name@example.com" required autofocus/>
             <label for="email">{{ __('Email') }}</label>
             <div class="invalid-feedback">
                 Por favor ingrese su {{ __('Email') }}.

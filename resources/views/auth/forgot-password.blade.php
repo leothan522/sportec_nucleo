@@ -1,10 +1,9 @@
-@extends('layouts.auth-bootstrap')
+@extends('layouts.bootstrap')
 
-@section('title', 'Olvidé mi contraseña')
+@section('title', __('Forgot your password?'))
 
 @section('content')
-
-    <form class="needs-validation position-relative" method="POST" action="{{ route('password.email') }}" novalidate>
+    <form class="needs-validation" method="POST" action="{{ route('password.email') }}" novalidate>
         @csrf
 
         <div class="mb-4">
@@ -34,7 +33,8 @@
         @endif
 
         <div class="form-floating mb-3 has-validation">
-            <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="name@example.com" required autofocus />
+            <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}"
+                   placeholder="name@example.com" required autofocus/>
             <label for="email">{{ __('Email') }}</label>
             <div class="invalid-feedback">
                 Por favor ingrese su {{ __('Email') }}.
@@ -52,6 +52,5 @@
         </div>
 
     </form>
-
 
 @endsection

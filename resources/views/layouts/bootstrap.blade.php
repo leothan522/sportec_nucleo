@@ -5,32 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Ing. Yonathan Castillo">
-    <meta name="generator" content="Bootstrap v5.3">
+    <meta name="generator" content="Bootstrap v5.3.7">
 
-    <title>{{ config('app.name') }} | @yield('title', 'Morros Devops')</title>
+    <title>@yield('title', 'Morros Devops') - {{ config('app.name', 'Laravel') }}</title>
 
     <!-- Favicons -->
-    {{--<link rel="apple-touch-icon" sizes="57x57" href="{{ asset('favicons/apple-icon-57x57.png') }}">
-    <link rel="apple-touch-icon" sizes="60x60" href="{{ asset('favicons/apple-icon-60x60.png') }}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('favicons/apple-icon-72x72.png') }}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('favicons/apple-icon-76x76.png') }}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('favicons/apple-icon-114x114.png') }}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('favicons/apple-icon-120x120.png') }}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{{ asset('favicons/apple-icon-144x144.png') }}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('favicons/apple-icon-152x152.png') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicons/apple-icon-180x180.png') }}">
-    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('favicons/android-icon-192x192.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicons/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicons/favicon-96x96.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicons/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ asset('favicons/manifest.json') }}">
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('img/favicons/apple-icon-57x57.png') }}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{{ asset('img/favicons/apple-icon-60x60.png') }}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('img/favicons/apple-icon-72x72.png') }}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('img/favicons/apple-icon-76x76.png') }}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('img/favicons/apple-icon-114x114.png') }}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('img/favicons/apple-icon-120x120.png') }}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ asset('img/favicons/apple-icon-144x144.png') }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('img/favicons/apple-icon-152x152.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/favicons/apple-icon-180x180.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('img/favicons/android-icon-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicons/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('img/favicons/favicon-96x96.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/favicons/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('img/favicons/manifest.json') }}">
     <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="{{ asset('favicons/ms-icon-144x144.png') }}">
-    <meta name="theme-color" content="#ffffff">--}}
+    <meta name="msapplication-TileImage" content="{{ asset('img/favicons/ms-icon-144x144.png') }}">
+    <meta name="theme-color" content="#ffffff">
 
     <!--Bootstrap -->
-    @vite(['resources/js/app.js'])
-
+    {{--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">--}}
+    @vite(['resources/js/bootstrap5.js'])
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -114,6 +114,13 @@
         }
 
     </style>
+    <script type="application/javascript">
+        //Script para ejecurar el preloader
+        window.addEventListener('load', function() {
+            document.querySelector('#preloader').style.display = 'none';
+            document.querySelector('.container').style.display = 'block';
+        });
+    </script>
 
     @livewireStyles
     @yield('css')
@@ -131,13 +138,13 @@
                 <div class="card rounded-3 text-black">
                     <div class="row g-0">
                         <div class="col-lg-6">
-                            <div class="card-body p-md-5 mx-md-4">
+                            <div class="card-body p-md-5 mx-md-4 position-relative" id="card_body">
 
-                                <div class="text-center mt-5 mt-sm-auto">
-                                    <a href="{{ route('web.index') }}">
-                                        <img class="img-fluid" src="{{ asset('img/logo.svg') }}" alt="logo">
+                                <div class="text-center @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'web.index') mt-5 pt-5 @endif">
+                                    <a href="{{ route('web.index') }}" onclick="verCargando()">
+                                        <img class="img-fluid @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'web.index') mt-sm-5 @endif" src="{{ asset('img/logo.svg') }}" alt="Logo Morros Devops">
                                     </a>
-                                    <h6 class="mt-1 mb-4 pb-1 text_title text-uppercase"><strong>{{ env('APP_NAME', 'Laravel') }}</strong></h6>
+                                    <h6 class="mt-1 mb-5 pb-1 text_title"><strong>{{ mb_strtoupper(env('APP_NAME', 'Laravel')) }}</strong></h6>
                                 </div>
 
                                 @yield('content')
@@ -159,16 +166,9 @@
     </div>
 </div>
 
+{{--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>--}}
 @livewireScripts
 <script type="application/javascript">
-
-    //Script para ejecurar el preloader
-    window.addEventListener('load', function() {
-        document.querySelector('#preloader').style.display = 'none';
-        document.querySelector('.container').style.display = 'block';
-    });
-
-    //Validacion Formularios
     (() => {
         'use strict'
 
@@ -181,15 +181,21 @@
                 if (!form.checkValidity()) {
                     event.preventDefault()
                     event.stopPropagation()
-                } else {
+                }else {
                     form.classList.add('opacity-50');
                     document.querySelector(".verCargando").classList.remove('d-none');
                 }
-                form.classList.add('was-validated')
-            }, false)
+                form.classList.add('was-validated');
+            }, false);
         })
-    })();
+    })()
 
+    function verCargando() {
+        document.querySelector("#card_body").classList.add('opacity-50');
+        document.querySelector(".verCargando").classList.remove('d-none');
+    }
+
+    console.log('Hi!')
 </script>
 @yield('js')
 </body>
