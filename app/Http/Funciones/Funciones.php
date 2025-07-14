@@ -1,8 +1,6 @@
 <?php
 //Funciones Personalizadas para el Proyecto
 
-use Carbon\Carbon;
-
 function verImagen($path): string
 {
     $response  = public_path('img/placeholder.jpg');
@@ -19,15 +17,15 @@ function getFecha($fecha, $format = null): string
 {
     if (is_null($fecha)){
         if (is_null($format)){
-            $date = Carbon::now(env('APP_TIMEZONE', "America/Caracas"))->toDateString();
+            $date = \Carbon\Carbon::now(env('APP_TIMEZONE', "America/Caracas"))->toDateString();
         }else{
-            $date = Carbon::now(env('APP_TIMEZONE', "America/Caracas"))->format($format);
+            $date = \Carbon\Carbon::now(env('APP_TIMEZONE', "America/Caracas"))->format($format);
         }
     }else{
         if (is_null($format)){
-            $date = Carbon::parse($fecha)->format("d/m/Y");
+            $date = \Carbon\Carbon::parse($fecha)->format("d/m/Y");
         }else{
-            $date = Carbon::parse($fecha)->format($format);
+            $date = \Carbon\Carbon::parse($fecha)->format($format);
         }
     }
     return $date;
@@ -39,6 +37,11 @@ function formatoMillares($cantidad, $decimal = 2): string
         $cantidad = 0;
     }
     return number_format($cantidad, $decimal, ',', '.');
+}
+
+function sweetAlert2(array $parametros = []): void
+{
+    session()->flash('sweetAlert2', $parametros);
 }
 
 function cerosIzquierda($cantidad, $cantCeros = 2): int|string

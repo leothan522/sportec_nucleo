@@ -18,6 +18,11 @@ class UserAdmin
     {
         if (Auth::check()){
             if (!Auth::user()->is_admin && !Auth::user()->is_root){
+                sweetAlert2([
+                    'icon' => 'info',
+                    'text' => 'No tienes acceso al Panel',
+                    'timer' => 3000,
+                ]);
                 return redirect('/home');
             }
         }

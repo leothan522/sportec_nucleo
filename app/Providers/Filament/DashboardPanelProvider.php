@@ -35,11 +35,6 @@ class DashboardPanelProvider extends PanelProvider
             ->default()
             ->id('dashboard')
             ->path('dashboard')
-            ->login()
-            ->passwordReset()
-            ->emailVerification()
-            ->profile(isSimple: false)
-            ->favicon(asset('img/favicons/favicon-32x32.png'))
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -65,22 +60,24 @@ class DashboardPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
                 UserAdmin::class,
                 UserActivo::class,
+                'verified'
             ])
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->profile(isSimple: false)
+            ->favicon(asset('img/favicons/favicon-32x32.png'))
             ->plugins([
-                FilamentEditProfilePlugin::make()
+               /*FilamentEditProfilePlugin::make()
                     ->shouldRegisterNavigation(false)
-                    ->shouldShowDeleteAccountForm(false),
+                    ->shouldShowDeleteAccountForm(false),*/
                 //FilamentSpatieRolesPermissionsPlugin::make()
             ])
             ->userMenuItems([
                 'profile' => MenuItem::make()
                     ->label(fn() => auth()->user()->name)
-                    ->url(fn (): string => EditProfilePage::getUrl())
-                    ->icon('heroicon-m-user-circle')
-            ])
-            ;
+                    //->url(fn (): string => EditProfilePage::getUrl())
+                    ->url(fn(): string => url('user/profile'))
+            ]);
     }
 }

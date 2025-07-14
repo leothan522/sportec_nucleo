@@ -30,7 +30,7 @@
 
     <!--Bootstrap -->
     {{--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">--}}
-    @vite(['resources/js/bootstrap5.js'])
+    @vite(['resources/js/bootstrap5.js', 'resources/js/sweetalert2.js'])
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,6 +42,7 @@
                 transform: scale(0.8); /* Reduce el tamaño al 80% */
             }
         }
+
         * {
             font-family: "Poppins", sans-serif;
             font-weight: 400;
@@ -116,7 +117,7 @@
     </style>
     <script type="application/javascript">
         //Script para ejecurar el preloader
-        window.addEventListener('load', function() {
+        window.addEventListener('load', function () {
             document.querySelector('#preloader').style.display = 'none';
             document.querySelector('.container').style.display = 'block';
         });
@@ -140,21 +141,27 @@
                         <div class="col-lg-6">
                             <div class="card-body p-md-5 mx-md-4 position-relative" id="card_body">
 
-                                <div class="text-center @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'web.index') mt-5 pt-5 @endif">
+                                <div
+                                    class="text-center @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'web.index') mt-5 pt-5 @endif">
                                     <a href="{{ route('web.index') }}" onclick="verCargando()">
-                                        <img class="img-fluid @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'web.index') mt-sm-5 @endif" src="{{ asset('img/logo.svg') }}" alt="Logo Morros Devops">
+                                        <img
+                                            class="img-fluid @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'web.index') mt-sm-5 @endif"
+                                            src="{{ asset('img/logo.svg') }}" alt="Logo Morros Devops">
                                     </a>
-                                    <h6 class="mt-1 mb-5 pb-1 text_title"><strong>{{ mb_strtoupper(env('APP_NAME', 'Laravel')) }}</strong></h6>
+                                    <h6 class="mt-1 mb-5 pb-1 text_title">
+                                        <strong>{{ mb_strtoupper(env('APP_NAME', 'Laravel')) }}</strong></h6>
                                 </div>
 
                                 @yield('content')
 
                             </div>
                         </div>
-                        <div class="col-lg-6 d-none d-lg-flex align-items-center gradient-custom-2" style="min-height: 70vh">
+                        <div class="col-lg-6 d-none d-lg-flex align-items-center gradient-custom-2"
+                             style="min-height: 70vh">
                             <div class="text-white px-3 py-4 p-md-5 mx-md-4 text-center">
                                 <h3>Desarrollado por Morros Devops</h3>
-                                <a href="https://www.morros-devops.xyz"  target="_blank" class="text-white text-decoration-none">www.morros-devops.xyz</a>
+                                <a href="https://www.morros-devops.xyz" target="_blank"
+                                   class="text-white text-decoration-none">www.morros-devops.xyz</a>
                             </div>
                         </div>
                     </div>
@@ -181,7 +188,7 @@
                 if (!form.checkValidity()) {
                     event.preventDefault()
                     event.stopPropagation()
-                }else {
+                } else {
                     form.classList.add('opacity-50');
                     document.querySelector(".verCargando").classList.remove('d-none');
                 }
@@ -198,5 +205,6 @@
     console.log('Hi!')
 </script>
 @yield('js')
+@include('layouts.sweetAlert2')
 </body>
 </html>

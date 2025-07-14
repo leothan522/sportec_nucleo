@@ -73,7 +73,7 @@ return [
     |
     */
 
-    'home' => '/home',
+    'home' => '/dashboard',
 
     /*
     |--------------------------------------------------------------------------
@@ -144,16 +144,17 @@ return [
     */
 
     'features' => [
-        Features::registration(),
+        //Features::registration(),
+        env('REGISTER', false) ? Features::registration() : null,
         Features::resetPasswords(),
         Features::emailVerification(),
         Features::updateProfileInformation(),
         Features::updatePasswords(),
-        Features::twoFactorAuthentication([
+        /*Features::twoFactorAuthentication([
             'confirm' => true,
             'confirmPassword' => true,
             // 'window' => 0,
-        ]),
+        ]),*/
     ],
 
 ];

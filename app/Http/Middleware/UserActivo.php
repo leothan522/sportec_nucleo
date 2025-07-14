@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,11 +19,14 @@ class UserActivo
         if (Auth::check()){
             if (!Auth::user()->activo && !Auth::user()->is_root){
                 Auth::logout();
-                Notification::make()
-                    ->title('Usuario Inactivo')
-                    ->warning()
-                    ->send();
-                return redirect('/dashboard/login');
+                session()->flush();
+                sweetAlert2([
+                    'icon' => 'warning',
+                    'text' => 'Usuario Inactivo',
+                    'timer' => null,
+                    'showCloseButton' => true
+                ]);
+                return redirect()->route('web.index');
             }
         }
         return $next($request);
