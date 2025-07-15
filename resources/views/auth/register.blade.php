@@ -69,7 +69,7 @@
             <button type="submit"
                     class="btn shadow text-white btn-block fa-lg gradient-custom-2 mb-3">{{ __('Register') }}</button>
             <a class="text-muted" href="{{ route('login') }}"
-               onclick="verCargando()">{{ __('Already registered?') }}</a>
+               onclick="verCargandoAuth(this)">{{ __('Already registered?') }}</a>
         </div>
 
         <div class="position-absolute top-50 start-50 translate-middle d-none verCargando">
