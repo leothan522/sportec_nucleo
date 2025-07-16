@@ -118,6 +118,8 @@ class UserResource extends Resource
                     ->alignCenter(),
                 Tables\Columns\TextColumn::make('visitas')
                     ->numeric()
+                    ->icon('heroicon-o-flag')
+                    ->iconColor('success')
                     ->alignEnd(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->since()
