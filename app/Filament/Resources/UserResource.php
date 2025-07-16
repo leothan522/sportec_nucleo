@@ -22,45 +22,55 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationLabel = 'Usuarios';
     protected static ?string $label = 'Usuarios';
-    protected static ?int $navigationSort = 98;
+
     protected static ?string $navigationGroup = "Configuración";
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label(__('Name'))
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('password')
-                    ->label(__('Password'))
-                    ->password()
-                    ->required()
-                    ->maxLength(255)
-                    ->revealable()
-                    ->hiddenOn('edit'),
-                Forms\Components\TextInput::make('telefono')
-                    ->label('Teléfono')
-                    ->tel()
-                    ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\Select::make('id_entidad')
-                    ->relationship('entidad', 'nombre')
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('id_nivel')
-                    ->relationship('nivel', 'nivel')
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\TextInput::make('descripcion')
-                    ->label('Descripción')
-                    ->default(null),
+                Forms\Components\Section::make('Datos Básicos')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label(__('Name'))
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('email')
+                            ->email()
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('password')
+                            ->label(__('Password'))
+                            ->password()
+                            ->required()
+                            ->maxLength(255)
+                            ->revealable()
+                            ->hiddenOn('edit'),
+                        Forms\Components\TextInput::make('telefono')
+                            ->label('Teléfono')
+                            ->tel()
+                            ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
+                            ->maxLength(255)
+                            ->default(null),
+                        Forms\Components\TextInput::make('descripcion')
+                            ->label('Descripción')
+                            ->default(null),
+                    ])
+                    ->columns()
+                    ->compact(),
+                Forms\Components\Section::make('Permisos')
+                    ->schema([
+                        Forms\Components\Select::make('id_entidad')
+                            ->relationship('entidad', 'short_nombre')
+                            ->searchable()
+                            ->preload(),
+                        Forms\Components\Select::make('id_nivel')
+                            ->relationship('nivel', 'nivel')
+                            ->searchable()
+                            ->preload(),
+                    ])
+                    ->columns()
+                    ->compact(),
             ]);
     }
 
@@ -70,25 +80,33 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Name'))
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(50)
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
+                    ->visibleFrom('sm')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('email_verified_at')
                     ->label('Verificado')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->alignCenter()
+                    ->visibleFrom('sm')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('telefono')
                     ->label('Teléfono')
                     ->searchable()
+                    ->visibleFrom('sm')
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('entidad.nombre')
+                Tables\Columns\TextColumn::make('entidad.short_nombre')
+                    ->formatStateUsing(fn(string $state): string => mb_strtoupper($state))
                     ->searchable()
+                    ->visibleFrom('sm')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('nivel.nivel')
-                    ->searchable(),
+                    ->searchable()
+                    ->visibleFrom('sm'),
                 Tables\Columns\ToggleColumn::make('activo')
                     ->disabled(function (User $record): bool {
                         $response = true;
@@ -96,15 +114,14 @@ class UserResource extends Resource
                             $response = false;
                         }
                         return $response;
-                    }),
+                    })
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('visitas')
                     ->numeric()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('descripcion')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->alignEnd(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->since()
+                    ->visibleFrom('sm')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
