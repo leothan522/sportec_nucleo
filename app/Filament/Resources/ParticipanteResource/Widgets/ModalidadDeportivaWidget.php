@@ -35,7 +35,7 @@ class ModalidadDeportivaWidget extends BaseWidget
                         ->where('rango_maximo', '<=', $fecha_nacimiento);
                 }
 
-                if ($id_cargo != 4){
+                if ($id_cargo != 4) {
                     $query->where('id', -1);
                 }
 
@@ -46,9 +46,11 @@ class ModalidadDeportivaWidget extends BaseWidget
             ->heading('Deportes y Modalidades')
             ->columns([
                 Tables\Columns\TextColumn::make('deporte.deporte')
-                ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('modalidad')
-                ->searchable(),
+                    ->wrap()
+                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\Action::make('seleccionar')
@@ -98,7 +100,7 @@ class ModalidadDeportivaWidget extends BaseWidget
     {
         $id_participante = $this->record->id;
         $atletas = Atleta::where('id_participante', $id_participante)->get();
-        foreach ($atletas as $atleta){
+        foreach ($atletas as $atleta) {
             $atleta->delete();
         }
         $this->resetPage();

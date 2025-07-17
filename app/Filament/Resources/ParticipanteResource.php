@@ -37,7 +37,6 @@ class ParticipanteResource extends Resource
     {
         return $form
             ->schema([
-                //
                 Forms\Components\Section::make('Datos Personales')
                     ->schema([
                         Forms\Components\Select::make('id_entidad')
@@ -65,6 +64,7 @@ class ParticipanteResource extends Resource
                                     ->required()
                                     ->suffixIcon('heroicon-m-magnifying-glass')
                                     ->suffixIconColor('warning')
+                                    ->maxLength(20)
                                     ->rules([
                                         fn(Get $get, Component $component): Closure => function (string $attribute, $value, Closure $fail) use ($get, $component) {
                                             $id_entidad = $get('id_entidad');
@@ -95,7 +95,7 @@ class ParticipanteResource extends Resource
                                             $set('fecha_nacimiento', $exite->fecha_nacimiento);
                                         } else {
                                             Notification::make()
-                                                ->title('La cedula '.$cedula)
+                                                ->title('La cedula ' . $cedula)
                                                 ->body('no esta en el listado de Socios')
                                                 ->icon('heroicon-c-exclamation-circle')
                                                 ->iconColor('warning')
@@ -119,7 +119,8 @@ class ParticipanteResource extends Resource
                                 Forms\Components\TextInput::make('carnet_socio')
                                     ->label('Carnet')
                                     ->integer()
-                                    ->required(),
+                                    ->required()
+                                    ->maxLength(50),
                                 Forms\Components\Select::make('id_tipo_socio')
                                     ->relationship('tipoSocio', 'tipo_socio')
                                     ->required(),
@@ -128,11 +129,15 @@ class ParticipanteResource extends Resource
                         Forms\Components\Fieldset::make()
                             ->schema([
                                 Forms\Components\TextInput::make('primer_nombre')
-                                    ->required(),
-                                Forms\Components\TextInput::make('segundo_nombre'),
+                                    ->required()
+                                    ->maxLength(50),
+                                Forms\Components\TextInput::make('segundo_nombre')
+                                    ->maxLength(50),
                                 Forms\Components\TextInput::make('primer_apellido')
-                                    ->required(),
-                                Forms\Components\TextInput::make('segundo_apellido'),
+                                    ->required()
+                                    ->maxLength(50),
+                                Forms\Components\TextInput::make('segundo_apellido')
+                                    ->maxLength(50),
                             ]),
                         Forms\Components\Fieldset::make()
                             ->schema([
@@ -143,7 +148,8 @@ class ParticipanteResource extends Resource
                                     ])
                                     ->required(),
                                 Forms\Components\TextInput::make('email')
-                                    ->email(),
+                                    ->email()
+                                    ->maxLength(100),
                                 Forms\Components\TextInput::make('telefono')
                                     ->tel()
                                     ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/'),
@@ -169,14 +175,14 @@ class ParticipanteResource extends Resource
                                     ->relationship(
                                         'cargo',
                                         'cargo',
-                                        function (Builder $query){
+                                        function (Builder $query) {
                                             $nivel = Nivel::find(auth()->user()->id_nivel);
-                                            if ($nivel && !auth()->user()->is_root){
+                                            if ($nivel && !auth()->user()->is_root) {
                                                 $id_permiso = $nivel->id_permiso;
                                                 $permiso = Permiso::find($id_permiso);
-                                                if ($permiso){
+                                                if ($permiso) {
                                                     $cargos = explode(',', $permiso->cargos);
-                                                    foreach ($cargos as $cargo){
+                                                    foreach ($cargos as $cargo) {
                                                         $query->orWhere('id', $cargo);
                                                     }
                                                 }
@@ -207,11 +213,13 @@ class ParticipanteResource extends Resource
                             ]),
                     ])
                     ->columns(3)
-                    ->collapsible(),
+                    ->collapsible()
+                    ->compact(),
                 Forms\Components\Section::make('Datos Médicos')
                     ->schema([
                         Forms\Components\TextInput::make('rh')
-                            ->label('Grupo Sanguineo y RH'),
+                            ->label('Grupo Sanguineo y RH')
+                            ->maxLength(50),
                         Forms\Components\Fieldset::make('Alergias')
                             ->schema([
                                 Forms\Components\Toggle::make('alergico')
@@ -247,7 +255,8 @@ class ParticipanteResource extends Resource
                         Forms\Components\Fieldset::make('Avisar a')
                             ->schema([
                                 Forms\Components\TextInput::make('avisar_a')
-                                    ->label('Nombre'),
+                                    ->label('Nombre')
+                                    ->maxLength(100),
                                 Forms\Components\TextInput::make('telefono_medico')
                                     ->label('Telefono')
                                     ->tel()
@@ -255,7 +264,8 @@ class ParticipanteResource extends Resource
                             ]),
                     ])
                     ->columns(3)
-                    ->collapsible(),
+                    ->collapsible()
+                    ->compact(),
             ]);
     }
 
@@ -273,14 +283,15 @@ class ParticipanteResource extends Resource
                         return mb_strtoupper($participante->primer_nombre . ' ' . $participante->segundo_nombre);
                     })
                     ->searchable()
-                    ->limit(15),
+                    ->wrap()
+                    ->visibleFrom('sm'),
                 Tables\Columns\TextColumn::make('primer_apellido')
                     ->label('Apellidos')
                     ->formatStateUsing(function ($state, Participante $participante) {
                         return mb_strtoupper($participante->primer_apellido . ' ' . $participante->segundo_apellido);
                     })
                     ->searchable()
-                    ->limit(15),
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('sexo')
                     ->label('Sexo')
                     ->formatStateUsing(function ($state, Participante $participante) {
@@ -289,20 +300,35 @@ class ParticipanteResource extends Resource
                         } else {
                             return mb_strtoupper('Femenino');
                         }
-                    }),
+                    })
+                    ->visibleFrom('sm')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('deporteinicial.deporte')
                     ->label('Deporte')
-                    ->limit(15)
+                    ->wrap()
                     ->formatStateUsing(fn(string $state) => mb_strtoupper($state))
+                    ->visibleFrom('sm')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('cargo.cargo')
                     ->label('Cargo')
                     ->formatStateUsing(fn(string $state) => mb_strtoupper($state))
-                    ->limit(15),
-                Tables\Columns\CheckboxColumn::make('asiste'),
+                    ->wrap()
+                    ->visibleFrom('sm'),
+                Tables\Columns\CheckboxColumn::make('asiste')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('entidad.short_nombre')
                     ->label('Club')
                     ->formatStateUsing(fn(string $state) => mb_strtoupper($state))
+                    ->wrap()
+                    ->hidden(function () {
+                        $id_nivel = auth()->user()->id_nivel;
+                        $is_root = auth()->user()->is_root;
+                        if ($id_nivel != 1 && !$is_root) {
+                            return true;
+                        }
+                        return false;
+                    })
+                    ->visibleFrom('sm')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
@@ -313,25 +339,33 @@ class ParticipanteResource extends Resource
                     ->relationship('cargo', 'cargo'),
                 Tables\Filters\SelectFilter::make('Entidad')
                     ->label('Club')
-                    ->relationship('entidad', 'short_nombre'),
+                    ->relationship('entidad', 'short_nombre')
+                    ->hidden(function () {
+                        $id_nivel = auth()->user()->id_nivel;
+                        $is_root = auth()->user()->is_root;
+                        if ($id_nivel != 1 && !$is_root) {
+                            return true;
+                        }
+                        return false;
+                    }),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     //Tables\Actions\ViewAction::make(),
                     Tables\Actions\Action::make('imprimir')
-                    ->label('Imprimir')
-                    ->icon('heroicon-o-identification')
-                    ->url(fn(Participante $record) => route('export.participante', $record->getKey()))
-                    ->openUrlInNewTab(),
+                        ->label('Imprimir')
+                        ->icon('heroicon-o-identification')
+                        ->url(fn(Participante $record) => route('export.participante', $record->getKey()))
+                        ->openUrlInNewTab(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
-                        ->before(function ($record){
+                        ->before(function ($record) {
                             $i = 0;
-                            do{
-                                $repeat = Str::repeat('*',++$i);
+                            do {
+                                $repeat = Str::repeat('*', ++$i);
                                 $cedula = $repeat . $record->cedula;
                                 $existe = Participante::withTrashed()->where('cedula', $cedula)->first();
-                            }while($existe);
+                            } while ($existe);
                             $record->update(['cedula' => $cedula]);
                         })
                 ]),
@@ -339,14 +373,14 @@ class ParticipanteResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                        ->before(function (Collection $records){
-                            foreach ($records as $record){
+                        ->before(function (Collection $records) {
+                            foreach ($records as $record) {
                                 $i = 0;
-                                do{
-                                    $repeat = Str::repeat('*',++$i);
+                                do {
+                                    $repeat = Str::repeat('*', ++$i);
                                     $cedula = $repeat . $record->cedula;
                                     $existe = Participante::withTrashed()->where('cedula', $cedula)->first();
-                                }while($existe);
+                                } while ($existe);
                                 $record->update(['cedula' => $cedula]);
                             }
                         })
