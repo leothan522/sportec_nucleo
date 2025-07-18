@@ -23,8 +23,9 @@ class ReporteGeneralTableComponent extends Component implements HasForms, HasTab
     public bool $filtrar_entidad;
     public int $id_entidad;
     public string $texto;
+    public int $id_deporte;
 
-    public function mount(bool $filtrar_entidad, int $id_entidad, string $texto = 'general')
+    public function mount(bool $filtrar_entidad, int $id_entidad, string $texto)
     {
         $this->filtrar_entidad = $filtrar_entidad;
         $this->id_entidad = $id_entidad;
@@ -43,6 +44,9 @@ class ReporteGeneralTableComponent extends Component implements HasForms, HasTab
             ->modifyQueryUsing(function (Builder $query) {
                 if ($this->filtrar_entidad) {
                     $query->where('id_entidad', $this->id_entidad);
+                }
+                if ($this->id_deporte){
+                    $query->where('deporteini', $this->id_deporte);
                 }
                 return $query;
             })

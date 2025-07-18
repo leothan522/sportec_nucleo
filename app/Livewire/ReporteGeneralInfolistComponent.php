@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Participante;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Actions\Action;
@@ -19,6 +20,23 @@ class ReporteGeneralInfolistComponent extends Component implements HasForms, Has
     use InteractsWithInfolists;
     use InteractsWithForms;
 
+    public string $title = 'Listado General de Inscritos';
+    public int $id_deporte = 0;
+    public bool $cerrado = false;
+    public string $texto = 'general';
+
+    public function mount(string $title = '', int $id_deporte = 0)
+    {
+        if (!empty($title)) {
+            $this->title = $title;
+        }
+        if ($id_deporte) {
+            $this->id_deporte = $id_deporte;
+            $this->cerrado = true;
+            $this->texto = 'deporte' . $id_deporte;
+        }
+    }
+
 
     public function render()
     {
@@ -30,11 +48,14 @@ class ReporteGeneralInfolistComponent extends Component implements HasForms, Has
         return $infolist
             ->state([])
             ->schema([
-                Section::make('Listado General de Inscritos')
+                Section::make($this->title)
+                    ->description(fn(): string => 'Inscritos ' . cerosIzquierda($this->getInscritos()))
                     ->schema([
                         Livewire::make(ReporteGeneralTableComponent::class, [
                             'filtrar_entidad' => $this->filtrarEntidad(),
-                            'id_entidad' => auth()->user()->id_entidad ?? 0
+                            'id_entidad' => auth()->user()->id_entidad ?? 0,
+                            'id_deporte' => $this->id_deporte,
+                            'texto' => $this->texto
                         ]),
                     ])
                     ->headerActions([
@@ -42,8 +63,11 @@ class ReporteGeneralInfolistComponent extends Component implements HasForms, Has
                             ->label('Generar PDF')
                             ->url(route('web.index'))
                             ->openUrlInNewTab()
+                            ->hidden(!$this->getInscritos())
+                            ->disabled(!$this->getInscritos())
                     ])
-                ->compact(),
+                    ->compact()
+                    ->collapsed($this->cerrado),
             ]);
     }
 
@@ -56,6 +80,21 @@ class ReporteGeneralInfolistComponent extends Component implements HasForms, Has
             $response = true;
         }
         return $response;
+    }
+
+    protected function getInscritos(): int
+    {
+        $participantes = Participante::query();
+        if ($this->id_deporte) {
+            $participantes->where('deporteini', $this->id_deporte);
+        }
+        $id_nivel = auth()->user()->id_nivel;
+        $id_entidad = auth()->user()->id_entidad;
+        $is_root = auth()->user()->is_root;
+        if ($id_nivel != 1 && !$is_root) {
+            $participantes->where('id_entidad', $id_entidad);
+        }
+        return $participantes->count();
     }
 
 }
