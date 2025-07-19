@@ -2,16 +2,19 @@
 
 namespace App\Livewire;
 
+use App\Models\Entidad;
 use App\Models\Participante;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\Livewire;
 use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
+use Filament\Support\Enums\MaxWidth;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use function Symfony\Component\Translation\t;
 
@@ -24,6 +27,8 @@ class ReporteGeneralInfolistComponent extends Component implements HasForms, Has
     public int $id_deporte = 0;
     public bool $cerrado = false;
     public string $texto = 'general';
+
+    public int $unico = 1;
 
     public function mount(string $title = '', int $id_deporte = 0)
     {
@@ -61,19 +66,46 @@ class ReporteGeneralInfolistComponent extends Component implements HasForms, Has
                     ->headerActions([
                         Action::make('imprimir')
                             ->label('Generar PDF')
-                            ->url(function ():string{
+                            ->url(function (): string {
                                 $response = route('export.reportes');
-                                if ($this->id_deporte){
+                                if ($this->id_deporte) {
                                     $response = route('export.reportes', $this->id_deporte);
                                 }
-                                return  $response;
+                                return $response;
                             })
                             ->openUrlInNewTab()
-                            ->hidden(!$this->getInscritos())
-                            ->disabled(!$this->getInscritos())
+                            ->hidden(!$this->getInscritos() || !$this->filtrarEntidad())
+                            ->disabled(!$this->getInscritos() || !$this->filtrarEntidad()),
+                        Action::make('imprimir_entidad')
+                            ->label('Generar PDF')
+                            ->form([
+                                Select::make('id_entidad')
+                                    ->label(Str::upper('Club'))
+                                    ->options(Entidad::query()->pluck('short_nombre', 'id'))
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
+                            ])
+                            ->modalWidth(MaxWidth::Small)
+                            ->action(function (Component $livewire, array $data) {
+                                $url = route('export.reportes.entidad', $data['id_entidad']);
+                                if ($this->id_deporte) {
+                                    $url = route('export.reportes.entidad', [$data['id_entidad'], $this->id_deporte]);
+                                }
+                                return $livewire->dispatch('generarpdfentidad-'.$this->id_deporte, url: $url);
+                                //$this->unico = ++$this->unico;
+                            })
+                            ->hidden(!$this->getInscritos() || $this->filtrarEntidad())
+                            ->disabled(!$this->getInscritos() || $this->filtrarEntidad()),
                     ])
                     ->compact()
-                    ->collapsed($this->cerrado),
+                    ->collapsed($this->cerrado)
+                    ->collapsible($this->cerrado)
+                    ->extraAttributes(function () {
+                        return [
+                            'x-on:generarpdfentidad-'.$this->id_deporte.'.window' => 'window.open(event.detail.url)',
+                        ];
+                    }),
             ]);
     }
 

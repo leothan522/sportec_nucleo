@@ -19,5 +19,5 @@ Route::middleware([
 });
 
 Route::get('export/{id}/participante', [ExportController::class, 'exportParticipante'])->name('export.participante');
-//Route::get('export/{reporte}/reportes/{id?}', [ExportController::class, 'exportReportes'])->name('export.reportes');
-Route::get('export/reportes/{id?}', [ExportReportesController::class, 'exportReportes'])->name('export.reportes');
+Route::get('export/reportes/{id_deporte?}', [ExportReportesController::class, 'generarPDF'])->name('export.reportes');
+Route::get('export/reportes/{id_entidad}/inscritos/{id_deporte?}', [ExportReportesController::class, 'generarEntidadPDF'])->name('export.reportes.entidad');
