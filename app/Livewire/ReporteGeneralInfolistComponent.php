@@ -61,7 +61,13 @@ class ReporteGeneralInfolistComponent extends Component implements HasForms, Has
                     ->headerActions([
                         Action::make('imprimir')
                             ->label('Generar PDF')
-                            ->url(route('web.index'))
+                            ->url(function ():string{
+                                $response = route('export.reportes');
+                                if ($this->id_deporte){
+                                    $response = route('export.reportes', $this->id_deporte);
+                                }
+                                return  $response;
+                            })
                             ->openUrlInNewTab()
                             ->hidden(!$this->getInscritos())
                             ->disabled(!$this->getInscritos())

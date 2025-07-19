@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\ExportReportesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,4 +19,5 @@ Route::middleware([
 });
 
 Route::get('export/{id}/participante', [ExportController::class, 'exportParticipante'])->name('export.participante');
-Route::get('export/{reporte}/reportes/{id?}', [ExportController::class, 'exportReportes'])->name('export.reportes');
+//Route::get('export/{reporte}/reportes/{id?}', [ExportController::class, 'exportReportes'])->name('export.reportes');
+Route::get('export/reportes/{id?}', [ExportReportesController::class, 'exportReportes'])->name('export.reportes');

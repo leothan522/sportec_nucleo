@@ -52,16 +52,19 @@ function cerosIzquierda($cantidad, $cantCeros = 2): int|string
     return str_pad($cantidad, $cantCeros, "0", STR_PAD_LEFT);
 }
 
-function generarStringAleatorio($largo = 10, $soloNumeros = false , $espacio = false): string
+function verUtf8($string, $safeNull = false): string
 {
-    $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    if ($soloNumeros){
-        $caracteres = '0123456789';
+    //$utf8_string = "Some UTF-8 encoded BATE QUEBRADO ÑñíÍÁÜ niño ó Ó string: é, ö, ü";
+    $response = null;
+    $text = 'NULL';
+    if ($safeNull){
+        $text = '';
     }
-    $caracteres = $espacio ? $caracteres . ' ' : $caracteres;
-    $string = '';
-    for ($i = 0; $i < $largo; $i++) {
-        $string .= $caracteres[rand(0, strlen($caracteres) - 1)];
+    if (!is_null($string)){
+        $response = mb_convert_encoding($string, 'ISO-8859-1', 'UTF-8');
     }
-    return $string;
+    if (!is_null($response)){
+        $text = "$response";
+    }
+    return $text;
 }
