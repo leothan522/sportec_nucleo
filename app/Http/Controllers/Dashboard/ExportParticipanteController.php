@@ -1,15 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Dashboard;
 
 use App\Models\Atleta;
-use App\Models\ModalidadDeportiva;
 use App\Models\Participante;
 use App\Traits\ReportesFpdf;
 use Codedge\Fpdf\Fpdf\Fpdf;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use JetBrains\PhpStorm\NoReturn;
 
 class ExportParticipanteController extends Fpdf
 {
@@ -234,6 +231,12 @@ class ExportParticipanteController extends Fpdf
                 }
             }
         }
+
+        // Code QR
+        $pdf->SetY(-42);
+        $y = $pdf->GetY();
+        $pdf->Image(qrCodeGenerateFPDF(route('consultar.participante', $participante->cedula)), 175, $y, 25, 25);
+
 
         $pdf->Output('I', $name . '.pdf');
 

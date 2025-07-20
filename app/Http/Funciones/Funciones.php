@@ -75,7 +75,7 @@ function qrCodeGenerate(string $content = null, int $size = null, int $margin = 
     $size = $size ?? 400;
     $margin = $margin ?? 4;
     $path = $path ? 'storage/'.$path.'/' : 'storage/images-qr/';
-    $filename = $filename ? \Illuminate\Support\Str::slug($filename).'.svg' : 'qrcode.svg';
+    $filename = $filename ? \Illuminate\Support\Str::slug($filename) : 'qrcode';
     $encoding = $encoding ?? \BaconQrCode\Encoder\Encoder::DEFAULT_BYTE_MODE_ENCODING;
 
     $backgroundColorRed = 255;
@@ -98,6 +98,14 @@ function qrCodeGenerate(string $content = null, int $size = null, int $margin = 
         $foregroundColorBlue = $foregroundColor[2] ?? $foregroundColorBlue;
     }
 
+    if (!extension_loaded('imagick')){
+        $imageBackEnd = new \BaconQrCode\Renderer\Image\SvgImageBackEnd();
+        $extension = '.svg';
+    }else{
+        $imageBackEnd  = new \BaconQrCode\Renderer\Image\ImagickImageBackEnd();
+        $extension = '.png';
+    }
+
     $module = new \BaconQrCode\Renderer\Module\RoundnessModule(\BaconQrCode\Renderer\Module\RoundnessModule::SOFT);
     $eye = new \BaconQrCode\Renderer\Eye\CompositeEye(\BaconQrCode\Renderer\Eye\PointyEye::instance(), \BaconQrCode\Renderer\Eye\SquareEye::instance());
 
@@ -112,11 +120,31 @@ function qrCodeGenerate(string $content = null, int $size = null, int $margin = 
                 foregroundColor: new \BaconQrCode\Renderer\Color\Rgb($foregroundColorRed,$foregroundColorGreen, $foregroundColorBlue)
             )
         ),
-        new \BaconQrCode\Renderer\Image\SvgImageBackEnd(),
+        imageBackEnd: $imageBackEnd,
     );
     $write = new \BaconQrCode\Writer($renderer);
-    $write->writeFile($content, $path . $filename, $encoding);
+    $write->writeFile($content, $path . $filename . $extension, $encoding);
 
-    return asset($path . $filename);
+    return asset($path . $filename . $extension);
 
+}
+
+function qrCodeGenerateFPDF(string $content = null, int $size = null, int $margin = null, string $filename = null, string $encoding = null, array $backgroundColor = null, array $foregroundColor = null, string $path = null): string
+{
+    if (!extension_loaded('imagick')){
+
+        $content = $content ?? 'Hello World!';
+        $size = $size ?? 400;
+        $path = $path ? 'storage/'.$path.'/' : 'storage/images-qr/';
+        $filename = $filename ? \Illuminate\Support\Str::slug($filename) : 'qrcode';
+
+        $renderer = new \BaconQrCode\Renderer\GDLibRenderer($size);
+        $writer = new \BaconQrCode\Writer($renderer);
+        $writer->writeFile($content, $path . $filename . '.png');
+
+        return asset($path . $filename . '.png');
+
+    }else{
+        return qrCodeGenerate($content, $size, $margin, $filename, $encoding, $backgroundColor, $foregroundColor, $path);
+    }
 }

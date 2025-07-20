@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\ExportController;
-use App\Http\Controllers\ExportParticipanteController;
-use App\Http\Controllers\ExportReportesController;
+use App\Http\Controllers\Dashboard\ExportParticipanteController;
+use App\Http\Controllers\Dashboard\ExportReportesController;
+use App\Http\Controllers\Web\WebController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,3 +22,5 @@ Route::middleware([
 Route::get('export/{id}/participante', [ExportParticipanteController::class, 'generarPDF'])->name('export.participante');
 Route::get('export/reportes/{id_deporte?}', [ExportReportesController::class, 'generarPDF'])->name('export.reportes');
 Route::get('export/reportes/{id_entidad}/inscritos/{id_deporte?}', [ExportReportesController::class, 'generarEntidadPDF'])->name('export.reportes.entidad');
+
+Route::get('consultar/{cedula}/participante', [WebController::class, 'consultarParticipante'])->name('consultar.participante');
