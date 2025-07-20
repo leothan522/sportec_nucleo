@@ -79,9 +79,29 @@ trait ReportesFpdf
         return verUtf8(Str::limit(Str::upper($participante->primer_nombre.' '.$participante->segundo_nombre),20));
     }
 
+    protected function getPrimerNombre($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->primer_nombre),20));
+    }
+
+    protected function getSegundoNombre($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->segundo_nombre ?? ''),20));
+    }
+
     protected function getApellidos($participante): string
     {
         return verUtf8(Str::limit(Str::upper($participante->primer_apellido.' '.$participante->segundo_apellido),20));
+    }
+
+    protected function getPrimerApellido($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->primer_apellido),20));
+    }
+
+    protected function getSegundoApellido($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->segundo_apellido ?? ''),20));
     }
 
     protected function getFechaNac($participante): string
@@ -92,9 +112,83 @@ trait ReportesFpdf
         return '';
     }
 
-    protected function getCargo($participante): string
+    protected function getCargo($participante, int $limit = 12): string
     {
-        return verUtf8(Str::limit(Str::upper($participante->cargo->cargo), 12, preserveWords: true));
+        return verUtf8(Str::limit(Str::upper($participante->cargo->cargo), $limit, preserveWords: true));
+    }
+
+    protected function getCarnet($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->carnet_socio ?? ''), 15));
+    }
+
+    protected function getTipoSocio($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->tipoSocio->tipo_socio ?? ''), 15));
+    }
+
+    protected function getSexo($paticipante): string
+    {
+        $opciones =[
+            0 => 'Masculino',
+            1 => 'Femenino'
+        ];
+        return verUtf8(Str::upper($opciones[$paticipante->sexo] ?? ''));
+    }
+
+    protected function getEmail($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->email ?? ''),20));
+    }
+
+    protected function getTelefono($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->telefono ?? ''),20));
+    }
+
+    protected function getDeporteParticipante($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->deporteinicial->deporte ?? ''),20));
+    }
+
+    protected function getRH($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->rh ?? ''),42));
+    }
+
+    protected function getAlergias($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->alergias ?? ''),48));
+    }
+
+    protected function getAntecedentes($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->antecedentes ?? ''),48));
+    }
+
+    protected function getEsAlergico($participante): string
+    {
+        return verUtf8($participante->alergico ? 'SI' : 'NO');
+    }
+
+    protected function getAntmedicos($participante): string
+    {
+        return verUtf8($participante->ant_medicos ? 'SI' : 'NO');
+    }
+
+    protected function getAvisarA($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->avisar_a ?? ''),35));
+    }
+
+    protected function getTelefonoMedico($participante): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->telefono_medico ?? ''),48));
+    }
+
+    protected function getModalidad($atleta, int $i): string
+    {
+        return verUtf8(Str::limit(Str::upper($i.'.- '.$atleta->deporte->deporte .' - '.$atleta->modalidad->modalidad),45));
     }
 
 }

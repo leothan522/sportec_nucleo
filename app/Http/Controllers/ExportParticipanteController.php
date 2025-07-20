@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Atleta;
+use App\Models\ModalidadDeportiva;
 use App\Models\Participante;
 use App\Traits\ReportesFpdf;
 use Codedge\Fpdf\Fpdf\Fpdf;
@@ -69,11 +71,11 @@ class ExportParticipanteController extends Fpdf
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(15, 7, verUtf8('Carnet:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(32, 7, '14528635412lkj');
+        $pdf->Cell(32, 7, $this->getCarnet($participante));
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(18, 7, verUtf8('Tipo Socio:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(28, 7, 'Socio Activo');
+        $pdf->Cell(28, 7, $this->getTipoSocio($participante));
         $pdf->SetX($x);
         $pdf->Cell(0, 7, '', 1, 1);
 
@@ -81,11 +83,11 @@ class ExportParticipanteController extends Fpdf
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(20, 7, verUtf8('P. Nombre:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(51, 7, 'YONATHAN LEONARDO');
+        $pdf->Cell(51, 7, $this->getPrimerNombre($participante));
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(20, 7, verUtf8('S. Nombre:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(48, 7, 'CASTILLO ROMERO');
+        $pdf->Cell(48, 7, $this->getSegundoNombre($participante));
         $pdf->SetX($x);
         $pdf->Cell(0, 7, '', 1, 1);
 
@@ -93,11 +95,11 @@ class ExportParticipanteController extends Fpdf
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(20, 7, verUtf8('P. Apellido:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(51, 7, 'leothan522@gmail.com');
+        $pdf->Cell(51, 7, $this->getPrimerApellido($participante));
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(20, 7, verUtf8('S. Apellido:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(48, 7, '0424-3386600');
+        $pdf->Cell(48, 7, $this->getSegundoApellido($participante));
         $pdf->SetX($x);
         $pdf->Cell(0, 7, '', 1, 1);
 
@@ -105,11 +107,11 @@ class ExportParticipanteController extends Fpdf
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(20, 7, verUtf8('Sexo:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(51, 7, 'Masculino');
+        $pdf->Cell(51, 7, $this->getSexo($participante));
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(20, 7, verUtf8('Fecha Nac:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(48, 7, '21/02/1989');
+        $pdf->Cell(48, 7, $this->getFechaNac($participante));
         $pdf->SetX($x);
         $pdf->Cell(0, 7, '', 1, 1);
 
@@ -117,11 +119,11 @@ class ExportParticipanteController extends Fpdf
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(20, 7, verUtf8('Email:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(51, 7, 'leothan522@gmail.com');
+        $pdf->Cell(51, 7, $this->getEmail($participante));
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(20, 7, verUtf8('Teléfono:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(48, 7, '0424-3386600');
+        $pdf->Cell(48, 7, $this->getTelefono($participante));
         $pdf->SetX($x);
         $pdf->Cell(0, 7, '', 1, 1);
 
@@ -129,11 +131,11 @@ class ExportParticipanteController extends Fpdf
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(20, 7, verUtf8('Deporte:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(51, 7, 'Masculino');
+        $pdf->Cell(51, 7, $this->getDeporteParticipante($participante));
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(20, 7, verUtf8('Cargo:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(48, 7, '21/02/1989');
+        $pdf->Cell(48, 7, $this->getCargo($participante, 20));
         $pdf->SetX($x);
         $pdf->Cell(0, 7, '', 1, 1);
 
@@ -149,7 +151,7 @@ class ExportParticipanteController extends Fpdf
 
         $pdf->Cell(39, 7, verUtf8('Grupo Sanguineo y RH:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(100, 7, $this->getCedula($participante));
+        $pdf->Cell(100, 7, $this->getRH($participante));
         $x2 = $pdf->GetX();
         $y2 = $pdf->GetY();
         $pdf->SetX($x);
@@ -158,42 +160,42 @@ class ExportParticipanteController extends Fpdf
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(23, 7, verUtf8('Es alérgico:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(116, 7, 'SI');
+        $pdf->Cell(116, 7, $this->getEsAlergico($participante));
         $pdf->SetX($x);
         $pdf->Cell(139, 7, '', 1, 1);
 
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(23, 7, verUtf8('Alergias:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(116, 7, 'CASTILLO ROMERO');
+        $pdf->Cell(116, 7, $this->getAlergias($participante));
         $pdf->SetX($x);
         $pdf->Cell(139, 7, '', 1, 1);
 
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(23, 7, verUtf8('Ant. Médicos:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(116, 7, 'SI');
+        $pdf->Cell(116, 7, $this->getAntmedicos($participante));
         $pdf->SetX($x);
         $pdf->Cell(139, 7, '', 1, 1);
 
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(23, 7, verUtf8('Antecedentes:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(116, 7, 'CASTILLO ROMERO');
+        $pdf->Cell(116, 7, $this->getAntecedentes($participante));
         $pdf->SetX($x);
         $pdf->Cell(139, 7, '', 1, 1);
 
         $pdf->SetFont('Times', 'B', 10);
         $pdf->Cell(51, 7, verUtf8('En caso de emergencia avisar a:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(88, 7, 'lheothan522@gmail.com');
+        $pdf->Cell(88, 7, $this->getAvisarA($participante));
         $pdf->SetX($x);
         $pdf->Cell(139, 7, '', 1, 1);
 
         $pdf->SetFont('Times', 'B', 10);
-        $pdf->Cell(20, 7, verUtf8('Teléfono:'));
+        $pdf->Cell(23, 7, verUtf8('Teléfono:'));
         $pdf->SetFont('Times', '', 10);
-        $pdf->Cell(48, 7, '0424-3386600');
+        $pdf->Cell(116, 7, $this->getTelefonoMedico($participante));
         $pdf->SetX($x);
         $pdf->Cell(139, 7, '', 1, 1);
 
@@ -204,15 +206,34 @@ class ExportParticipanteController extends Fpdf
         $pdf->Ln(10);
 
         //Deportes y Modalidades
-        $pdf->SetFont('Times', 'B', 10);
 
-        $pdf->Cell(95, 7, verUtf8(Str::upper('Deportes y Modalidades')), 1, 1, 'C', 1);
+        $deportes = Atleta::where('id_participante', $participante->id)->orderBy('id_deporte')->get();
+        if ($deportes->isNotEmpty()){
 
-        $pdf->Cell(95, 7, verUtf8('P. Nombre:'), 0, 0, 'C');
-        $pdf->SetX($x);
-        $pdf->Cell(95, 7, '', 1, 1);
+            $pdf->SetFont('Times', 'B', 10);
+            $pdf->Cell(95, 7, verUtf8(Str::upper('Deportes y Modalidades')), 1, 1, 'C', 1);
 
+            $pdf->SetFont('Times', '', 10);
+            $i = 0;
+            foreach ($deportes as $atleta){
+                $pdf->Cell(95, 7, $this->getModalidad($atleta, ++$i));
+                $pdf->SetX($x);
+                $pdf->Cell(95, 7, '', 1, 1);
+            }
 
+        }else{
+            if ($participante->id_cargo == 4){
+
+                $pdf->SetFont('Times', 'B', 10);
+                $pdf->Cell(95, 7, verUtf8(Str::upper('Deportes y Modalidades')), 1, 1, 'C', 1);
+                $pdf->SetFont('Times', '', 10);
+                for ($i = 1; $i <= 1; $i++ ){
+                    $pdf->Cell(95, 7, verUtf8($i.'.-'));
+                    $pdf->SetX($x);
+                    $pdf->Cell(95, 7, '', 1, 1);
+                }
+            }
+        }
 
         $pdf->Output('I', $name . '.pdf');
 
