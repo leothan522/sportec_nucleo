@@ -16,7 +16,13 @@ class ExportParticipanteController extends Fpdf
     {
         $participante = Participante::find($id);
         if (!$participante) {
-            return redirect('/dashboard/participantes');
+            sweetAlert2([
+                'icon' => 'info',
+                'text' => 'Participante NO encontrado',
+                'timer' => null,
+                'showCloseButton' => true
+            ]);
+            return redirect()->route('web.index');
         }
 
         $name = 'Participante CI ' . $participante->cedula;
@@ -45,7 +51,7 @@ class ExportParticipanteController extends Fpdf
 
         $pdf->SetFillColor(46, 119, 195);
         $pdf->Rect($x, $y, 50, 49);
-        $pdf->Image(verImagen($participante->fotografia), $x + 1, $y + 1, 48, 47);
+        $pdf->Image(verImagenFPDF($participante->fotografia), $x + 1, $y + 1, 48, 47);
 
         $pdf->SetY($y);
         $pdf->SetX(61);
@@ -198,7 +204,7 @@ class ExportParticipanteController extends Fpdf
 
         //Foto del Carnet
         $pdf->Rect($x2, $y2, 51, 49);
-        $pdf->Image(verImagen($participante->image_cedula), $x2 + 1, $y2 + 0.5, 49, 48);
+        $pdf->Image(verImagenFPDF($participante->image_cedula), $x2 + 1, $y2 + 0.5, 49, 48);
 
         $pdf->Ln(10);
 
