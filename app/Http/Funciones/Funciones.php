@@ -3,11 +3,11 @@
 
 function verImagen($path): string
 {
-    $response  = public_path('img/placeholder.jpg');
-    if (!empty($path)){
-        $existe = file_exists(public_path('storage/'.$path));
-        if ($existe){
-            $response = storage_path('app/public/'.$path);
+    $response = public_path('img/placeholder.jpg');
+    if (!empty($path)) {
+        $existe = file_exists(public_path('storage/' . $path));
+        if ($existe) {
+            $response = storage_path('app/public/' . $path);
         }
     }
     return $response;
@@ -15,16 +15,16 @@ function verImagen($path): string
 
 function getFecha($fecha, $format = null): string
 {
-    if (is_null($fecha)){
-        if (is_null($format)){
+    if (is_null($fecha)) {
+        if (is_null($format)) {
             $date = \Carbon\Carbon::now(env('APP_TIMEZONE', "America/Caracas"))->toDateString();
-        }else{
+        } else {
             $date = \Carbon\Carbon::now(env('APP_TIMEZONE', "America/Caracas"))->format($format);
         }
-    }else{
-        if (is_null($format)){
+    } else {
+        if (is_null($format)) {
             $date = \Carbon\Carbon::parse($fecha)->format("d/m/Y");
-        }else{
+        } else {
             $date = \Carbon\Carbon::parse($fecha)->format($format);
         }
     }
@@ -33,7 +33,7 @@ function getFecha($fecha, $format = null): string
 
 function formatoMillares($cantidad, $decimal = 2): string
 {
-    if (!is_numeric($cantidad)){
+    if (!is_numeric($cantidad)) {
         $cantidad = 0;
     }
     return number_format($cantidad, $decimal, ',', '.');
@@ -57,14 +57,66 @@ function verUtf8($string, $safeNull = false): string
     //$utf8_string = "Some UTF-8 encoded BATE QUEBRADO ÑñíÍÁÜ niño ó Ó string: é, ö, ü";
     $response = null;
     $text = 'NULL';
-    if ($safeNull){
+    if ($safeNull) {
         $text = '';
     }
-    if (!is_null($string)){
+    if (!is_null($string)) {
         $response = mb_convert_encoding($string, 'ISO-8859-1', 'UTF-8');
     }
-    if (!is_null($response)){
+    if (!is_null($response)) {
         $text = "$response";
     }
     return $text;
+}
+
+function qrCodeGenerate(string $content = null, int $size = null, int $margin = null, string $filename = null, string $encoding = null, array $backgroundColor = null, array $foregroundColor = null, string $path = null): string
+{
+    $content = $content ?? 'Hello World!';
+    $size = $size ?? 400;
+    $margin = $margin ?? 4;
+    $path = $path ? 'storage/'.$path.'/' : 'storage/images-qr/';
+    $filename = $filename ? \Illuminate\Support\Str::slug($filename).'.svg' : 'qrcode.svg';
+    $encoding = $encoding ?? \BaconQrCode\Encoder\Encoder::DEFAULT_BYTE_MODE_ENCODING;
+
+    $backgroundColorRed = 255;
+    $backgroundColorGreen = 255;
+    $backgroundColorBlue = 255;
+
+    $foregroundColorRed = 0;
+    $foregroundColorGreen = 0;
+    $foregroundColorBlue = 0;
+
+    if (!empty($backgroundColor)){
+        $backgroundColorRed = $backgroundColor[0] ?? $backgroundColorRed;
+        $backgroundColorGreen = $backgroundColor[1] ?? $backgroundColorGreen;
+        $backgroundColorBlue = $backgroundColor[2] ?? $backgroundColorBlue;
+    }
+
+    if (!empty($foregroundColor)){
+        $foregroundColorRed = $foregroundColor[0] ?? $foregroundColorRed;
+        $foregroundColorGreen = $foregroundColor[1] ?? $foregroundColorGreen;
+        $foregroundColorBlue = $foregroundColor[2] ?? $foregroundColorBlue;
+    }
+
+    $module = new \BaconQrCode\Renderer\Module\RoundnessModule(\BaconQrCode\Renderer\Module\RoundnessModule::SOFT);
+    $eye = new \BaconQrCode\Renderer\Eye\CompositeEye(\BaconQrCode\Renderer\Eye\PointyEye::instance(), \BaconQrCode\Renderer\Eye\SquareEye::instance());
+
+    $renderer = new \BaconQrCode\Renderer\ImageRenderer(
+        new \BaconQrCode\Renderer\RendererStyle\RendererStyle(
+            $size,
+            $margin,
+            $module,
+            $eye,
+            \BaconQrCode\Renderer\RendererStyle\Fill::uniformColor(
+                backgroundColor: new \BaconQrCode\Renderer\Color\Rgb($backgroundColorRed,$backgroundColorGreen,$backgroundColorBlue),
+                foregroundColor: new \BaconQrCode\Renderer\Color\Rgb($foregroundColorRed,$foregroundColorGreen, $foregroundColorBlue)
+            )
+        ),
+        new \BaconQrCode\Renderer\Image\SvgImageBackEnd(),
+    );
+    $write = new \BaconQrCode\Writer($renderer);
+    $write->writeFile($content, $path . $filename, $encoding);
+
+    return asset($path . $filename);
+
 }
