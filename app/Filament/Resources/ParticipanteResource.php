@@ -59,6 +59,7 @@ class ParticipanteResource extends Resource
                         Forms\Components\Fieldset::make()
                             ->schema([
                                 Forms\Components\TextInput::make('cedula')
+                                    ->label('Cédula')
                                     ->unique(ignoreRecord: true)
                                     ->live(onBlur: true)
                                     ->required()
@@ -151,6 +152,7 @@ class ParticipanteResource extends Resource
                                     ->email()
                                     ->maxLength(100),
                                 Forms\Components\TextInput::make('telefono')
+                                    ->label('Teléfono')
                                     ->tel()
                                     ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/'),
                             ])
@@ -236,7 +238,7 @@ class ParticipanteResource extends Resource
                                     ->requiredIf('alergico', true)
                                     ->readOnly(fn(Get $get) => !$get('alergico')),
                             ]),
-                        Forms\Components\Fieldset::make('Antecedentes Medicos')
+                        Forms\Components\Fieldset::make('Antecedentes Médicos')
                             ->schema([
                                 Forms\Components\Toggle::make('ant_medicos')
                                     ->label('Con Antecedentes')
@@ -258,7 +260,7 @@ class ParticipanteResource extends Resource
                                     ->label('Nombre')
                                     ->maxLength(100),
                                 Forms\Components\TextInput::make('telefono_medico')
-                                    ->label('Telefono')
+                                    ->label('Teléfono')
                                     ->tel()
                                     ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/'),
                             ]),
