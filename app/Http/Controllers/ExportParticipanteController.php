@@ -47,8 +47,8 @@ class ExportParticipanteController extends Fpdf
         }
 
         $pdf->SetFillColor(46, 119, 195);
-        $pdf->Rect($x, $y, 50, 50, 'F');
-        $pdf->Image(verImagen($participante->fotografia), $x + 0.6, $y + 0.5, 49, 49);
+        $pdf->Rect($x, $y, 50, 49);
+        $pdf->Image(verImagen($participante->fotografia), $x + 1, $y + 1, 48, 47);
 
         $pdf->SetY($y);
         $pdf->SetX(61);
