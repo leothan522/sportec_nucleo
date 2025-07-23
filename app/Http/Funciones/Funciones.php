@@ -1,7 +1,28 @@
 <?php
 //Funciones Personalizadas para el Proyecto
 
-function verImagenFPDF($path): string
+function verImagen($path, $user = false): string
+{
+    if (!is_null($path)){
+        if (file_exists(public_path('storage/'.$path))){
+            return asset('storage/'.$path);
+        }else{
+            if ($user){
+                return asset('img/user_placeholder.png');
+            }else{
+                return asset('img/placeholder.jpg');
+            }
+        }
+    }else{
+        if ($user){
+            return asset('img/user_placeholder.png');
+        }else{
+            return asset('img/placeholder.jpg');
+        }
+    }
+}
+
+function verImagenStoragePath($path): string
 {
     $response = public_path('img/placeholder.jpg');
     if (!empty($path)) {
@@ -149,23 +170,4 @@ function qrCodeGenerateFPDF(string $content = null, int $size = null, int $margi
     }
 }
 
-function verImagen($path, $user = false): string
-{
-    if (!is_null($path)){
-        if (file_exists(public_path('storage/'.$path))){
-            return asset('storage/'.$path);
-        }else{
-            if ($user){
-                return asset('img/user_placeholder.png');
-            }else{
-                return asset('img/placeholder.jpg');
-            }
-        }
-    }else{
-        if ($user){
-            return asset('img/user_placeholder.png');
-        }else{
-            return asset('img/placeholder.jpg');
-        }
-    }
-}
+
