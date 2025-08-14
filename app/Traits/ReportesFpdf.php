@@ -77,7 +77,7 @@ trait ReportesFpdf
 
     protected function getNombres($participante): string
     {
-        return verUtf8(Str::limit(Str::upper($participante->primer_nombre.' '.$participante->segundo_nombre),20));
+        return verUtf8(Str::limit(Str::upper($participante->primer_nombre.' '.$participante->segundo_nombre),19));
     }
 
     protected function getPrimerNombre($participante): string
@@ -92,7 +92,7 @@ trait ReportesFpdf
 
     protected function getApellidos($participante): string
     {
-        return verUtf8(Str::limit(Str::upper($participante->primer_apellido.' '.$participante->segundo_apellido),20));
+        return verUtf8(Str::limit(Str::upper($participante->primer_apellido.' '.$participante->segundo_apellido),19));
     }
 
     protected function getPrimerApellido($participante): string
