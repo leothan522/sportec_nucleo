@@ -13,6 +13,7 @@ trait ReportesFpdf
     {
         // Logo
         $this->Image(asset('img/cintillo.png'), 10, 0);
+        $this->Image(asset('img/logo_juegos.png'), 170, 5, 30, 30);
         // Arial bold 15
         $this->SetFont('Arial', 'B', 15);
         // Movernos hacia abajo
@@ -25,7 +26,7 @@ trait ReportesFpdf
         $this->Cell(12);
         // Título
         $this->SetTextColor(0);
-        $this->Cell(0, 10, $_SESSION['headerTitle'], 0, 0, 'C');
+        $this->Cell(70, 10, $_SESSION['headerTitle'], 1, 0, 'C');
         // Salto de línea
         $this->Ln(20);
     }

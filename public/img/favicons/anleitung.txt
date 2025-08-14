@@ -1,8 +1,8 @@
-1) Cargar archivos de imágenes
-Descargar todos los archivos de imágenes en el directorio de tu dominio
+1) Upload der Bilddateien
+Laden Sie alle Bilddateien in das Root Verzeichnis ihrer Domain
 
-2) Insertar códigos HTML
-Pega tu código HTML ente las dos etiquetas <head></head>:
+2) HTML Codes einfügen
+Fügen Sie den folgenden HTML Code zwischen den beiden <head> </head> Tags ein:
 <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
 <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">

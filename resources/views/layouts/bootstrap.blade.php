@@ -114,6 +114,15 @@
             }
         }
 
+        .imagen_top_rigth {
+            display: block;
+            position: absolute;
+            height: 100px;
+            width: 100px;
+            right: 3%;
+            top: 3%;
+        }
+
     </style>
     <script type="application/javascript">
         //Script para ejecurar el preloader
@@ -144,9 +153,8 @@
                                 <div
                                     class="text-center @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'web.index') mt-5 pt-5 @endif">
                                     <a href="{{ route('web.index') }}" onclick="verCargandoAuth(this)">
-                                        <img
-                                            class="img-fluid @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'web.index') mt-sm-5 @endif"
-                                            src="{{ asset('img/logo.svg') }}" alt="Logo Morros Devops">
+                                        <img class="img-fluid @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'web.index') mt-sm-5 @endif"
+                                            src="{{ asset('img/mascota.png') }}" style="width: 200px !important;"  alt="Logo Morros Devops">
                                     </a>
                                     <h6 class="mt-1 mb-5 pb-1 text_title">
                                         <strong>{{ mb_strtoupper(env('APP_NAME', 'Laravel')) }}</strong></h6>
@@ -159,9 +167,11 @@
                         <div class="col-lg-6 d-none d-lg-flex align-items-center gradient-custom-2"
                              style="min-height: 70vh">
                             <div class="text-white px-3 py-4 p-md-5 mx-md-4 text-center">
-                                <h3>Desarrollado por Morros Devops</h3>
+                                <img class="img-fluid rounded-2"
+                                     src="{{ asset('img/logo_juegos_border_white.png') }}" alt="Logo Tecnología Alguarisa">
+                                {{--<h3>XIX Juegos FEDECIV</h3>
                                 <a href="https://www.morros-devops.xyz" target="_blank"
-                                   class="text-white text-decoration-none">www.morros-devops.xyz</a>
+                                   class="text-white text-decoration-none">“Maracaibo 2026”</a>--}}
                             </div>
                         </div>
                     </div>

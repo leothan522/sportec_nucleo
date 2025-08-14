@@ -1,5 +1,7 @@
 @extends('layouts.bootstrap')
 
+@section('title', 'Inicio')
+
 @section('content')
     <div class="text-center pt-1 mb-5 pb-1 position-relative">
         @auth
