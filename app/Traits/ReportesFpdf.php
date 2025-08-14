@@ -26,7 +26,7 @@ trait ReportesFpdf
         $this->Cell(12);
         // Título
         $this->SetTextColor(0);
-        $this->Cell(70, 10, $_SESSION['headerTitle'], 1, 0, 'C');
+        $this->Cell(70, 10, $_SESSION['headerTitle'], 0, 0, 'C');
         // Salto de línea
         $this->Ln(20);
     }
