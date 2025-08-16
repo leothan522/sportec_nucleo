@@ -103,13 +103,17 @@ class ExportReportesController extends Fpdf
             $pdf->Output('I', $name . '.pdf');
             return $pdf;
         }else{
-            sweetAlert2([
+            /*sweetAlert2([
                 'icon' => 'info',
                 'text' => 'Reporte Vacio',
                 'timer' => null,
                 'showCloseButton' => true
             ]);
-            return redirect()->route('web.index');
+            return redirect()->route('web.index');*/
+            echo "<script type='text/javascript'>
+                    alert('Reporte Vacio.');
+                    window.close();</script>";
+            return false;
         }
     }
 
