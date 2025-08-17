@@ -20,7 +20,8 @@ Route::middleware([
 });
 
 Route::get('export/{id}/participante', [ExportParticipanteController::class, 'generarPDF'])->name('export.participante');
-Route::get('export/reportes/{id_deporte?}', [ExportReportesController::class, 'generarPDF'])->name('export.reportes');
-Route::get('export/reportes/{id_entidad}/inscritos/{id_deporte?}', [ExportReportesController::class, 'generarEntidadPDF'])->name('export.reportes.entidad');
+Route::get('export/reportes/{filtro}/{id_deporte?}', [ExportReportesController::class, 'generarPDF'])->name('export.reportes');
+Route::get('export/reportes/{filtro}/{id_entidad}/inscritos/{id_deporte?}', [ExportReportesController::class, 'generarEntidadPDF'])->name('export.reportes.entidad');
+Route::get('export/all/reportes/inscritos/{filtro}/{id_deporte?}', [ExportReportesController::class, 'generarAllPDF'])->name('export.reportes.all');
 
 Route::get('consultar/{cedula}/participante', [WebController::class, 'consultarParticipante'])->name('consultar.participante');

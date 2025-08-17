@@ -80,9 +80,9 @@ trait ReportesFpdf
         return verUtf8(Str::limit(Str::upper($participante->primer_nombre.' '.$participante->segundo_nombre),19));
     }
 
-    protected function getPrimerNombre($participante): string
+    protected function getPrimerNombre($participante, $limit = 20): string
     {
-        return verUtf8(Str::limit(Str::upper($participante->primer_nombre),20));
+        return verUtf8(Str::limit(Str::upper($participante->primer_nombre), $limit));
     }
 
     protected function getSegundoNombre($participante): string
@@ -95,9 +95,9 @@ trait ReportesFpdf
         return verUtf8(Str::limit(Str::upper($participante->primer_apellido.' '.$participante->segundo_apellido),19));
     }
 
-    protected function getPrimerApellido($participante): string
+    protected function getPrimerApellido($participante, $limit = 20): string
     {
-        return verUtf8(Str::limit(Str::upper($participante->primer_apellido),20));
+        return verUtf8(Str::limit(Str::upper($participante->primer_apellido), $limit));
     }
 
     protected function getSegundoApellido($participante): string
@@ -190,6 +190,16 @@ trait ReportesFpdf
     protected function getModalidad($atleta, int $i): string
     {
         return verUtf8(Str::limit(Str::upper($i.'.- '.$atleta->deporte->deporte .' - '.$atleta->modalidad->modalidad),45));
+    }
+
+    protected function getAsiste($participante): string
+    {
+        return verUtf8($participante->asiste ? 'SI' : 'NO');
+    }
+
+    protected function getNombreClub($participante, int $limit = 12): string
+    {
+        return verUtf8(Str::limit(Str::upper($participante->entidad->short_nombre ?? ''), $limit));
     }
 
 }

@@ -67,9 +67,9 @@ class ReporteGeneralInfolistComponent extends Component implements HasForms, Has
                         Action::make('imprimir')
                             ->label('Generar PDF')
                             ->url(function (): string {
-                                $response = route('export.reportes');
+                                $response = route('export.reportes', 'all');
                                 if ($this->id_deporte) {
-                                    $response = route('export.reportes', $this->id_deporte);
+                                    $response = route('export.reportes', ['all', $this->id_deporte]);
                                 }
                                 return $response;
                             })
@@ -81,18 +81,37 @@ class ReporteGeneralInfolistComponent extends Component implements HasForms, Has
                             ->form([
                                 Select::make('id_entidad')
                                     ->label(Str::upper('Club'))
-                                    ->options(Entidad::query()->pluck('short_nombre', 'id'))
+                                    ->options(function (): array{
+                                        $options = Entidad::query()->pluck('short_nombre', 'id')->toArray();
+                                        $options['all'] = "TODOS";
+                                        return $options;
+                                    })
                                     ->searchable()
                                     ->preload()
+                                    ->required(),
+                                Select::make('filtro')
+                                    ->options([
+                                        'all' => 'TODOS',
+                                        1 => 'ASISTE',
+                                        0 => 'NO ASISTE'
+                                    ])
+                                    ->default('all')
                                     ->required(),
                             ])
                             ->modalWidth(MaxWidth::Small)
                             ->action(function (Component $livewire, array $data) {
-                                $url = route('export.reportes.entidad', $data['id_entidad']);
-                                if ($this->id_deporte) {
-                                    $url = route('export.reportes.entidad', [$data['id_entidad'], $this->id_deporte]);
+                                if ($data['id_entidad'] != 'all'){
+                                    $url = route('export.reportes.entidad', [$data['filtro'], $data['id_entidad']]);
+                                    if ($this->id_deporte) {
+                                        $url = route('export.reportes.entidad', [$data['filtro'], $data['id_entidad'], $this->id_deporte]);
+                                    }
+                                }else{
+                                    $url = route('export.reportes.all', $data['filtro']);
+                                    if ($this->id_deporte) {
+                                        $url = route('export.reportes.all', [$data['filtro'], $this->id_deporte]);
+                                    }
                                 }
-                                return $livewire->dispatch('generarpdfentidad-'.$this->id_deporte, url: $url);
+                                return $livewire->dispatch('generarpdfentidad-' . $this->id_deporte, url: $url);
                                 //$this->unico = ++$this->unico;
                             })
                             ->hidden(!$this->getInscritos() || $this->filtrarEntidad())
@@ -103,7 +122,7 @@ class ReporteGeneralInfolistComponent extends Component implements HasForms, Has
                     ->collapsible($this->cerrado)
                     ->extraAttributes(function () {
                         return [
-                            'x-on:generarpdfentidad-'.$this->id_deporte.'.window' => 'window.open(event.detail.url)',
+                            'x-on:generarpdfentidad-' . $this->id_deporte . '.window' => 'window.open(event.detail.url)',
                         ];
                     }),
             ]);
