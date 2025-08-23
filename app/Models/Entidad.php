@@ -28,4 +28,9 @@ class Entidad extends Model
         return $this->hasMany(Participante::class, 'id_entidad', 'id');
     }
 
+    public function participacion(): HasMany
+    {
+        return $this->hasMany(ParticipacionClub::class, 'id_entidad', 'id');
+    }
+
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\ExportIntencionController;
 use App\Http\Controllers\Dashboard\ExportParticipanteController;
 use App\Http\Controllers\Dashboard\ExportReportesController;
 use App\Http\Controllers\Web\WebController;
@@ -25,3 +26,5 @@ Route::get('export/reportes/{filtro}/{id_entidad}/inscritos/{id_deporte?}', [Exp
 Route::get('export/all/reportes/inscritos/{filtro}/{id_deporte?}', [ExportReportesController::class, 'generarAllPDF'])->name('export.reportes.all');
 
 Route::get('consultar/{cedula}/participante', [WebController::class, 'consultarParticipante'])->name('consultar.participante');
+
+Route::get('export/intencion/participacion/{id_endidad?}', [ExportIntencionController::class, 'exportIntencionParticipacion'])->name('intencion.participacion');

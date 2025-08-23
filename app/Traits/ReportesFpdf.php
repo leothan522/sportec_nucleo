@@ -40,7 +40,7 @@ trait ReportesFpdf
         $this->SetFont('Arial', 'I', 7);
         $this->SetTextColor(0);
         //Nombre club
-        $this->Cell(160, 10, verUtf8(Str::upper(/*'Club: '.*/$_SESSION['footerClub'])));
+        $this->Cell(160, 10, verUtf8(Str::upper(/*'Club: '.*/$_SESSION['footerClub'].'   /   Fecha: '.getFecha(now()))));
         $this->SetFont('Arial', 'I', 8);
         // Número de página
         $this->Cell(0, 10, verUtf8('Página ') . $this->PageNo() . '/{nb}', 0, 0, 'R');
