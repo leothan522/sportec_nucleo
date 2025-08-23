@@ -67,6 +67,7 @@ class IntencionTableComponent extends Component implements HasForms, HasTable
                     ->action(function (ModalidadDeportiva $record): void {
                         if ($this->id_entidad) {
                             $this->setParticipacion($record);
+                            $this->dispatch('actualizarResultados');
                         } else {
                             Notification::make()
                                 ->title('Falta Seleccionar CLUB')

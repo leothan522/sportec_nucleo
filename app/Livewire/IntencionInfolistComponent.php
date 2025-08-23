@@ -76,6 +76,12 @@ class IntencionInfolistComponent extends Component implements HasForms, HasInfol
                 Section::make('Resultados')
                     ->schema([
                         //tabla resultados
+                        Livewire::make(IntencionResultadosComponent::class)
+                        ->key('foo-second')
+                    ])
+                    ->headerActions([
+                        Action::make('actualizar')
+                        ->action(fn() => $this->dispatch('actualizarResultados')),
                     ])
                     ->compact()
                     ->hidden($this->ocultar())
