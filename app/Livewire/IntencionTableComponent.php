@@ -40,7 +40,8 @@ class IntencionTableComponent extends Component implements HasForms, HasTable
                 $query = ModalidadDeportiva::query();
                 return $query->whereRelation('deporte', 'en_uso', 1)
                     ->where('puntuable', 1)
-                    ->where('en_practica', 1);
+                    ->where('en_practica', 1)
+                    ->orderBy('id_deporte');
             })
             //->heading('id: ' . $this->id_entidad)
             ->columns([

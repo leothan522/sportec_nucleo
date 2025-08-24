@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Deporte;
 use App\Models\Entidad;
+use App\Models\ModalidadDeportiva;
 use App\Models\ParticipacionClub;
 use App\Models\Participante;
 use App\Traits\ReportesFpdf;
@@ -19,7 +20,7 @@ class ExportIntencionController extends Fpdf
     public function exportIntencionParticipacion($id_entidad = null): mixed
     {
         $_SESSION['headerTitle'] = verUtf8('Intención de Participación');
-        $name = 'Reporte General';
+        $name = 'Intencion_participacion_club';
         $nameDeporte = '';
         $query = ParticipacionClub::query();
 
@@ -70,8 +71,8 @@ class ExportIntencionController extends Fpdf
             $i = 0;
             foreach ($participantes as $participante) {
                 $pdf->Cell(10, 7, ++$i, 1, 0, 'C');
-                $pdf->Cell(60, 7, Str::upper($participante->deporte->deporte), 1, 0, 'C');
-                $pdf->Cell(0, 7, Str::upper($participante->modalidad->modalidad), 1, 1, 'C');
+                $pdf->Cell(60, 7, $this->getTextoGenerico($participante->deporte->deporte, 27), 1, 0, 'C');
+                $pdf->Cell(0, 7, $this->getTextoGenerico($participante->modalidad->modalidad), 1, 1, 'C');
             }
             $pdf->Output('I', $name . '.pdf');
             return $pdf;
@@ -90,33 +91,23 @@ class ExportIntencionController extends Fpdf
         }
     }
 
-    protected function exportAllReportes($filtro, $id_deporte = null): mixed
+    public function exportIntencionReporteGeneral(): mixed
     {
-        $_SESSION['headerTitle'] = 'Listado General de Inscritos';
-        $name = 'Reporte General';
+        $_SESSION['headerTitle'] = verUtf8('Intención de Participación');
+        $name = 'Intencion_participacion_reporte_general';
         $nameDeporte = '';
-        $query = Participante::query();
+        $query = ModalidadDeportiva::query();
 
-        if ($filtro != 'all') {
-            $query->where('asiste', $filtro);
-        }
+        $query->whereRelation('participacion', 'intencion', 1)
+            ->withCount('participacion');
 
-        if (!empty($id_deporte)) {
-            $query->where('deporteini', $id_deporte);
-            $deporte = Deporte::find($id_deporte);
-            if ($deporte) {
-                $_SESSION['headerTitle'] = 'Inscritos por Deporte';
-                $name = 'Inscritos por Deporte - ' . $deporte->deporte;
-                $nameDeporte = $deporte->deporte;
-            }
-        }
-
-        $participantes = $query->orderBy('id_entidad')->get();
+        $participantes = $query->orderBy('participacion_count', 'DESC')->get();
 
         if ($participantes->isNotEmpty()) {
 
-            $this->setClub('REPORTE COMPLETO DE CLUBES');
-            $_SESSION['footerClub'] = 'REPORTE COMPLETO DE CLUBES';
+            //$entidad = Entidad::find($id_entidad);
+            $this->setClub('Reporte General');
+            $_SESSION['footerClub'] = 'Reporte General';
             $count = $participantes->count();
             if ($count < 10) {
                 $total = cerosIzquierda($count, 2);
@@ -124,7 +115,7 @@ class ExportIntencionController extends Fpdf
                 $total = formatoMillares($count, 0);
             }
 
-            $pdf = new ExportReportesController();
+            $pdf = new ExportIntencionController();
             $pdf->SetTitle('viewPDF');
             $pdf->AliasNbPages();
             $pdf->AddPage();
@@ -132,20 +123,8 @@ class ExportIntencionController extends Fpdf
             //Cabecera
             $pdf->SetFont('Arial', 'B', 10);
             $pdf->SetTextColor(46, 57, 242);
-            $pdf->Cell(160, 10, $this->getClub(), 0, 0, 'C');
-            $pdf->Cell(30, 10, $this->getTotal($total), 0, 1, 'C');
-            if (!empty($nameDeporte)) {
-                $w = $filtro != 'all' ? 130 : 190;
-                $pdf->Cell($w, 10, $this->getDeporte($nameDeporte), 0, 0, 'C');
-            }
-            if ($filtro != 'all') {
-                $w = !empty($nameDeporte) ? 50 : 190;
-                $texto = $filtro ? 'ASISTE' : 'NO ASISTE';
-                $pdf->Cell($w, 10, 'FILTRO: ' . $texto, 0, 0, 'C');
-            }
-            if (!empty($nameDeporte) || $filtro != 'all') {
-                $pdf->Cell(0, 10, '', 0, 1);
-            }
+            $pdf->Cell(0, 10, $this->getClub(), 0, 1, 'C');
+            //$pdf->Cell(30, 10, $this->getTotal($total), 0, 1, 'C');
             $pdf->Ln(3);
 
             //Titulos de Columnas
@@ -153,14 +132,9 @@ class ExportIntencionController extends Fpdf
             $pdf->SetFont('Times', 'B', 10);
             $pdf->SetTextColor(0);
             $pdf->Cell(10, 7, verUtf8('#'), 1, 0, 'C', 1);
-            $pdf->Cell(19, 7, verUtf8('Cédula'), 1, 0, 'C', 1);
-            $pdf->Cell(25, 7, verUtf8('Nombres'), 1, 0, 'C', 1);
-            $pdf->Cell(25, 7, verUtf8('Apellidos'), 1, 0, 'C', 1);
-            $pdf->Cell(19, 7, verUtf8('Fecha Nac.'), 1, 0, 'C', 1);
-            $pdf->Cell(25, 7, verUtf8('Cargo'), 1, 0, 'C', 1);
-            $pdf->Cell(12, 7, verUtf8('Asiste'), 1, 0, 'C', 1);
-            $pdf->Cell(25, 7, verUtf8('Tipo Socio'), 1, 0, 'C', 1);
-            $pdf->Cell(30, 7, verUtf8('Club'), 1, 1, 'C', 1);
+            $pdf->Cell(60, 7, verUtf8('Deporte'), 1, 0, 'C', 1);
+            $pdf->Cell(100, 7, verUtf8('Modalidad'), 1, 0, 'C', 1);
+            $pdf->Cell(20, 7, verUtf8('Clubes'), 1, 1, 'C', 1);
 
             //filas
             $pdf->SetFont('Times', '', 9);
@@ -168,15 +142,44 @@ class ExportIntencionController extends Fpdf
             $i = 0;
             foreach ($participantes as $participante) {
                 $pdf->Cell(10, 7, ++$i, 1, 0, 'C');
-                $pdf->Cell(19, 7, $this->getCedula($participante), 1, 0, 'C');
-                $pdf->Cell(25, 7, $this->getPrimerNombre($participante, 10), 1);
-                $pdf->Cell(25, 7, $this->getPrimerApellido($participante, 10), 1);
-                $pdf->Cell(19, 7, $this->getFechaNac($participante), 1, 0, 'C');
-                $pdf->Cell(25, 7, $this->getCargo($participante), 1, 0, 'C');
-                $pdf->Cell(12, 7, $this->getAsiste($participante), 1, 0, 'C');
-                $pdf->Cell(25, 7, $this->getTipoSocio($participante), 1, 0, 'C');
-                $pdf->Cell(30, 7, $this->getNombreClub($participante, 14), 1, 1, 'C');
+                $pdf->Cell(60, 7, $this->getTextoGenerico($participante->deporte->deporte, 27), 1, 0, 'C');
+                $pdf->Cell(100, 7, $this->getTextoGenerico($participante->modalidad), 1, 0, 'C');
+                $pdf->Cell(20, 7, $this->getTextoGenerico($participante->participacion_count), 1, 1, 'C');
             }
+            $pdf->Ln(5);
+
+            //Cabecera
+            $pdf->SetFont('Arial', 'B', 10);
+            $pdf->SetTextColor(46, 57, 242);
+            $pdf->Cell(0, 10, 'REPORTE POR DEPORTE Y MODALIDAD', 0, 1, 'C');
+            //$pdf->Cell(30, 10, $this->getTotal($total), 0, 1, 'C');
+            $pdf->Ln(3);
+
+            foreach ($participantes as $participante) {
+                $query = ParticipacionClub::query();
+                $clubes = $query->where('id_modalidad', $participante->id)
+                    ->where('intencion', 1)
+                    ->get();
+
+                //Titulos de Columnas
+                $pdf->SetFillColor(250, 152, 135);
+                $pdf->SetFont('Times', 'B', 10);
+                $pdf->SetTextColor(0);
+                $pdf->Cell(10, 7, verUtf8('#'), 1, 0, 'C', 1);
+                $pdf->Cell(0, 7, verUtf8('Clubes con Intención Deporte: '.Str::upper($participante->deporte->deporte).' Modalidad: '.Str::upper($participante->modalidad)), 1, 1, 'C', 1);
+
+                //filas
+                $pdf->SetFont('Times', '', 9);
+                $pdf->SetTextColor(0);
+                $i = 0;
+                foreach ($clubes as $club){
+                    $pdf->Cell(10, 7, ++$i, 1, 0, 'C');
+                    $pdf->Cell(0, 7, $this->getTextoGenerico($club->entidad->nombre), 1, 1, 'C');
+                }
+                $pdf->Ln(5);
+            }
+
+
             $pdf->Output('I', $name . '.pdf');
             return $pdf;
         } else {

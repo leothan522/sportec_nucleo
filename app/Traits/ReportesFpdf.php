@@ -202,4 +202,9 @@ trait ReportesFpdf
         return verUtf8(Str::limit(Str::upper($participante->entidad->short_nombre ?? ''), $limit));
     }
 
+    protected function getTextoGenerico($texto, int $limit = 100): string
+    {
+        return verUtf8(Str::limit(Str::upper($texto ?? ''), $limit));
+    }
+
 }
