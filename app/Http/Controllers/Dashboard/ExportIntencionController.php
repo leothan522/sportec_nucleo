@@ -10,6 +10,7 @@ use App\Models\ParticipacionClub;
 use App\Models\Participante;
 use App\Traits\ReportesFpdf;
 use Codedge\Fpdf\Fpdf\Fpdf;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -99,7 +100,9 @@ class ExportIntencionController extends Fpdf
         $query = ModalidadDeportiva::query();
 
         $query->whereRelation('participacion', 'intencion', 1)
-            ->withCount('participacion');
+            ->withCount([
+                'participacion' => fn(Builder $query) => $query->where('intencion', 1)
+            ]);
 
         $participantes = $query->orderBy('participacion_count', 'DESC')->get();
 
