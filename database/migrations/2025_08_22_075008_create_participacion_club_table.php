@@ -27,6 +27,8 @@ return new class extends Migration
             $table->integer('num_arb_mas')->nullable();
             $table->integer('num_ofi_fem')->nullable();
             $table->integer('num_ofi_mas')->nullable();
+            $table->integer('num_total_fem')->nullable();
+            $table->integer('num_total_mas')->nullable();
             $table->integer('num_total')->nullable();
             $table->foreign('id_entidad')->references('id')->on('estados')->cascadeOnDelete();
             $table->foreign('id_deporte')->references('id')->on('deportes')->cascadeOnDelete();

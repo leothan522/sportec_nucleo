@@ -32,6 +32,7 @@ class ParticipanteResource extends Resource
     protected static ?string $model = Participante::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

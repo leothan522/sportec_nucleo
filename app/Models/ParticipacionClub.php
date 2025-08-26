@@ -23,6 +23,8 @@ class ParticipacionClub extends Model
         'num_arb_mas',
         'num_ofi_fem',
         'num_ofi_mas',
+        'num_total_fem',
+        'num_total_mas',
         'num_total',
     ];
 
