@@ -21,8 +21,8 @@ class ListParticipantes extends ListRecords
     public function getSubheading(): string|Htmlable|null
     {
         $response = null;
-        $id_nivel = auth()->user()->id_nivel;
-        $is_root = auth()->user()->is_root;
+        $id_nivel = auth()->user()->id_nivel ?? null;
+        $is_root = auth()->user()->is_root ?? null;
         if ($id_nivel == 1 || $is_root){
             if (verPage('PARTICIPANTES_VER', 'PARTICIPANTES_HASTA')){
                 $response = "Registro Activo";

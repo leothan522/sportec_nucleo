@@ -15,16 +15,16 @@ class IntencionNumericaPage extends Page
 
     public static function canAccess(): bool
     {
-        $id_nivel = auth()->user()->id_nivel;
-        $is_root = auth()->user()->is_root;
+        $id_nivel = auth()->user()->id_nivel ?? null;
+        $is_root = auth()->user()->is_root ?? null;
         return verPage('NUMERICA_VER', 'NUMERICA_HASTA') || $id_nivel == 1 || $is_root;
     }
 
     public function getSubheading(): string|Htmlable|null
     {
         $response = null;
-        $id_nivel = auth()->user()->id_nivel;
-        $is_root = auth()->user()->is_root;
+        $id_nivel = auth()->user()->id_nivel ?? null;
+        $is_root = auth()->user()->is_root ?? null;
         if ($id_nivel == 1 || $is_root){
             if (verPage('NUMERICA_VER', 'NUMERICA_HASTA')){
                 $response = "Registro Activo";

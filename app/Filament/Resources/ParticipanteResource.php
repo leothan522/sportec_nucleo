@@ -446,8 +446,8 @@ class ParticipanteResource extends Resource
 
     public static function canAccess(): bool
     {
-        $id_nivel = auth()->user()->id_nivel;
-        $is_root = auth()->user()->is_root;
+        $id_nivel = auth()->user()->id_nivel ?? null;
+        $is_root = auth()->user()->is_root ?? null;
         return verPage('PARTICIPANTES_VER', 'PARTICIPANTES_HASTA') || $id_nivel == 1 || $is_root;
     }
 
