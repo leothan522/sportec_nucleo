@@ -73,8 +73,8 @@ class NumericaInfolistComponent extends Component implements HasForms, HasInfoli
                             ->hidden($this->ocultar()),
                         Action::make('imprimir')
                             ->label('Generar PDF')
-                            ->url(fn(): string => route('intencion.participacion', $this->id_entidad ?? null))
-                            ->disabled(!isset($this->id_entidad))
+                            ->url(fn(): string => route('intencion.numerica', $this->id_entidad ?? null))
+                            //->disabled(!isset($this->id_entidad))
                             ->openUrlInNewTab()
                     ])
                     ->compact()

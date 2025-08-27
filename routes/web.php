@@ -29,3 +29,4 @@ Route::get('consultar/{cedula}/participante', [WebController::class, 'consultarP
 
 Route::get('export/intencion/participacion/{id_endidad?}', [ExportIntencionController::class, 'exportIntencionParticipacion'])->name('intencion.participacion');
 Route::get('export/intencion/reporte/', [ExportIntencionController::class, 'exportIntencionReporteGeneral'])->name('intencion.reporte');
+Route::get('export/numerica/reporte/{id?}', [ExportIntencionController::class, 'exportIntencionNumerica'])->name('intencion.numerica');
