@@ -151,6 +151,8 @@ class ExportIntencionController extends Fpdf
             }
             $pdf->Ln(5);
 
+            $pdf->AddPage();
+
             //Cabecera
             $pdf->SetFont('Arial', 'B', 10);
             $pdf->SetTextColor(46, 57, 242);
@@ -202,8 +204,8 @@ class ExportIntencionController extends Fpdf
 
     public function exportIntencionNumerica($id_entidad = null): mixed
     {
-        $_SESSION['headerTitle'] = verUtf8('Intención Numérica');
-        $name = 'Intencion_numerica_reporte_general';
+        $_SESSION['headerTitle'] = verUtf8('Inscripción Numérica');
+        $name = 'inscripcion_numerica_reporte_general';
         $nameDeporte = '';
         $query = ModalidadDeportiva::query();
 
@@ -309,6 +311,21 @@ class ExportIntencionController extends Fpdf
                 $total_oficiales_mas = $total_oficiales_mas + intval($data['num_ofi_mas']);
                 $total_total_fem = $total_total_fem + intval($data['num_total_fem']);
                 $total_total_mas = $total_total_mas + intval($data['num_total_mas']);
+
+                if ($id_entidad &&
+                    is_null($data['num_atl_fem']) &&
+                    is_null($data['num_atl_mas']) &&
+                    is_null($data['num_ent_fem']) &&
+                    is_null($data['num_ent_mas']) &&
+                    is_null($data['num_del_fem']) &&
+                    is_null($data['num_del_mas']) &&
+                    is_null($data['num_arb_fem']) &&
+                    is_null($data['num_arb_mas']) &&
+                    is_null($data['num_ofi_fem']) &&
+                    is_null($data['num_ofi_mas']) //&&
+                ){
+                    continue;
+                }
 
                 $y = $pdf->GetY();
                 $pdf->Cell(10, 14, ++$i, 1, 0, 'C');

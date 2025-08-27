@@ -12,7 +12,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -51,6 +53,16 @@ class IntencionTableComponent extends Component implements HasForms, HasTable
                 TextColumn::make('modalidad')
                     ->wrap()
                     ->searchable(),
+            ])
+            ->filters([
+                SelectFilter::make('deporte')
+                    ->relationship(
+                        'deporte',
+                        'deporte',
+                        fn(Builder $query) => $query->where('en_uso', 1)->orderBy('id')
+                    )
+                    ->searchable()
+                    ->preload()
             ])
             ->actions([
                 Action::make('seleccionar')

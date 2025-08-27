@@ -15,7 +15,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -66,6 +68,16 @@ class NumericaTableComponent extends Component implements HasForms, HasTable
                     ->default(fn(ModalidadDeportiva $record): mixed => $this->getNumeros($record->id) + $this->getNumeros($record->id, false))
                     ->numeric()
                     ->alignEnd(),
+            ])
+            ->filters([
+                SelectFilter::make('deporte')
+                    ->relationship(
+                        'deporte',
+                        'deporte',
+                        fn(Builder $query) => $query->where('en_uso', 1)->orderBy('id')
+                    )
+                    ->searchable()
+                    ->preload()
             ])
             ->actions([
                 Action::make('editar')
@@ -193,17 +205,17 @@ class NumericaTableComponent extends Component implements HasForms, HasTable
         if ($this->id_entidad){
             $participacion = $this->getParticipacion($id_modalidad);
             if ($femenino){
-                $num = $participacion->num_total_fem ?? 0;
+                $num = $participacion->num_atl_fem ?? 0;
             }else{
-                $num = $participacion->num_total_mas ?? 0;
+                $num = $participacion->num_atl_mas ?? 0;
             }
         }else{
             $participacion = ParticipacionClub::where('id_modalidad', $id_modalidad)->get();
             if ($participacion){
                 if ($femenino){
-                    $num = $participacion->sum('num_total_fem');
+                    $num = $participacion->sum('num_atl_fem');
                 }else{
-                    $num = $participacion->sum('num_total_mas');
+                    $num = $participacion->sum('num_atl_mas');
                 }
             }
         }
