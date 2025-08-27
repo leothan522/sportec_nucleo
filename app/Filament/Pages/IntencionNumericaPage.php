@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
+use Illuminate\Contracts\Support\Htmlable;
 
 class IntencionNumericaPage extends Page
 {
@@ -11,4 +12,27 @@ class IntencionNumericaPage extends Page
     protected static string $view = 'filament.pages.intencion-numerica-page';
     protected static ?string $title = "Intención Numérica";
     protected static ?int $navigationSort = 2;
+
+    public static function canAccess(): bool
+    {
+        $id_nivel = auth()->user()->id_nivel;
+        $is_root = auth()->user()->is_root;
+        return verPage('NUMERICA_VER', 'NUMERICA_HASTA') || $id_nivel == 1 || $is_root;
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        $response = null;
+        $id_nivel = auth()->user()->id_nivel;
+        $is_root = auth()->user()->is_root;
+        if ($id_nivel == 1 || $is_root){
+            if (verPage('NUMERICA_VER', 'NUMERICA_HASTA')){
+                $response = "Registro Activo";
+            }else{
+                $response = "Registro Inactivo";
+            }
+        }
+
+        return $response;
+    }
 }

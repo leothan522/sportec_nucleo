@@ -1,6 +1,8 @@
 <?php
 //Funciones Personalizadas para el Proyecto
 
+use Carbon\Carbon;
+
 function verImagen($path, $user = false): string
 {
     if (!is_null($path)){
@@ -34,7 +36,7 @@ function verImagenStoragePath($path): string
     return $response;
 }
 
-function getFecha($fecha, $format = null): string
+function getFecha($fecha = null, $format = null): string
 {
     if (is_null($fecha)) {
         if (is_null($format)) {
@@ -168,6 +170,25 @@ function qrCodeGenerateFPDF(string $content = null, int $size = null, int $margi
     }else{
         return qrCodeGenerate($content, $size, $margin, $filename, $encoding, $backgroundColor, $foregroundColor, $path);
     }
+}
+
+function verPage($env_ver, $env_hasta): bool
+{
+    $response = true;
+    $hoy = Carbon::parse(getFecha());
+    $hasta = Carbon::parse(env($env_hasta, getFecha()));
+
+    if (env($env_ver)){
+        if ($hasta->lessThan($hoy)){
+            $response = false;
+        }
+    }else{
+        if ($hasta->greaterThan($hoy)){
+            $response = false;
+        }
+    }
+
+    return $response;
 }
 
 
