@@ -48,6 +48,7 @@ class ReporteGeneralTableComponent extends Component implements HasForms, HasTab
                 if ($this->id_deporte){
                     $query->where('deporteini', $this->id_deporte);
                 }
+                $query->whereRelation('deporteinicial', 'en_uso', 1);
                 return $query;
             })
             ->columns([

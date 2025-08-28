@@ -151,6 +151,7 @@ class ReporteGeneralInfolistComponent extends Component implements HasForms, Has
         if ($id_nivel != 1 && !$is_root) {
             $participantes->where('id_entidad', $id_entidad);
         }
+        $participantes->whereRelation('deporteinicial', 'en_uso', 1);
         return $participantes->count();
     }
 

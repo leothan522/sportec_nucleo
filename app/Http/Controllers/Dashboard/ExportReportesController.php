@@ -158,7 +158,7 @@ class ExportReportesController extends Fpdf
             }
         }
 
-        $participantes = $query->orderBy('id_entidad')->get();
+        $participantes = $query->whereRelation('deporteinicial', 'en_uso', 1)->orderBy('id_entidad')->get();
 
         if ($participantes->isNotEmpty()) {
 
