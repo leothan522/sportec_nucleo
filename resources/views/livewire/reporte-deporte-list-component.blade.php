@@ -8,7 +8,10 @@
             />
             <br>
         @else
-            Deporte: {{ $deporte->deporte }} <br>
+            <livewire:reporte-modalidad-infolist-component
+                id_deporte="{{ $deporte->id }}"
+                nombre_deporte="{{ $deporte->deporte }}"
+            />
         @endif
     @endforeach
 </div>
