@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Dashboard\ExportIntencionController;
+use App\Http\Controllers\Dashboard\ExportModalidadController;
 use App\Http\Controllers\Dashboard\ExportParticipanteController;
 use App\Http\Controllers\Dashboard\ExportReportesController;
 use App\Http\Controllers\Web\WebController;
@@ -30,3 +31,6 @@ Route::get('consultar/{cedula}/participante', [WebController::class, 'consultarP
 Route::get('export/intencion/participacion/{id_endidad?}', [ExportIntencionController::class, 'exportIntencionParticipacion'])->name('intencion.participacion');
 Route::get('export/intencion/reporte/', [ExportIntencionController::class, 'exportIntencionReporteGeneral'])->name('intencion.reporte');
 Route::get('export/numerica/reporte/{id?}', [ExportIntencionController::class, 'exportIntencionNumerica'])->name('intencion.numerica');
+
+Route::get('export/deporte/reportes/{id_entidad}/{filtro}/{id_deporte}', [ExportModalidadController::class, 'exportDeporte'])->name('export.deporte');
+Route::get('export/modalidad/reportes/{id_entidad}/{filtro}/{id_modalidad}', [ExportModalidadController::class, 'exportModalidad'])->name('export.modalidad');

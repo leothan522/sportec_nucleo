@@ -7,7 +7,6 @@ use App\Models\Entidad;
 use App\Models\Participante;
 use App\Traits\ReportesFpdf;
 use Codedge\Fpdf\Fpdf\Fpdf;
-use JetBrains\PhpStorm\NoReturn;
 
 class ExportReportesController extends Fpdf
 {

@@ -4,4 +4,5 @@
         {{ $this->deportesInfoList }}
         <br>
     @endif
+    <x-filament-actions::modals />
 </div>
