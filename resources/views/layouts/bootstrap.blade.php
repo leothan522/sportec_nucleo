@@ -120,12 +120,12 @@
                         <div class="col-lg-6">
                             <div class="card-body p-md-5 mx-md-4 position-relative" id="card_body">
 
-                                <div x-data class="text-center @if(Route::currentRouteName() == 'web.index') mt-5 pt-5 @endif">
+                                <div x-data class="text-center mt-4 @if(Route::currentRouteName() == 'web.index') pt-5 @endif">
                                     <a href="{{ route('web.index') }}" @click="mostrarPreloader()">
-                                        <img class="img-fluid @if(Route::currentRouteName() == 'web.index') mt-sm-5 @endif"
+                                        <img class="img-fluid @if(Route::currentRouteName() == 'web.index') mt-5 @endif"
                                             src="{{ asset('img/mascota.png') }}" style="width: 200px !important;"  alt="Mascota Juegos FEDECIV">
                                     </a>
-                                    <h6 class="mt-1 mb-5 pb-1 text_title">
+                                    <h6 class="mt-1 mb-4 pb-1 text_title">
                                         <strong>{{ mb_strtoupper(config('app.name')) }}</strong></h6>
                                 </div>
 
