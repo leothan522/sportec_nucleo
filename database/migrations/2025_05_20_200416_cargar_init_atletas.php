@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         //
-        if (env('CARGAR_INIT_ATLETAS', true)){
+        if (config('app.sql_participantes') && config('app.sql_atletas')){
             \Illuminate\Support\Facades\DB::unprepared(
                 file_get_contents(storage_path('app/private/sql/init_atletas.sql'))
             );

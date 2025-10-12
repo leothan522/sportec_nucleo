@@ -22,13 +22,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //Customizing the asset URL Livewire's
-        if (env('APP_ASSET_LIVEWIRE', false)){
+        if (config('app.livewire')){
             Livewire::setUpdateRoute(function ($handle) {
-                return Route::post('/'.env('APP_ASSET_LIVEWIRE', '').'/livewire/update', $handle)->name('assetlivewire.update');
+                return Route::post('/'.config('app.livewire').'/livewire/update', $handle)->name('assetlivewire.update');
             });
 
             Livewire::setScriptRoute(function ($handle) {
-                return Route::get('/'.env('APP_ASSET_LIVEWIRE', '').'/livewire/livewire.js', $handle);
+                return Route::get('/'.config('app.livewire').'/livewire/livewire.js', $handle);
             });
         }
     }

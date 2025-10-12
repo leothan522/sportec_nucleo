@@ -72,7 +72,7 @@ class ParticipanteResource extends Resource
                                             $id_entidad = $get('id_entidad');
                                             $cedula = $value;
                                             $key = $component->getRecord()?->getKey();
-                                            if (env('chequear_listado_socios', false)) {
+                                            if (config('app.chequear_socios')) {
                                                 $exite = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
                                                 if (!$exite /*&& !$key*/) {
                                                     //$fail("The {$attribute} is invalid.");

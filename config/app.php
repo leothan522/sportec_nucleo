@@ -123,4 +123,36 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Variables de Entorno personalizadas para el proyecto
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+
+    'livewire' => env('APP_ASSET_LIVEWIRE', false),
+    'register' => env('REGISTER', false),
+    'root_name' => env('ROOT_NAME', false),
+    'root_email' => env('ROOT_EMAIL', false),
+    'root_password' => env('ROOT_PASSWORD', false),
+
+    'sql_extra' => env('CARGAR_INIT_EXTRA', true),
+    'sql_estados' => env('CARGAR_INIT_ESTADOS', false),
+    'sql_users' => env('CARGAR_INIT_USER', false),
+    'sql_socios' => env('CARGAR_INIT_SOCIOS', false),
+    'sql_participantes' => env('CARGAR_INIT_PARTICIPANTES', false),
+    'sql_datos_medicos' => env('CARGAR_INIT_DATOS_MEDICOS', false),
+    'sql_atletas' => env('CARGAR_INIT_ATLETAS', false),
+
+    'chequear_socios' => env('CHEQUEAR_LISTADO_SOCIOS', false),
+
+    'intencion_ver' => env('INTENCION_VER', true),
+    'intencion_hasta' => env('INTENCION_HASTA', false),
+    'numerica_ver' => env('NUMERICA_VER', true),
+    'numerica_hasta' => env('NUMERICA_HASTA', false),
+    'participantes_ver' => env('PARTICIPANTES_VER', true),
+    'participantes_hasta' => env('PARTICIPANTES_VER', false),
+
+
 ];

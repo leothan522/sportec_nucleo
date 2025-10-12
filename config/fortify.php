@@ -143,9 +143,8 @@ return [
     |
     */
 
-    'features' => [
-        //Features::registration(),
-        env('REGISTER', false) ? Features::registration() : null,
+    'features' => array_filter([
+        config('app.register') ? Features::registration() : null,
         Features::resetPasswords(),
         Features::emailVerification(),
         Features::updateProfileInformation(),
@@ -155,6 +154,6 @@ return [
             'confirmPassword' => true,
             // 'window' => 0,
         ]),*/
-    ],
+    ]),
 
 ];
