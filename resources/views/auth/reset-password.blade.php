@@ -48,12 +48,6 @@
             <button type="submit" class="btn shadow text-white btn-block fa-lg gradient-custom-2">{{ __('Reset Password') }}</button>
         </div>
 
-        <div class="position-absolute top-50 start-50 translate-middle d-none verCargando">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-
     </form>
 
 @endsection

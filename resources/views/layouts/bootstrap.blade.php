@@ -9,39 +9,22 @@
 
     <title>@yield('title', 'Morros Devops') - {{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('img/favicons/apple-icon-57x57.png') }}">
-    <link rel="apple-touch-icon" sizes="60x60" href="{{ asset('img/favicons/apple-icon-60x60.png') }}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('img/favicons/apple-icon-72x72.png') }}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('img/favicons/apple-icon-76x76.png') }}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('img/favicons/apple-icon-114x114.png') }}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('img/favicons/apple-icon-120x120.png') }}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{{ asset('img/favicons/apple-icon-144x144.png') }}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('img/favicons/apple-icon-152x152.png') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/favicons/apple-icon-180x180.png') }}">
-    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('img/favicons/android-icon-192x192.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicons/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('img/favicons/favicon-96x96.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/favicons/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ asset('img/favicons/manifest.json') }}">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="{{ asset('img/favicons/ms-icon-144x144.png') }}">
-    <meta name="theme-color" content="#ffffff">
+    {{-- Favicon y PWA --}}
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicons/appicon-32x32.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicons/appicon-128x128.png') }}">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!--Bootstrap -->
     {{--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">--}}
-    @vite(['resources/js/bootstrap5.js', 'resources/js/sweetalert2.js'])
+    @vite(['resources/js/bootstrap5.js', 'resources/js/sweetalert2.js', 'resources/js/web-app.js'])
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap" rel="stylesheet">
 
     <style>
-        @media (min-width: 768px) {
-            #scale {
-                transform: scale(0.8); /* Reduce el tamaño al 80% */
-            }
-        }
 
         * {
             font-family: "Poppins", sans-serif;
@@ -53,7 +36,6 @@
             color: rgba(8, 23, 44, 1);
             font-weight: bold;
         }
-
 
         .gradient-custom-2 {
             /* fallback for old browsers */
@@ -79,65 +61,53 @@
             }
         }
 
+        @media (min-width: 768px) {
+            #scale {
+                transform: scale(0.8); /* Reduce el tamaño al 80% */
+            }
+        }
+
+        /*--------------------------------------------------------------
+        # Preloader
+        --------------------------------------------------------------*/
         #preloader {
             position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: #fff no-repeat center center;
-            z-index: 9999;
+            inset: 0;
+            z-index: 999999;
+            overflow: hidden;
+            background: #ffffff;
+            transition: all 0.6s ease-out;
         }
 
-        #preloader::before {
+        #preloader:before {
             content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100px;
-            height: 100px;
-            background: url('{{ asset('img/preloader_171x171.png') }}') no-repeat center center;
-            background-size: contain;
-            transform: translate(-50%, -50%);
-            animation: pulse 2s infinite;
+            position: fixed;
+            top: calc(50% - 30px);
+            left: calc(50% - 30px);
+            border: 6px solid #ffffff;
+            border-color: #1977cc transparent #1977cc transparent;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: animate-preloader 1.5s linear infinite;
         }
 
-        @keyframes pulse {
+        @keyframes animate-preloader {
             0% {
-                transform: translate(-50%, -50%) scale(1);
+                transform: rotate(0deg);
             }
-            50% {
-                transform: translate(-50%, -50%) scale(1.2);
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-            }
-        }
 
-        .imagen_top_rigth {
-            display: block;
-            position: absolute;
-            height: 100px;
-            width: 100px;
-            right: 3%;
-            top: 3%;
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
     </style>
-    <script type="application/javascript">
-        //Script para ejecurar el preloader
-        window.addEventListener('load', function () {
-            document.querySelector('#preloader').style.display = 'none';
-            document.querySelector('.container').style.display = 'block';
-        });
-    </script>
 
+    @stack('css')
     @livewireStyles
-    @yield('css')
 </head>
 <body style="background-color: #eee;">
-
-<div id="preloader"></div>
 
 <div class="position-relative gradient-form" style="min-height: 100vh;">
     <div class="position-absolute top-50 start-50 translate-middle container">
@@ -150,14 +120,13 @@
                         <div class="col-lg-6">
                             <div class="card-body p-md-5 mx-md-4 position-relative" id="card_body">
 
-                                <div
-                                    class="text-center @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'web.index') mt-5 pt-5 @endif">
-                                    <a href="{{ route('web.index') }}" onclick="verCargandoAuth(this)">
-                                        <img class="img-fluid @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'web.index') mt-sm-5 @endif"
-                                            src="{{ asset('img/mascota.png') }}" style="width: 200px !important;"  alt="Logo Morros Devops">
+                                <div x-data class="text-center @if(Route::currentRouteName() == 'web.index') mt-5 pt-5 @endif">
+                                    <a href="{{ route('web.index') }}" @click="mostrarPreloader()">
+                                        <img class="img-fluid @if(Route::currentRouteName() == 'web.index') mt-sm-5 @endif"
+                                            src="{{ asset('img/mascota.png') }}" style="width: 200px !important;"  alt="Mascota Juegos FEDECIV">
                                     </a>
                                     <h6 class="mt-1 mb-5 pb-1 text_title">
-                                        <strong>{{ mb_strtoupper(env('APP_NAME', 'Laravel')) }}</strong></h6>
+                                        <strong>{{ mb_strtoupper(config('app.name')) }}</strong></h6>
                                 </div>
 
                                 @yield('content')
@@ -167,8 +136,7 @@
                         <div class="col-lg-6 d-none d-lg-flex align-items-center gradient-custom-2"
                              style="min-height: 70vh">
                             <div class="text-white px-3 py-4 p-md-5 mx-md-4 text-center">
-                                <img class="img-fluid rounded-2"
-                                     src="{{ asset('img/logo_juegos_border_white.png') }}" alt="Logo Tecnología Alguarisa">
+                                <img class="img-fluid rounded-2" src="{{ asset('img/logo_juegos_border_white.png') }}" alt="Logo Juegos FEDECIV">
                                 {{--<h3>XIX Juegos FEDECIV</h3>
                                 <a href="https://www.morros-devops.xyz" target="_blank"
                                    class="text-white text-decoration-none">“Maracaibo 2026”</a>--}}
@@ -183,12 +151,20 @@
     </div>
 </div>
 
+<!-- Preloader -->
+<div id="preloader"></div>
+
 {{--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>--}}
-@livewireScripts
 <script type="application/javascript">
+
+    //Script para ejecurar el preloader
+    window.addEventListener('load', function () {
+        document.querySelector('#preloader').classList.add('d-none');
+    });
+
+    //Validar Formularios
     (() => {
         'use strict'
-
         // Fetch all the forms we want to apply custom Bootstrap validation styles to
         const forms = document.querySelectorAll('.needs-validation')
 
@@ -199,33 +175,28 @@
                     event.preventDefault()
                     event.stopPropagation()
                 } else {
-                    form.classList.add('opacity-50');
-                    document.querySelector(".verCargando").classList.remove('d-none');
+                    mostrarPreloader();
                 }
                 form.classList.add('was-validated');
             }, false);
         })
-    })()
-
-    function verCargandoAuth(enlace) {
-        event.preventDefault();
-        const card = document.querySelector("#card_body");
-        const spinner = document.querySelector(".verCargando");
-
-        card.classList.add('opacity-50');
-        spinner.classList.remove('d-none');
-
-        setTimeout(function () {
-            card.classList.remove('opacity-50');
-            spinner.classList.add('d-none');
-            //alert(enlace.href)
-            window.location.href = enlace.href;
-        }, 1000)
-    }
+    })();
 
     console.log('Hi!')
 </script>
-@yield('js')
+
 @include('layouts.sweetAlert2')
+@stack('js')
+@livewireScripts
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register("{{ asset('service-worker.js') }}")
+                .then(reg => console.log('✅ Service Worker registrado en:', reg.scope))
+                .catch(err => console.error('⚠️ Error al registrar el Service Worker:', err));
+        });
+    }
+</script>
 </body>
 </html>

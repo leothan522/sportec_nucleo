@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         //
-        if (config('app.sql_participantesl')){
+        if (config('app.sql_participantes')){
             \Illuminate\Support\Facades\DB::unprepared(
                 file_get_contents(storage_path('app/private/sql/init_participantes.sql'))
             );

@@ -45,12 +45,6 @@
             <button type="submit" class="btn shadow text-white btn-block  gradient-custom-2">{{ __('Email Password Reset Link') }}</button>
         </div>
 
-        <div class="position-absolute top-50 start-50 translate-middle d-none verCargando">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-
     </form>
 
 @endsection

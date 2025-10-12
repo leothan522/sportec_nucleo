@@ -24,17 +24,11 @@
             <button type="submit" class="btn shadow text-white btn-block  gradient-custom-2 mb-3">{{ __('Resend Verification Email') }}</button>
         </div>
 
-        <div class="position-absolute top-50 start-50 translate-middle d-none verCargando">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-
     </form>
 
-    <div class="d-flex align-items-center justify-content-between">
-        <a class="text-muted mb-0 me-2" href="{{ route('profile.show') }}" onclick="verCargandoAuth(this)">{{ __('Edit Profile') }}</a>
-        <form method="POST" action="{{ route('logout') }}" onsubmit="verCargandoAuth(this)">
+    <div x-data class="d-flex align-items-center justify-content-between">
+        <a class="text-muted mb-0 me-2" href="{{ route('profile.show') }}" @click="mostrarPreloader()">{{ __('Edit Profile') }}</a>
+        <form method="POST" action="{{ route('logout') }}" @submit="mostrarPreloader()">
             @csrf
             <button type="submit" class="btn btn-link text-muted">{{ __('Log Out') }}</button>
         </form>
