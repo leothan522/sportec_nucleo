@@ -154,5 +154,7 @@ return [
     'participantes_ver' => env('PARTICIPANTES_VER', true),
     'participantes_hasta' => env('PARTICIPANTES_VER', false),
 
+    'intencion_deporte_ver' => env('INTENCION_DEPORTE_VER', true),
+    'intencion_deporte_hasta' => env('INTENCION_DEPORTE_HASTA', false),
 
 ];

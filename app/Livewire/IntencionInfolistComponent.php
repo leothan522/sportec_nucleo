@@ -23,10 +23,12 @@ class IntencionInfolistComponent extends Component implements HasForms, HasInfol
 
     public int $id_entidad;
     public string $nombre_entidad;
+    public bool $intencionDeporte;
 
-    public function mount()
+    public function mount($tablaDeporte = false)
     {
         $this->filtrarEntidad();
+        $this->intencionDeporte = $tablaDeporte;
     }
 
     public function render()
@@ -41,12 +43,12 @@ class IntencionInfolistComponent extends Component implements HasForms, HasInfol
             ->schema([
                 Section::make('Deportes y Modalidades')
                     ->description('Seleccione todas competiciones en las que su club desea competir')
-                    ->schema([
-                        Livewire::make(IntencionTableComponent::class, [
+                    ->schema(array_filter([
+                        !$this->intencionDeporte ? Livewire::make(IntencionTableComponent::class, [
                             'id_entidad' => $this->id_entidad ?? null
                         ])
-                            ->key('foo-first')
-                    ])
+                            ->key('foo-first') : null,
+                    ]))
                     ->headerActions([
                         Action::make('seleccionar_entidad')
                             ->label(Str::upper($this->nombre_entidad))
@@ -88,7 +90,7 @@ class IntencionInfolistComponent extends Component implements HasForms, HasInfol
                             ->openUrlInNewTab(),
                     ])
                     ->compact()
-                    ->hidden($this->ocultar())
+                    ->hidden($this->ocultar() || $this->intencionDeporte)
             ]);
     }
 
