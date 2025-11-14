@@ -86,6 +86,8 @@ class IntencionDeporteTableComponent extends Component implements HasForms, HasT
                         'deporte',
                         fn(Builder $query) => $query->has('oficiales'),
                     )
+                    ->searchable()
+                    ->preload()
             ])
             ->actions([
                 Action::make('seleccionar')
@@ -100,17 +102,40 @@ class IntencionDeporteTableComponent extends Component implements HasForms, HasT
                     ->modalHeading(fn(DeporteOficial $record): string => $record->deporte->deporte ?? null)
                     ->modalDescription(fn(DeporteOficial $record): string => $record->categoria)
                     ->modalWidth(MaxWidth::Small)
+                    ->fillForm(function (DeporteOficial $record): array {
+                        $response = [];
+                        $intencion = $this->getParticipacion($record);
+                        if ($intencion) {
+                            $response = [
+                                'femenino' => $intencion->femenino,
+                                'masculino' => $intencion->masculino
+                            ];
+                        }
+                        return $response;
+                    })
                     ->form([
                         TextInput::make('femenino')
-                            ->numeric()
+                            ->integer()
                             ->minValue(0),
                         TextInput::make('masculino')
-                            ->numeric()
+                            ->integer()
                             ->minValue(0),
                     ])
                     ->action(function (array $data, DeporteOficial $record): void {
                         if ($this->id_entidad) {
-                            //programaos
+                            $intencion = $this->getParticipacion($record);
+                            if ($data['femenino'] && $data['masculino']) {
+                                if (!$intencion) {
+                                    $intencion = new ParticipacionDisciplina();
+                                    $intencion->id_entidad = $this->id_entidad;
+                                    $intencion->id_deporte_oficial = $record->id;
+                                }
+                                $intencion->femenino = $data['femenino'];
+                                $intencion->masculino = $data['masculino'];
+                                $intencion->save();
+                            } else {
+                                $intencion?->delete();
+                            }
                         } else {
                             Notification::make()
                                 ->title('Falta Seleccionar CLUB')

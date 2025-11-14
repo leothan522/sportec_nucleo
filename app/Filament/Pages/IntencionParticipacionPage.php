@@ -17,7 +17,8 @@ class IntencionParticipacionPage extends Page
     {
         $id_nivel = auth()->user()->id_nivel ?? null;
         $is_root = auth()->user()->is_root ?? null;
-        return verPage('INTENCION_VER', 'INTENCION_HASTA') || $id_nivel == 1 || $is_root;
+        return verPage('INTENCION_VER', 'INTENCION_HASTA') ||
+            (!verPage('INTENCION_DEPORTE_VER', 'INTENCION_DEPORTE_HASTA') && ($id_nivel == 1 || $is_root));
     }
 
     public function getSubheading(): string|Htmlable|null

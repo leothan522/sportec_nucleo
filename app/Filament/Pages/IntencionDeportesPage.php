@@ -9,7 +9,7 @@ class IntencionDeportesPage extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static string $view = 'filament.pages.intencion-deportes-page';
-    protected static ?string $title = 'Intención de Participación 2';
+    protected static ?string $title = 'Intención de Participación';
 
     public static function canAccess(): bool
     {
