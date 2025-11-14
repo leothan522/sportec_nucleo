@@ -3,9 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\DeporteOficial;
+use App\Models\ParticipacionDisciplina;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -87,11 +90,28 @@ class IntencionDeporteTableComponent extends Component implements HasForms, HasT
             ->actions([
                 Action::make('seleccionar')
                     ->iconButton()
-                    ->icon('heroicon-o-stop')
-                    ->action(function (DeporteOficial $record): void {
-                        if ($this->id_entidad){
+                    ->icon(function (DeporteOficial $record): string {
+                        $response = 'heroicon-o-stop';
+                        if ($this->getParticipacion($record)) {
+                            $response = 'heroicon-m-check-circle';
+                        }
+                        return $response;
+                    })
+                    ->modalHeading(fn(DeporteOficial $record): string => $record->deporte->deporte ?? null)
+                    ->modalDescription(fn(DeporteOficial $record): string => $record->categoria)
+                    ->modalWidth(MaxWidth::Small)
+                    ->form([
+                        TextInput::make('femenino')
+                            ->numeric()
+                            ->minValue(0),
+                        TextInput::make('masculino')
+                            ->numeric()
+                            ->minValue(0),
+                    ])
+                    ->action(function (array $data, DeporteOficial $record): void {
+                        if ($this->id_entidad) {
                             //programaos
-                        }else{
+                        } else {
                             Notification::make()
                                 ->title('Falta Seleccionar CLUB')
                                 ->warning()
@@ -101,6 +121,13 @@ class IntencionDeporteTableComponent extends Component implements HasForms, HasT
                         }
                     }),
             ], position: ActionsPosition::BeforeColumns);
+    }
+
+    protected function getParticipacion($record): ?ParticipacionDisciplina
+    {
+        return ParticipacionDisciplina::where('id_entidad', $this->id_entidad)
+            ->where('id_deporte_oficial', $record->id)
+            ->first();
     }
 
     #[On('cambiarValorEntidad')]
