@@ -24,6 +24,7 @@
 !init_letra.sql
 !init_color.sql
 !init_palco.sql
+!init_deportes_oficiales.sql
 !sql
 !.gitignore
 

@@ -44,10 +44,16 @@ class IntencionInfolistComponent extends Component implements HasForms, HasInfol
                 Section::make('Deportes y Modalidades')
                     ->description('Seleccione todas competiciones en las que su club desea competir')
                     ->schema(array_filter([
-                        !$this->intencionDeporte ? Livewire::make(IntencionTableComponent::class, [
-                            'id_entidad' => $this->id_entidad ?? null
-                        ])
-                            ->key('foo-first') : null,
+                        !$this->intencionDeporte ?
+                            Livewire::make(IntencionTableComponent::class, [
+                                'id_entidad' => $this->id_entidad ?? null
+                            ])
+                            ->key('foo-first')
+                            :
+                            Livewire::make(IntencionDeporteTableComponent::class, [
+                                'id_entidad' => $this->id_entidad ?? null
+                            ])
+                            ->key('foo-three'),
                     ]))
                     ->headerActions([
                         Action::make('seleccionar_entidad')
