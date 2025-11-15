@@ -48,12 +48,12 @@ class IntencionInfolistComponent extends Component implements HasForms, HasInfol
                             Livewire::make(IntencionTableComponent::class, [
                                 'id_entidad' => $this->id_entidad ?? null
                             ])
-                            ->key('foo-first')
+                                ->key('foo-first')
                             :
                             Livewire::make(IntencionDeporteTableComponent::class, [
                                 'id_entidad' => $this->id_entidad ?? null
                             ])
-                            ->key('foo-three'),
+                                ->key('foo-three'),
                     ]))
                     ->headerActions([
                         Action::make('seleccionar_entidad')
@@ -75,7 +75,10 @@ class IntencionInfolistComponent extends Component implements HasForms, HasInfol
                             ->hidden($this->ocultar()),
                         Action::make('imprimir')
                             ->label('Generar PDF')
-                            ->url(fn(): string => route('intencion.participacion', $this->id_entidad ?? null))
+                            ->url(fn(): string => !$this->intencionDeporte ?
+                                route('intencion.participacion', $this->id_entidad ?? null) :
+                                route('intencion.deporte', $this->id_entidad ?? null)
+                            )
                             ->disabled(!isset($this->id_entidad))
                             ->openUrlInNewTab()
                     ])
