@@ -68,7 +68,7 @@ class ExportIntencionDeporteController extends Fpdf
             //filas
             $deportes = DeporteOficial::select('deportes_oficiales.*')
                 ->join('deportes', 'deportes.id', '=', 'deportes_oficiales.id_deporte')
-                ->orderBy('deportes.deporte', 'asc')->get();
+                ->orderBy('deportes.deporte', 'asc')->orderBy('categoria', 'asc')->get();
             $totalMasculino = 0;
             $totalFemenino = 0;
             $totalGeneral = 0;

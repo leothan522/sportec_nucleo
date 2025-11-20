@@ -44,7 +44,7 @@ class IntencionDeporteTableComponent extends Component implements HasForms, HasT
                 $query = DeporteOficial::query();
                 return $query->select('deportes_oficiales.*')
                     ->join('deportes', 'deportes.id', '=', 'deportes_oficiales.id_deporte')
-                    ->orderBy('deportes.deporte', 'asc');
+                    ->orderBy('deportes.deporte', 'asc')->orderBy('categoria', 'asc');
             })
             ->columns([
                 TextColumn::make('deporte_sm')
