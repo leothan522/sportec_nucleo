@@ -29,38 +29,40 @@ class ExportIntencionDeporteController extends Fpdf
             $pdf->AliasNbPages();
             $pdf->AddPage();
 
+            $altura = 8;
+
             //Cabecera
             $pdf->SetFont('Arial', 'B', 10);
-            $pdf->Cell(40, 7, 'NOMBRE DEL CLUB:', 1);
-            $pdf->Cell(150, 7, $nombreClub, 1, 1, 'C');
-            $pdf->Cell(40, 7, 'CIUDAD DEL CLUB:', 1);
-            $pdf->Cell(150, 7, $ciudadClub, 1, 1, 'C');
+            $pdf->Cell(40, $altura, 'NOMBRE DEL CLUB:', 1);
+            $pdf->Cell(150, $altura, $nombreClub, 1, 1, 'C');
+            $pdf->Cell(40, $altura, 'CIUDAD DEL CLUB:', 1);
+            $pdf->Cell(150, $altura, $ciudadClub, 1, 1, 'C');
             $pdf->Ln(5);
 
             //Titulos de Columnas
             $pdf->SetFont('Arial', 'B', 12);
-            $pdf->Cell(0, 7, 'DEPORTES OFICIALES', 1, 1, 'C');
+            $pdf->Cell(0, $altura, 'DEPORTES OFICIALES', 1, 1, 'C');
 
 
             $pdf->SetFont('Times', 'B', 10);
-            $pdf->Cell(30,14, verUtf8('DISCIPLINAS'), 1, 0, 'C');
-            $pdf->Cell(30,14, verUtf8('CATEGORÍAS'), 1, 0, 'C');
-            $pdf->Cell(100,7, 'CONDICIONES DE LA DISCIPLINA', 1, 0, 'C');
+            $pdf->Cell(30,$altura * 2, verUtf8('DISCIPLINAS'), 1, 0, 'C');
+            $pdf->Cell(30,$altura * 2, verUtf8('CATEGORÍAS'), 1, 0, 'C');
+            $pdf->Cell(100, $altura, 'CONDICIONES DE LA DISCIPLINA', 1, 0, 'C');
 
             $pdf->SetFont('Times', 'B', 7);
 
-            $pdf->Cell(30,7, 'ATLETAS A INSCRIBIR', 1, 1, 'C');
+            $pdf->Cell(30, $altura, 'ATLETAS A INSCRIBIR', 1, 1, 'C');
 
-            $pdf->Cell(30,7, '');
-            $pdf->Cell(30,7, '');
-            $pdf->Cell(9,7, verUtf8('Min'), 1, 0, 'C');
-            $pdf->Cell(9,7, verUtf8('Max'), 1, 0, 'C');
-            $pdf->Cell(32,7, verUtf8('GÉNERO'), 1, 0, 'C');
-            $pdf->Cell(20,7, verUtf8('EDADES'), 1, 0, 'C');
-            $pdf->Cell(30,7, verUtf8('FECHA CALENDARIO'), 1, 0, 'C');
-            $pdf->Cell(10,7, verUtf8('Masc'), 1, 0, 'C');
-            $pdf->Cell(10,7, verUtf8('Fem'), 1, 0, 'C');
-            $pdf->Cell(10,7, verUtf8('TOTAL'), 1, 1, 'C');
+            $pdf->Cell(30, $altura, '');
+            $pdf->Cell(30, $altura, '');
+            $pdf->Cell(9, $altura, verUtf8('Min'), 1, 0, 'C');
+            $pdf->Cell(9, $altura, verUtf8('Max'), 1, 0, 'C');
+            $pdf->Cell(32, $altura, verUtf8('GÉNERO'), 1, 0, 'C');
+            $pdf->Cell(20, $altura, verUtf8('EDADES'), 1, 0, 'C');
+            $pdf->Cell(30, $altura, verUtf8('FECHA CALENDARIO'), 1, 0, 'C');
+            $pdf->Cell(10, $altura, verUtf8('Masc'), 1, 0, 'C');
+            $pdf->Cell(10, $altura, verUtf8('Fem'), 1, 0, 'C');
+            $pdf->Cell(10, $altura, verUtf8('TOTAL'), 1, 1, 'C');
 
 
             //filas
@@ -76,29 +78,29 @@ class ExportIntencionDeporteController extends Fpdf
                 $pdf->SetFont('Times', '', 8);
                 $pdf->SetTextColor(0);
 
-                $pdf->Cell(30,7, verUtf8($deporte->deporte->deporte), 1, 0, 'C');
-                $pdf->Cell(30,7, verUtf8($deporte->categoria), 1, 0, 'C');
-                $pdf->Cell(9,7, verUtf8($deporte->min), 1, 0, 'C');
-                $pdf->Cell(9,7, verUtf8($deporte->max), 1, 0, 'C');
-                $pdf->Cell(32,7, verUtf8($deporte->genero), 1, 0, 'C');
+                $pdf->Cell(30, $altura, verUtf8($deporte->deporte->deporte), 1, 0, 'C');
+                $pdf->Cell(30, $altura, verUtf8($deporte->categoria), 1, 0, 'C');
+                $pdf->Cell(9, $altura, verUtf8($deporte->min), 1, 0, 'C');
+                $pdf->Cell(9, $altura, verUtf8($deporte->max), 1, 0, 'C');
+                $pdf->Cell(32, $altura, verUtf8($deporte->genero), 1, 0, 'C');
 
                 if ($deporte->edad_libre){
-                    $pdf->Cell(20,7, verUtf8('LIBRE'), 1, 0, 'C');
+                    $pdf->Cell(20, $altura, verUtf8('LIBRE'), 1, 0, 'C');
                 }else{
-                    $pdf->Cell(7,7, verUtf8(is_numeric($deporte->edad_inicial) ? $deporte->edad_inicial : '>='), 1, 0, 'C');
-                    $pdf->Cell(6,7, verUtf8('a'), 1, 0, 'C');
-                    $pdf->Cell(7,7, verUtf8($deporte->edad_final), 1, 0, 'C');
+                    $pdf->Cell(7, $altura, verUtf8(is_numeric($deporte->edad_inicial) ? $deporte->edad_inicial : '>='), 1, 0, 'C');
+                    $pdf->Cell(6, $altura, verUtf8('a'), 1, 0, 'C');
+                    $pdf->Cell(7, $altura, verUtf8($deporte->edad_final), 1, 0, 'C');
                 }
 
                 if ($deporte->fecha_libre){
-                    $pdf->Cell(30,7, verUtf8('LIBRE'), 1, 0, 'C');
+                    $pdf->Cell(30, $altura, verUtf8('LIBRE'), 1, 0, 'C');
                 }else{
-                    $pdf->Cell(10,7, verUtf8($deporte->fecha_inicial), 1, 0, 'C');
+                    $pdf->Cell(10, $altura, verUtf8($deporte->fecha_inicial), 1, 0, 'C');
                     if (is_numeric($deporte->fecha_final)){
-                        $pdf->Cell(10,7, verUtf8('al'), 1, 0, 'C');
-                        $pdf->Cell(10,7, verUtf8($deporte->fecha_final), 1, 0, 'C');
+                        $pdf->Cell(10, $altura, verUtf8('al'), 1, 0, 'C');
+                        $pdf->Cell(10, $altura, verUtf8($deporte->fecha_final), 1, 0, 'C');
                     }else{
-                        $pdf->Cell(20,7, verUtf8('hacia abajo'), 1, 0, 'C');
+                        $pdf->Cell(20, $altura, verUtf8('hacia abajo'), 1, 0, 'C');
                     }
                 }
 
@@ -117,25 +119,25 @@ class ExportIntencionDeporteController extends Fpdf
                     $totalGeneral = $totalGeneral + $total;
                 }
 
-                $pdf->Cell(10,7, verUtf8($masculino), 1, 0, 'C');
-                $pdf->Cell(10,7, verUtf8($femenino), 1, 0, 'C');
+                $pdf->Cell(10, $altura, verUtf8($masculino), 1, 0, 'C');
+                $pdf->Cell(10, $altura, verUtf8($femenino), 1, 0, 'C');
                 $pdf->SetFont('Times', 'B', 8);
-                $pdf->Cell(10,7, verUtf8($total), 1, 1, 'C');
+                $pdf->Cell(10, $altura, verUtf8($total), 1, 1, 'C');
 
             }
-            $pdf->Ln(7);
+            $pdf->Ln($altura);
 
             //total general
 
             $pdf->SetFont('Times', 'B', 10);
 
-            $pdf->Cell(110, 21, '', 1, 0, 'C');
-            $pdf->Cell(50, 7, 'TOTAL GENERAL', 0, 0, 'C');
-            $pdf->Cell(10,7, verUtf8($totalMasculino), 1, 0, 'C');
-            $pdf->Cell(10,7, verUtf8($totalFemenino), 1, 0, 'C');
-            $pdf->Cell(10,7, verUtf8($totalGeneral), 1, 1, 'C');
+            $pdf->Cell(110, $altura * 3, '', 1, 0, 'C');
+            $pdf->Cell(50, $altura, 'TOTAL GENERAL', 0, 0, 'C');
+            $pdf->Cell(10, $altura, verUtf8($totalMasculino), 1, 0, 'C');
+            $pdf->Cell(10, $altura, verUtf8($totalFemenino), 1, 0, 'C');
+            $pdf->Cell(10, $altura, verUtf8($totalGeneral), 1, 1, 'C');
             $pdf->Ln(14);
-            $pdf->Cell(0, 7, 'PRESIDENTE / SECRETARIO GENERAL / DELEGADO PRINCIPAL DEL CLUB', 0, 1);
+            $pdf->Cell(0, $altura, 'PRESIDENTE / SECRETARIO GENERAL / DELEGADO PRINCIPAL DEL CLUB', 0, 1);
 
 
             //Exportamos el PDF
