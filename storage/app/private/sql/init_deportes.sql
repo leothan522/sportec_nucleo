@@ -14,7 +14,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- Volcando datos para la tabla morrosroot_sportec_nucleo.deportes: ~99 rows (aproximadamente)
+-- Volcando datos para la tabla morrosroot_sportec_nucleo.deportes: ~103 rows (aproximadamente)
 INSERT INTO `deportes` (`id`, `tipo_deporte`, `codigod`, `deporte`, `en_uso`, `acronimo`, `ruta_logo`, `listo`, `federacion`, `presidente`, `url_federacion`, `email`, `direccion`, `telefono`, `fax`, `observaciones`, `url_ranking`, `clasificatorio`, `plan`, `rango_minimo`, `rango_maximo`, `secundario`, `sport`, `created_at`, `updated_at`) VALUES
 	(1, 4, 'AGA', 'AGUAS ABIERTAS', 0, 'DPA', 'c_aga.jpg', 0, 'DPA', ' ', NULL, ' ', ' ', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, NULL, '2025-05-20 01:46:37', '2025-05-19 22:49:27'),
 	(2, 1, 'AJE', 'AJEDREZ', 0, 'AJE', 'c_aje.jpg', 0, 'AJE', ' ', NULL, ' ', ' ', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, NULL, '2025-05-20 01:46:37', '2025-05-19 22:49:27'),
