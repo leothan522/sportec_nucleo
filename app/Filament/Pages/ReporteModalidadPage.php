@@ -15,7 +15,7 @@ class ReporteModalidadPage extends Page
 
     public static function canAccess(): bool
     {
-        return config('app.reportes_ver');
+        return false;
     }
 
 }
