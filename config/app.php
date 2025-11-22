@@ -157,4 +157,6 @@ return [
     'intencion_deporte_ver' => env('INTENCION_DEPORTE_VER', true),
     'intencion_deporte_hasta' => env('INTENCION_DEPORTE_HASTA', false),
 
+    'reportes_ver' => env('reportes_ver', true),
+
 ];

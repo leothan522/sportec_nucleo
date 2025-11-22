@@ -11,6 +11,10 @@ class ReporteDeportePage extends Page
     protected static string $view = 'filament.pages.reporte-deporte-page';
     protected static ?string $title = 'Inscritos por Deporte';
     protected static ?string $navigationGroup = 'Reportes';
-    protected static ?int $navigationSort = 2
-    ;
+    protected static ?int $navigationSort = 2;
+
+    public static function canAccess(): bool
+    {
+        return config('app.reportes_ver');
+    }
 }

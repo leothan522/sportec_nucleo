@@ -12,4 +12,10 @@ class ReporteModalidadPage extends Page
     protected static ?string $title = 'Inscritos por Modalidad';
     protected static ?string $navigationGroup = 'Reportes';
     protected static ?int $navigationSort = 3;
+
+    public static function canAccess(): bool
+    {
+        return config('app.reportes_ver');
+    }
+
 }

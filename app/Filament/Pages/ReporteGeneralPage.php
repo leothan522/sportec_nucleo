@@ -11,4 +11,10 @@ class ReporteGeneralPage extends Page
     protected static string $view = 'filament.pages.reporte-general-page';
     protected static ?string $title = 'Reporte General';
     protected static ?string $navigationGroup = 'Reportes';
+
+    public static function canAccess(): bool
+    {
+        return config('app.reportes_ver');
+    }
+
 }
