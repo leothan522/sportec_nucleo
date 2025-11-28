@@ -126,7 +126,7 @@ class IntencionDeporteTableComponent extends Component implements HasForms, HasT
                     ->action(function (array $data, DeporteOficial $record): void {
                         if ($this->id_entidad) {
                             $intencion = $this->getParticipacion($record);
-                            if ($data['femenino'] && $data['masculino']) {
+                            if ($data['femenino'] || $data['masculino']) {
                                 if (!$intencion) {
                                     $intencion = new ParticipacionDisciplina();
                                     $intencion->id_entidad = $this->id_entidad;
