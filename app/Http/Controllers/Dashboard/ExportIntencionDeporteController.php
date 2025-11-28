@@ -110,8 +110,8 @@ class ExportIntencionDeporteController extends Fpdf
 
                 $intencion = ParticipacionDisciplina::where('id_deporte_oficial', $deporte->id)->where('id_entidad', $entidad->id)->first();
                 if ($intencion){
-                    $femenino = $intencion->femenino;
-                    $masculino = $intencion->masculino;
+                    $femenino = $intencion->femenino ?? 0;
+                    $masculino = $intencion->masculino ?? 0;
                     $total = $intencion->femenino + $intencion->masculino;
 
                     $totalFemenino = $totalFemenino + $femenino;
