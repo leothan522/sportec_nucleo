@@ -13,6 +13,6 @@ class IntencionParticipacionExport implements FromView
      */
     public function view(): View
     {
-        return \view('export.intencion-participacion');
+        return \view('export.intencion-resumen');
     }
 }

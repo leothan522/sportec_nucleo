@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Exports\IntencionParticipacionExport;
+use App\Exports\ResumenExport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -16,6 +16,6 @@ class ExportsExcelController extends Controller
      */
     public function intencionParticipacion()
     {
-        return Excel::download(new IntencionParticipacionExport(), 'RESUMEN_INTENCION_PARTICIPACION.xlsx');
+        return Excel::download(new ResumenExport(), 'RESUMEN_INTENCION_PARTICIPACION.xlsx');
     }
 }
