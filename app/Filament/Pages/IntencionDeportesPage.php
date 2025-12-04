@@ -45,7 +45,7 @@ class IntencionDeportesPage extends Page
                 ->color('success')
                 ->url(route('excel-exports.intencion-participacion'))
                 ->openUrlInNewTab()
-                ->visible(fn(): bool => auth()->user()->nivel == 1 || auth()->user()->is_root),
+                ->visible(fn(): bool => auth()->user()->id_nivel == 1 || auth()->user()->is_root),
         ];
     }
 
