@@ -2,17 +2,16 @@
 
 namespace App\Exports;
 
-use App\Models\DeporteOficial;
-use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class IntencionParticipacionExport implements FromView
+class IntencionParticipacionExport implements WithMultipleSheets
 {
-    /**
-     * @return View
-     */
-    public function view(): View
+
+    public function sheets(): array
     {
-        return \view('export.intencion-resumen');
+        return [
+            new ResumenExport(),
+            new QuorumExport()
+        ];
     }
 }

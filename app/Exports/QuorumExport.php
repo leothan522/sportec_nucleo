@@ -3,14 +3,15 @@
 namespace App\Exports;
 
 use App\Models\DeporteOficial;
-use App\Models\Entidad;
 use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class ResumenExport implements FromView, WithTitle, ShouldAutoSize
+class QuorumExport implements FromView, WithTitle, ShouldAutoSize
 {
+
     /**
      * @return View
      */
@@ -20,19 +21,15 @@ class ResumenExport implements FromView, WithTitle, ShouldAutoSize
             ->join('deportes', 'deportes.id', '=', 'deportes_oficiales.id_deporte')
             ->orderBy('deportes.deporte', 'asc')->orderBy('ordenar')->get();
 
-        $clubes = Entidad::orderBy('short_nombre')->get();
-
-        return \view('export.intencion-resumen')
+        return \view('export.intencion-quorum')
             ->with('i', 0)
             ->with('deportes', $deportes)
-            ->with('clubes', $clubes)
             ->with('totalFemenino', 0)
             ->with('totalMasculino', 0);
     }
 
     public function title(): string
     {
-        return 'INTENCIÓN - NUMÉRICA';
+        return 'QUÓRUM';
     }
-
 }
