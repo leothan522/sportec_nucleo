@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\ExportIntencionDeporteController;
 use App\Http\Controllers\Dashboard\ExportModalidadController;
 use App\Http\Controllers\Dashboard\ExportParticipanteController;
 use App\Http\Controllers\Dashboard\ExportReportesController;
+use App\Http\Controllers\Dashboard\ExportsExcelController;
 use App\Http\Controllers\Web\WebController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,3 +37,5 @@ Route::get('export/numerica/reporte/{id?}', [ExportIntencionController::class, '
 
 Route::get('export/deporte/reportes/{id_entidad}/{filtro}/{id_deporte}', [ExportModalidadController::class, 'exportDeporte'])->name('export.deporte');
 Route::get('export/modalidad/reportes/{id_entidad}/{filtro}/{id_modalidad}', [ExportModalidadController::class, 'exportModalidad'])->name('export.modalidad');
+
+Route::get('/export/excel/intencion-participacion', [ExportsExcelController::class, 'intencionParticipacion'])->name('excel-exports.intencion-participacion');
