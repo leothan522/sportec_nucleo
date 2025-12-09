@@ -17,7 +17,7 @@
                     </x-nav-link>
                 </div>--}}
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ url('dashboard') }}" :active="request()->routeIs('dashboard')">
+                    <x-nav-link href="{{ route('filament.dashboard.pages.dashboard') }}" :active="request()->routeIs('filament.dashboard.pages.dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
@@ -144,7 +144,7 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
+            <x-responsive-nav-link href="{{ route('filament.dashboard.pages.dashboard') }}" :active="request()->routeIs('filament.dashboard.pages.dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
@@ -165,6 +165,9 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                <x-responsive-nav-link href="{{ route('filament.dashboard.pages.dashboard') }}" :active="request()->routeIs('filament.dashboard.pages.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
                 <!-- Account Management -->
                 <x-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
                     {{ __('Profile') }}

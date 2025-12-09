@@ -7,6 +7,13 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        {{-- Favicon y PWA --}}
+        <link rel="manifest" href="{{ asset('manifest.json') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicons/appicon-32x32.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('favicons/appicon-128x128.png') }}">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -44,5 +51,14 @@
 
         @include('layouts.sweetAlert2')
 
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register("{{ asset('service-worker.js') }}")
+                        .then(reg => console.log('✅ Service Worker registrado en:', reg.scope))
+                        .catch(err => console.error('⚠️ Error al registrar el Service Worker:', err));
+                });
+            }
+        </script>
     </body>
 </html>
