@@ -20,7 +20,7 @@ class ResumenExport implements FromView, WithTitle, ShouldAutoSize
             ->join('deportes', 'deportes.id', '=', 'deportes_oficiales.id_deporte')
             ->orderBy('deportes.deporte', 'asc')->orderBy('ordenar')->get();
 
-        $clubes = Entidad::orderBy('short_nombre')->get();
+        $clubes = Entidad::where('is_delegacion', 1)->where('activo', 1)->orderBy('short_nombre')->get();
 
         return \view('export.intencion-resumen')
             ->with('i', 0)

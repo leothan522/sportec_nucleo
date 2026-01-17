@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('ruta_bandera')->nullable();
             $table->text('ruta_escudo')->nullable();
             $table->boolean('activo')->default(true);
+            $table->boolean('is_delegacion')->default(true);
             $table->timestamps();
         });
     }

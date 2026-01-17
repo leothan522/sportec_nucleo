@@ -18,6 +18,7 @@ class Entidad extends Model
         'ruta_bandera',
         'ruta_escudo',
         'activo',
+        'is_delegacion',
     ];
 
     public function users(): HasMany
