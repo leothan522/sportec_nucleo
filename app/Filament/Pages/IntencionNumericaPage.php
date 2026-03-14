@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 
@@ -34,5 +35,18 @@ class IntencionNumericaPage extends Page
         }
 
         return $response;
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('generar_excel')
+                ->label('Generar Reporte')
+                ->icon('heroicon-o-document-arrow-down')
+                ->color('success')
+                ->url(route('excel-exports.inscripcion-numerica'))
+                ->openUrlInNewTab()
+                ->visible(fn(): bool => auth()->user()->id_nivel == 1 || auth()->user()->is_root),
+        ];
     }
 }

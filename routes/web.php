@@ -39,3 +39,4 @@ Route::get('export/deporte/reportes/{id_entidad}/{filtro}/{id_deporte}', [Export
 Route::get('export/modalidad/reportes/{id_entidad}/{filtro}/{id_modalidad}', [ExportModalidadController::class, 'exportModalidad'])->name('export.modalidad');
 
 Route::get('/export/excel/intencion-participacion', [ExportsExcelController::class, 'intencionParticipacion'])->name('excel-exports.intencion-participacion');
+Route::get('/export/excel/inscripcion-participacion', [ExportsExcelController::class, 'inscripcionNumerica'])->name('excel-exports.inscripcion-numerica');
