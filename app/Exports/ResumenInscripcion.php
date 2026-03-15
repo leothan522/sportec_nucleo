@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\DeporteOficial;
 use App\Models\Entidad;
+use App\Models\ModalidadDeportiva;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -16,9 +17,10 @@ class ResumenInscripcion implements FromView, WithTitle, ShouldAutoSize
      */
     public function view(): View
     {
-        $deportes = DeporteOficial::select('deportes_oficiales.*')
-            ->join('deportes', 'deportes.id', '=', 'deportes_oficiales.id_deporte')
-            ->orderBy('deportes.deporte', 'asc')->orderBy('ordenar')->get();
+        $deportes = ModalidadDeportiva::whereRelation('deporte', 'en_uso', 1)
+            ->where('puntuable', 1)
+            ->where('en_practica', 1)
+            ->orderBy('id_deporte')->get();
 
         $clubes = Entidad::where('is_delegacion', 1)->where('activo', 1)->orderBy('short_nombre')->get();
 

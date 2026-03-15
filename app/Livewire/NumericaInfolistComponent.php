@@ -53,7 +53,7 @@ class NumericaInfolistComponent extends Component implements HasForms, HasInfoli
                             ->form([
                                 Select::make('id_entidad')
                                     ->label(Str::upper('club'))
-                                    ->options(Entidad::query()->pluck('short_nombre', 'id'))
+                                    ->options(Entidad::query()->where('is_delegacion', 1)->where('activo', 1)->pluck('short_nombre', 'id'))
                                     ->searchable()
                                     ->preload()
                                     //->required()
