@@ -37,6 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasAvatar
         'password',
         'id_entidad',
         'id_nivel',
+        'validar_socios',
         'activo',
         'visitas',
         'descripcion',

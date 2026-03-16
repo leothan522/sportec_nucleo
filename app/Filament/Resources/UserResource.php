@@ -68,6 +68,8 @@ class UserResource extends Resource
                             ->relationship('nivel', 'nivel')
                             ->searchable()
                             ->preload(),
+                        Forms\Components\Toggle::make('validar_socios')
+                            ->hiddenOn('create'),
                     ])
                     ->columns()
                     ->compact(),
