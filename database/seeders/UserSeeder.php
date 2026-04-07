@@ -30,6 +30,8 @@ class UserSeeder extends Seeder
                 'email' => 'admin@morros-devops.xyz',
                 'email_verified_at' => now(),
                 'password' => Hash::make('admin1234'),
+                'id_nivel' => 1,
+                'validar_socios' => 0
             ]);
             //$admin->assignRole('admin');
         }
