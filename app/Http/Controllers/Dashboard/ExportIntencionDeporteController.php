@@ -12,19 +12,24 @@ use Illuminate\Support\Str;
 
 class ExportIntencionDeporteController extends Fpdf
 {
-    public function exportIntencionDeporte($id_entidad = null): mixed
+    public bool $intencion = true;
+
+    public function exportIntencionDeporte($proceso, $id_entidad = null): mixed
     {
         $entidad = Entidad::find($id_entidad);
         if ($entidad){
 
             //definimos variables
-            $nameFile = 'Intencion_participacion_club';
+            $nameFile = $proceso == 1 ? 'Intencion_participacion_club' : 'Inscripcion_numerica_club';
             $nombreClub = Str::upper(verUtf8($entidad->codigoe.' - '.$entidad->nombre));
             $ciudadClub = Str::upper(verUtf8($entidad->short_nombre));
             $_SESSION['nombreClub'] = Str::upper(verUtf8($entidad->nombre));
 
             //iniciamos el PDF
             $pdf = new ExportIntencionDeporteController();
+            if ($proceso != 1){
+                $pdf->intencion = false;
+            }
             $pdf->SetTitle('viewPDF');
             $pdf->AliasNbPages();
             $pdf->AddPage();
@@ -75,6 +80,10 @@ class ExportIntencionDeporteController extends Fpdf
 
             foreach ($deportes as $deporte){
 
+                if ($deporte->proceso != $proceso){
+                    continue;
+                }
+
                 $pdf->SetFont('Times', '', 8);
                 $pdf->SetTextColor(0);
 
@@ -108,7 +117,7 @@ class ExportIntencionDeporteController extends Fpdf
                 $masculino = '';
                 $total = '';
 
-                $intencion = ParticipacionDisciplina::where('id_deporte_oficial', $deporte->id)->where('id_entidad', $entidad->id)->first();
+                $intencion = ParticipacionDisciplina::where('proceso', $proceso)->where('id_deporte_oficial', $deporte->id)->where('id_entidad', $entidad->id)->first();
                 if ($intencion){
                     $femenino = $intencion->femenino ?? 0;
                     $masculino = $intencion->masculino ?? 0;
@@ -141,7 +150,7 @@ class ExportIntencionDeporteController extends Fpdf
 
 
             //Exportamos el PDF
-            $pdf->Output('I', 'tengo' . '.pdf');
+            $pdf->Output('I', $nameFile . '.pdf');
             return $pdf;
 
         }else{
@@ -166,7 +175,8 @@ class ExportIntencionDeporteController extends Fpdf
         $this->Cell(0, 7, verUtf8('XIX JUEGOS DEPORTIVOS NACIONALES INTERCLUBES - 08 al 12 OCTUBRE 2026'), 0, 1, 'C');
         //titulo
         $this->SetFont('Arial', 'B', 15);
-        $this->Cell(0, 10, verUtf8('PLANILLA DE INTENCIÓN DE PARTICIPACIÓN 2026'), 0, 1, 'C');
+        $label = $this->intencion ? 'PLANILLA DE INTENCIÓN DE PARTICIPACIÓN 2026' : 'PLANILLA DE INSCRIPCIÓN NUMÉRICA 2026';
+        $this->Cell(0, 10, verUtf8($label), 0, 1, 'C');
         // Salto de línea
         $this->Ln(5);
     }

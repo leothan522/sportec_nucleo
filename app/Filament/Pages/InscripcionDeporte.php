@@ -6,29 +6,34 @@ use App\Traits\DeportesTrait;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 
-class IntencionDeportesPage extends Page
+class InscripcionDeporte extends Page
 {
     use DeportesTrait;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static string $view = 'filament.pages.intencion-deportes-page';
-    protected static ?string $title = 'Intención de Participación';
+
+    protected static ?string $title = "Inscripción Numérica";
+
+    protected static ?int $navigationSort = 2;
+
+    protected static string $view = 'filament.pages.inscripcion-deporte';
 
     public static function canAccess(): bool
     {
         $id_nivel = auth()->user()->id_nivel ?? null;
         $is_root = auth()->user()->is_root ?? null;
-        return verPage('INTENCION_DEPORTE_VER', 'INTENCION_DEPORTE_HASTA') ||
-            (!verPage('INTENCION_VER', 'INTENCION_HASTA') && ($id_nivel == 1 || $is_root));
+        return verPage('NUMERICA_DEPORTE_VER', 'NUMERICA_DEPORTE_HASTA') ||
+            (!verPage('NUMERICA_VER', 'NUMERICA_HASTA') && ($id_nivel == 1 || $is_root));
     }
 
     public function getSubheading(): string|Htmlable|null
     {
+        $this->intencion = false;
         return $this->subHeader();
     }
 
     protected function getHeaderActions(): array
     {
+        $this->intencion = false;
         return $this->actionGenerarReporte();
     }
-
 }
