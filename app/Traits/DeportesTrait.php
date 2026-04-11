@@ -2,11 +2,14 @@
 
 namespace App\Traits;
 
+use App\Models\DeporteOficial;
 use Filament\Actions\Action;
+use Illuminate\Database\Eloquent\Builder;
 
 trait DeportesTrait
 {
     public bool $intencion = true;
+    public static bool $intencionParticipacion = true;
 
     protected function subHeader(): ?string
     {
@@ -25,6 +28,7 @@ trait DeportesTrait
 
         return $response;
     }
+
     protected function actionGenerarReporte(): array
     {
         $proceso = $this->intencion ? 1 : 2;
@@ -37,6 +41,20 @@ trait DeportesTrait
                 ->openUrlInNewTab()
                 ->visible(fn(): bool => auth()->user()->id_nivel == 1 || auth()->user()->is_root),
         ];
+    }
+
+    protected static function getQueryDeporteOficial(): Builder
+    {
+        $query = DeporteOficial::query();
+        $query->where('proceso', self::getProceso());
+        return $query->select('deportes_oficiales.*')
+            ->join('deportes', 'deportes.id', '=', 'deportes_oficiales.id_deporte')
+            ->orderBy('deportes.deporte')->orderBy('ordenar');
+    }
+
+    protected static function getProceso(): int
+    {
+        return self::$intencionParticipacion ? 1 : 2;
     }
 
 
