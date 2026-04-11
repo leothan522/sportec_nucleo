@@ -11,6 +11,9 @@ trait DeportesTrait
     public bool $intencion = true;
     public static bool $intencionParticipacion = true;
 
+    public static int|null $id_entidad = null;
+    public static string|null $nombre_entidad = null;
+
     protected function subHeader(): ?string
     {
         $response = null;

@@ -33,11 +33,9 @@ class IntencionParticipacionResource extends Resource
 
     protected static ?string $slug = 'intencion-de-participacion';
 
-    public static int|null $id_entidad = null;
-    public static string|null $nombre_entidad = null;
-
-    public static function table(Table $table): Table
+    public static function table(Table $table, $intencion = true): Table
     {
+        self::$intencionParticipacion = $intencion;
         self::filtrarEntidad();
         return $table
             ->query(function (): Builder {
@@ -128,6 +126,7 @@ class IntencionParticipacionResource extends Resource
                             if ($data['femenino'] || $data['masculino']) {
                                 if (!$intencion) {
                                     $intencion = new ParticipacionDisciplina();
+                                    $intencion->proceso = self::getProceso();
                                     $intencion->id_entidad = self::$id_entidad;
                                     $intencion->id_deporte_oficial = $record->id;
                                 }
@@ -227,6 +226,7 @@ class IntencionParticipacionResource extends Resource
     protected static function getParticipacion($record): ?ParticipacionDisciplina
     {
         return ParticipacionDisciplina::where('id_entidad', self::$id_entidad)
+            ->where('proceso', self::getProceso())
             ->where('id_deporte_oficial', $record->id)
             ->first();
     }
