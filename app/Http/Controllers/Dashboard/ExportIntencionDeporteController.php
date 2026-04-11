@@ -34,7 +34,7 @@ class ExportIntencionDeporteController extends Fpdf
             $pdf->AliasNbPages();
             $pdf->AddPage();
 
-            $altura = 8;
+            $altura = 6;
 
             //Cabecera
             $pdf->SetFont('Arial', 'B', 10);
@@ -78,6 +78,7 @@ class ExportIntencionDeporteController extends Fpdf
             $totalFemenino = 0;
             $totalGeneral = 0;
 
+            $altura = 5;
             foreach ($deportes as $deporte){
 
                 if ($deporte->proceso != $proceso){
