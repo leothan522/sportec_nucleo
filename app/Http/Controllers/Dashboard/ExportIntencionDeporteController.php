@@ -52,7 +52,7 @@ class ExportIntencionDeporteController extends Fpdf
             $pdf->SetFont('Times', 'B', 10);
             $pdf->Cell(30,$altura * 2, verUtf8('DISCIPLINAS'), 1, 0, 'C');
             $pdf->Cell(36,$altura * 2, verUtf8('CATEGORÍAS'), 1, 0, 'C');
-            $pdf->Cell(100, $altura, 'CONDICIONES DE LA DISCIPLINA', 1, 0, 'C');
+            $pdf->Cell(94, $altura, 'CONDICIONES DE LA DISCIPLINA', 1, 0, 'C');
 
             $pdf->SetFont('Times', 'B', 7);
 
@@ -62,7 +62,7 @@ class ExportIntencionDeporteController extends Fpdf
             $pdf->Cell(36, $altura, '');
             $pdf->Cell(8, $altura, verUtf8('Min'), 1, 0, 'C');
             $pdf->Cell(8, $altura, verUtf8('Max'), 1, 0, 'C');
-            $pdf->Cell(30, $altura, verUtf8('GÉNERO'), 1, 0, 'C');
+            $pdf->Cell(28, $altura, verUtf8('GÉNERO'), 1, 0, 'C');
             $pdf->Cell(20, $altura, verUtf8('EDADES'), 1, 0, 'C');
             $pdf->Cell(30, $altura, verUtf8('FECHA CALENDARIO'), 1, 0, 'C');
             $pdf->Cell(10, $altura, verUtf8('Masc'), 1, 0, 'C');
@@ -92,7 +92,7 @@ class ExportIntencionDeporteController extends Fpdf
                 $pdf->Cell(36, $altura, verUtf8($deporte->categoria), 1, 0, 'C');
                 $pdf->Cell(8, $altura, verUtf8($deporte->min), 1, 0, 'C');
                 $pdf->Cell(8, $altura, verUtf8($deporte->max), 1, 0, 'C');
-                $pdf->Cell(30, $altura, verUtf8($deporte->genero), 1, 0, 'C');
+                $pdf->Cell(28, $altura, verUtf8($deporte->genero), 1, 0, 'C');
 
                 if ($deporte->edad_libre){
                     $pdf->Cell(20, $altura, verUtf8('LIBRE'), 1, 0, 'C');
