@@ -15,6 +15,7 @@ class AtletasRelationManager extends RelationManager
 {
     protected static string $relationship = 'atletas';
     protected static ?string $title = 'Deportes y Modalidades';
+    protected static bool $isLazy = false;
 
     public function form(Form $form): Form
     {
