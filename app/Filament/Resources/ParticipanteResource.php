@@ -143,18 +143,30 @@ class ParticipanteResource extends Resource
                                             })
                                             ->toArray();
 
-                                        // 2. Si el usuario escribió algo y ese número exacto no está en los resultados,
-                                        // lo forzamos a aparecer en la lista para que pueda seleccionarlo.
-                                        if (filled($search) && ! array_key_exists($search, $resultados)) {
-                                            // Lo colocamos al inicio de la lista de opciones
-                                            return [$search => "Utilizar: {$search}"] + $resultados;
+                                        // 2. Aplicamos la limpieza estrictamente para construir la opción virtual
+                                        $cleanSearch = preg_replace('/[^0-9-]/', '', $search);
+                                        $cleanSearch = trim($cleanSearch, '-');
+
+                                        // Si después de limpiar queda un valor válido y no existe en los resultados, inyectamos la opción virtual limpia
+                                        if (filled($cleanSearch) && ! array_key_exists($cleanSearch, $resultados)) {
+                                            return [$cleanSearch => "Utilizar: {$cleanSearch}"] + $resultados;
                                         }
 
                                         return $resultados;
                                     })
                                     ->getOptionLabelUsing(function ($value): ?string {
                                         // Esto garantiza que visualmente en el campo solo quede el número puro
-                                        return (string) $value;
+                                        if (blank($value)) {
+                                            return null;
+                                        }
+
+                                        // 🛡️ Filtro de seguridad: Eliminamos absolutamente todo lo que NO sea un número o un guion
+                                        $cleanValue = preg_replace('/[^0-9-]/', '', $value);
+
+                                        // Opcional: Limpieza estética para evitar guiones duplicados o al inicio/final
+                                        $cleanValue = trim($cleanValue, '-');
+
+                                        return $cleanValue;
                                     })
                                     ->rules([
                                         // Cambiado de "Component $component" a "Forms\Components\Select $component" o "mixed" para evitar conflictos
