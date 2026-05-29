@@ -117,7 +117,7 @@ class ParticipanteResource extends Resource
                                         }
                                         $livewire->validateOnly($input->getStatePath());
                                     }),*/
-                                Forms\Components\Select::make('cedula')
+                                /*Forms\Components\Select::make('cedula')
                                     ->label('Cédula')
                                     ->unique(ignoreRecord: true)
                                     ->required()
@@ -128,7 +128,7 @@ class ParticipanteResource extends Resource
                                             return [];
                                         }
 
-                                        // 1. Buscamos los socios reales en la base de datos
+                                        // 1. Buscamos en la base de datos usando el $search original (permite buscar texto)
                                         $resultados = Socio::query()
                                             ->where('id_entidad', $get('id_entidad'))
                                             ->where(function ($query) use ($search) {
@@ -147,8 +147,9 @@ class ParticipanteResource extends Resource
                                         $cleanSearch = preg_replace('/[^0-9-]/', '', $search);
                                         $cleanSearch = trim($cleanSearch, '-');
 
-                                        // Si después de limpiar queda un valor válido y no existe en los resultados, inyectamos la opción virtual limpia
-                                        if (filled($cleanSearch) && ! array_key_exists($cleanSearch, $resultados)) {
+                                        // 🔥 CORRECCIÓN: Si el término limpio tiene contenido, y NO existe esa clave EXACTA
+                                        // en el array de resultados (aunque el array traiga otras cédulas parecidas), inyectamos la opción virtual.
+                                        if (filled($cleanSearch) && ! isset($resultados[$cleanSearch])) {
                                             return [$cleanSearch => "Utilizar: {$cleanSearch}"] + $resultados;
                                         }
 
@@ -228,12 +229,167 @@ class ParticipanteResource extends Resource
 
                                         // Ejecuta la validación en caliente de este campo usando el StatePath correcto del componente actual
                                         $livewire->validateOnly($component->getStatePath());
+                                    }),*/
+                                Forms\Components\Select::make('cedula')
+                                    ->label('Cédula')
+                                    ->unique(ignoreRecord: true)
+                                    ->required()
+                                    ->live()
+                                    ->searchable()
+                                    ->getSearchResultsUsing(function (string $search, Get $get): array {
+                                        if (! $get('id_entidad')) {
+                                            return [];
+                                        }
+
+                                        // 1. Buscamos los socios reales en la base de datos
+                                        $resultados = Socio::query()
+                                            ->where('id_entidad', $get('id_entidad'))
+                                            ->where(function ($query) use ($search) {
+                                                $query->where('cedula', 'like', "%{$search}%")
+                                                    ->orWhere('primer_nombre', 'like', "%{$search}%")
+                                                    ->orWhere('primer_apellido', 'like', "%{$search}%");
+                                            })
+                                            ->limit(10)
+                                            ->get()
+                                            ->mapWithKeys(function ($socio) {
+                                                return [$socio->cedula => "{$socio->cedula} - {$socio->primer_nombre} {$socio->primer_apellido}"];
+                                            })
+                                            ->toArray();
+
+                                        // 2. Aplicamos la limpieza estrictamente para construir la opción virtual
+                                        $cleanSearch = preg_replace('/[^0-9-]/', '', $search);
+                                        $cleanSearch = trim($cleanSearch, '-');
+
+                                        if (filled($cleanSearch) && ! isset($resultados[$cleanSearch])) {
+                                            return [$cleanSearch => "Utilizar: {$cleanSearch}"] + $resultados;
+                                        }
+
+                                        return $resultados;
+                                    })
+                                    ->getOptionLabelUsing(function ($value): ?string {
+                                        if (blank($value)) {
+                                            return null;
+                                        }
+                                        $cleanValue = preg_replace('/[^0-9-]/', '', $value);
+                                        return trim($cleanValue, '-');
+                                    })
+                                    ->rules([
+                                        fn(Get $get, $component): Closure => function (string $attribute, $value, Closure $fail) use ($get, $component) {
+                                            $id_entidad = $get('id_entidad');
+                                            $cedula = $value;
+
+                                            if (config('app.chequear_socios') && auth()->user()->validar_socios && !auth()->user()->is_root) {
+                                                $existe = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
+                                                if (!$existe) {
+                                                    $fail("La cédula no está en el listado de Socios.");
+                                                }
+                                            }
+                                        },
+                                    ])
+                                    ->afterStateUpdated(function (Get $get, Set $set, ?string $state, $livewire, $component) {
+                                        $id_entidad = $get('id_entidad');
+                                        $cedula = $state;
+                                        $key = $component->getRecord()?->getKey();
+
+                                        if (blank($cedula)) {
+                                            return;
+                                        }
+
+                                        // 🛡️ 1. CONTROL DE REGLA "UNIQUE": Si la cédula ya está registrada en el formulario actual
+                                        // (excluyendo el registro actual si es edición), limpiamos todo y abortamos el rellenado.
+                                        $modelClass = $component->getModel();
+                                        $duplicadoQuery = $modelClass::where('cedula', $cedula);
+                                        if ($key) {
+                                            $duplicadoQuery->where($component->getRecord()->getKeyName(), '!=', $key);
+                                        }
+                                        if ($duplicadoQuery->exists()) {
+                                            // Limpiamos los campos para que no retenga datos viejos
+                                            $set('carnet_socio', '');
+                                            $set('id_tipo_socio', '');
+                                            $set('primer_nombre', '');
+                                            $set('segundo_nombre', '');
+                                            $set('primer_apellido', '');
+                                            $set('segundo_apellido', '');
+                                            $set('sexo', '');
+                                            $set('fecha_nacimiento', '');
+
+                                            // Forzamos la validación para que pinte el error de 'unique' de inmediato en la UI
+                                            $livewire->validateOnly($component->getStatePath());
+                                            return;
+                                        }
+
+                                        // 🔍 2. Consultamos en la tabla de socios si superó el filtro de unicidad
+                                        $existe = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
+
+                                        // 🛡️ 3. CONTROL DE REGLA PERSONALIZADA (config('app.chequear_socios'))
+                                        // Si el sistema exige que el socio exista obligatoriamente y NO se encontró, no rellenamos nada.
+                                        $exigeSocio = config('app.chequear_socios') && auth()->user()->validar_socios && !auth()->user()->is_root;
+
+                                        if (!$existe && $exigeSocio) {
+                                            // Forzamos el comportamiento de error limpiando los campos
+                                            if (!$key) {
+                                                $set('carnet_socio', '');
+                                                $set('id_tipo_socio', '');
+                                                $set('primer_nombre', '');
+                                                $set('segundo_nombre', '');
+                                                $set('primer_apellido', '');
+                                                $set('segundo_apellido', '');
+                                                $set('sexo', '');
+                                                $set('fecha_nacimiento', '');
+                                            }
+
+                                            Notification::make()
+                                                ->title('La cédula ' . $cedula)
+                                                ->body('no está en el listado de Socios')
+                                                ->icon('heroicon-c-exclamation-circle')
+                                                ->iconColor('warning')
+                                                ->color('warning')
+                                                ->persistent()
+                                                ->send();
+
+                                            $livewire->validateOnly($component->getStatePath());
+                                            return;
+                                        }
+
+                                        // 🚀 4. Si pasó los filtros de arriba con éxito, procedemos a rellenar o vaciar según corresponda
+                                        if ($existe) {
+                                            $set('carnet_socio', $existe->carnet);
+                                            $set('id_tipo_socio', $existe->tiposocio);
+                                            $set('primer_nombre', $existe->primer_nombre);
+                                            $set('segundo_nombre', $existe->segundo_nombre);
+                                            $set('primer_apellido', $existe->primer_apellido);
+                                            $set('segundo_apellido', $existe->segundo_apellido);
+                                            $set('sexo', $existe->sexo);
+                                            $set('fecha_nacimiento', $existe->fecha_nacimiento);
+                                        } else {
+                                            // Si no existe pero el sistema SÍ permite guardar cédulas libres (opción virtual)
+                                            if (!$key) {
+                                                $set('carnet_socio', '');
+                                                $set('id_tipo_socio', '');
+                                                $set('primer_nombre', '');
+                                                $set('segundo_nombre', '');
+                                                $set('primer_apellido', '');
+                                                $set('segundo_apellido', '');
+                                                $set('sexo', '');
+                                                $set('fecha_nacimiento', '');
+                                            }
+                                            Notification::make()
+                                                ->title('La cédula ' . $cedula)
+                                                ->body('no está en el listado de Socios')
+                                                ->icon('heroicon-c-exclamation-circle')
+                                                ->iconColor('warning')
+                                                ->color('warning')
+                                                ->persistent()
+                                                ->send();
+                                        }
+
+                                        $livewire->validateOnly($component->getStatePath());
                                     }),
                                 Forms\Components\TextInput::make('carnet_socio')
                                     ->label('Carnet')
                                     ->integer()
                                     ->required()
-                                    ->maxLength(50),
+                                    ->maxLength(8),
                                 Forms\Components\Select::make('id_tipo_socio')
                                     ->relationship('tipoSocio', 'tipo_socio')
                                     ->required(),
