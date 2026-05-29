@@ -40,7 +40,7 @@ class ParticipanteResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Datos Personales')
                     ->schema([
-                        Forms\Components\Select::make('id_entidad')
+                        /*Forms\Components\Select::make('id_entidad')
                             ->label('Club')
                             ->relationship('entidad', 'nombre')
                             ->required()
@@ -56,6 +56,35 @@ class ParticipanteResource extends Resource
                                     return true;
                                 }
                                 return false;
+                            }),*/
+                        Forms\Components\Select::make('id_entidad')
+                            ->label('Club')
+                            ->relationship('entidad', 'nombre')
+                            ->required()
+                            ->searchable()
+                            ->preload()
+                            ->columnSpanFull()
+                            // 1. Definimos el valor por defecto usando la sesión o el club del usuario común
+                            ->default(function () {
+                                $user = auth()->user();
+
+                                // Si no es admin/root, su club por defecto es el suyo propio
+                                if ($user->id_nivel != 1 && !$user->is_root) {
+                                    return $user->id_entidad;
+                                }
+
+                                // Si es admin, intentamos recuperar el último club guardado en la sesión
+                                return session('last_selected_id_entidad');
+                            })
+                            // 2. Si no es admin, se oculta el campo (ya que el default le asignará su id_entidad automáticamente)
+                            ->hidden(fn () => auth()->user()->id_nivel != 1 && !auth()->user()->is_root)
+                            // 3. Activamos la reactividad para capturar el cambio inmediatamente
+                            ->live()
+                            // 4. Cada vez que el administrador cambie el club, lo guardamos en la sesión
+                            ->afterStateUpdated(function ($state) {
+                                if (auth()->user()->id_nivel == 1 || auth()->user()->is_root) {
+                                    session(['last_selected_id_entidad' => $state]);
+                                }
                             }),
                         Forms\Components\Fieldset::make()
                             ->schema([
