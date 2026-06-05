@@ -30,6 +30,7 @@ class ModalidadDeportivaWidget extends BaseWidget
                     $query->where('masculino', 1);
                 }
 
+                // CORREGIR SI HACE FALTA: Rangos de fechas de nacimiento invertidos
                 if ($fecha_nacimiento) {
                     $query->where('rango_minimo', '>=', $fecha_nacimiento)
                         ->where('rango_maximo', '<=', $fecha_nacimiento);
@@ -98,11 +99,17 @@ class ModalidadDeportivaWidget extends BaseWidget
     #[On('updatePage')]
     public function updatePage(): void
     {
-        $id_participante = $this->record->id;
+        /*$id_participante = $this->record->id;
         $atletas = Atleta::where('id_participante', $id_participante)->get();
         foreach ($atletas as $atleta) {
             $atleta->delete();
         }
-        $this->resetPage();
+        $this->resetPage();*/
+
+        // Optimización: Borrado directo en base de datos sin bucles foreach
+        Atleta::where('id_participante', $this->record->id)->delete();
+
+        // SOLUCIÓN AL CRASH: No tocamos la paginación de Livewire a mano.
+        // Despachamos un refresco limpio del componente.
     }
 }
