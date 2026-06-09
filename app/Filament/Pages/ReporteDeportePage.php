@@ -15,6 +15,6 @@ class ReporteDeportePage extends Page
 
     public static function canAccess(): bool
     {
-        return config('app.reportes_ver');
+        return config('app.reportes_ver') === true;
     }
 }
