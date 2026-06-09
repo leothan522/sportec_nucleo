@@ -40,23 +40,6 @@ class ParticipanteResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Datos Personales')
                     ->schema([
-                        /*Forms\Components\Select::make('id_entidad')
-                            ->label('Club')
-                            ->relationship('entidad', 'nombre')
-                            ->required()
-                            ->searchable()
-                            ->preload()
-                            ->columnSpanFull()
-                            ->hidden(function (Set $set) {
-                                $id_nivel = auth()->user()->id_nivel;
-                                $id_entidad = auth()->user()->id_entidad;
-                                $is_root = auth()->user()->is_root;
-                                if ($id_nivel != 1 && !$is_root) {
-                                    $set('id_entidad', $id_entidad);
-                                    return true;
-                                }
-                                return false;
-                            }),*/
                         Forms\Components\Select::make('id_entidad')
                             ->label('Club')
                             ->relationship('entidad', 'nombre')
@@ -88,65 +71,7 @@ class ParticipanteResource extends Resource
                             }),
                         Forms\Components\Fieldset::make()
                             ->schema([
-                                /*Forms\Components\TextInput::make('cedula')
-                                    ->label('Cédula')
-                                    ->unique(ignoreRecord: true)
-                                    ->live(onBlur: true)
-                                    ->required()
-                                    ->suffixIcon('heroicon-m-magnifying-glass')
-                                    ->suffixIconColor('warning')
-                                    ->maxLength(20)
-                                    ->rules([
-                                        fn(Get $get, Component $component): Closure => function (string $attribute, $value, Closure $fail) use ($get, $component) {
-                                            $id_entidad = $get('id_entidad');
-                                            $cedula = $value;
-                                            $key = $component->getRecord()?->getKey();
-                                            if (config('app.chequear_socios') && auth()->user()->validar_socios && !auth()->user()->is_root) {
-                                                $exite = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
-                                                if (!$exite) { // && !$key
-                                                    //$fail("The {$attribute} is invalid.");
-                                                    $fail("La cedula no esta en el listado de Socios.");
-                                                }
-                                            }
-                                        },
-                                    ])
-                                    ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state, Forms\Contracts\HasForms $livewire, Forms\Components\TextInput $input, Component $component) {
-                                        $id_entidad = $get('id_entidad');
-                                        $cedula = $state;
-                                        $key = $component->getRecord()?->getKey();
-                                        $exite = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
-                                        if ($exite) {
-                                            $set('carnet_socio', $exite->carnet);
-                                            $set('id_tipo_socio', $exite->tiposocio);
-                                            $set('primer_nombre', $exite->primer_nombre);
-                                            $set('segundo_nombre', $exite->segundo_nombre);
-                                            $set('primer_apellido', $exite->primer_apellido);
-                                            $set('segundo_apellido', $exite->segundo_apellido);
-                                            $set('sexo', $exite->sexo);
-                                            $set('fecha_nacimiento', $exite->fecha_nacimiento);
-                                        } else {
-                                            Notification::make()
-                                                ->title('La cedula ' . $cedula)
-                                                ->body('no esta en el listado de Socios')
-                                                ->icon('heroicon-c-exclamation-circle')
-                                                ->iconColor('warning')
-                                                ->color('warning')
-                                                ->persistent()
-                                                ->send();
-                                            if (!$key) {
-                                                $set('carnet_socio', '');
-                                                $set('id_tipo_socio', '');
-                                                $set('primer_nombre', '');
-                                                $set('segundo_nombre', '');
-                                                $set('primer_apellido', '');
-                                                $set('segundo_apellido', '');
-                                                $set('sexo', '');
-                                                $set('fecha_nacimiento', '');
-                                            }
-                                        }
-                                        $livewire->validateOnly($input->getStatePath());
-                                    }),*/
-                                Forms\Components\Select::make('cedula')
+                                /*Forms\Components\Select::make('cedula')
                                     ->label('Cédula')
                                     ->unique(ignoreRecord: true)
                                     ->required()
@@ -300,12 +225,199 @@ class ParticipanteResource extends Resource
                                         }
 
                                         $livewire->validateOnly($component->getStatePath());
+                                    })*/
+                                Forms\Components\Select::make('cedula')
+                                    ->label('Cédula')
+                                    ->unique(ignoreRecord: true)
+                                    ->required()
+                                    ->live()
+                                    ->searchable()
+                                    // 1. Quitamos el key dinámico de sesión para evitar conflictos de renderizado
+                                    ->getSearchResultsUsing(function (string $search, Get $get): array {
+                                        if (! $get('id_entidad')) {
+                                            return [];
+                                        }
+
+                                        $resultados = Socio::query()
+                                            ->where('id_entidad', $get('id_entidad'))
+                                            ->where(function ($query) use ($search) {
+                                                $query->where('cedula', 'like', "%{$search}%")
+                                                    ->orWhere('primer_nombre', 'like', "%{$search}%")
+                                                    ->orWhere('primer_apellido', 'like', "%{$search}%");
+                                            })
+                                            ->limit(10)
+                                            ->get()
+                                            ->mapWithKeys(function ($socio) {
+                                                return [$socio->cedula => "{$socio->cedula} - {$socio->primer_nombre} {$socio->primer_apellido}"];
+                                            })
+                                            ->toArray();
+
+                                        $cleanSearch = preg_replace('/[^0-9-]/', '', $search);
+                                        $cleanSearch = trim($cleanSearch, '-');
+
+                                        if (filled($cleanSearch) && ! isset($resultados[$cleanSearch])) {
+                                            return [$cleanSearch => "Utilizar: {$cleanSearch}"] + $resultados;
+                                        }
+
+                                        return $resultados;
+                                    })
+                                    ->getOptionLabelUsing(function ($value): ?string {
+                                        if (blank($value)) {
+                                            return null;
+                                        }
+                                        $cleanValue = preg_replace('/[^0-9-]/', '', $value);
+                                        return trim($cleanValue, '-');
+                                    })
+                                    ->rules([
+                                        fn(Get $get, $component): Closure => function (string $attribute, $value, Closure $fail) use ($get, $component) {
+                                            $id_entidad = $get('id_entidad');
+                                            $cedula = $value;
+
+                                            if (config('app.chequear_socios') && auth()->user()->validar_socios && !auth()->user()->is_root) {
+                                                $existe = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
+                                                if (!$existe) {
+                                                    $fail("La cédula no está en el listado de Socios.");
+                                                }
+                                            }
+                                        },
+                                    ])
+                                    ->afterStateUpdated(function (Get $get, Set $set, ?string $state, $livewire, $component) {
+                                        $id_entidad = $get('id_entidad');
+                                        $cedula = $state;
+                                        $key = $component->getRecord()?->getKey();
+
+                                        if (blank($cedula)) {
+                                            return;
+                                        }
+
+                                        // 🛡️ 1. CONTROL DE REGLA "UNIQUE"
+                                        $modelClass = $component->getModel();
+                                        $duplicadoQuery = $modelClass::where('cedula', $cedula);
+                                        if ($key) {
+                                            $duplicadoQuery->where($component->getRecord()->getKeyName(), '!=', $key);
+                                        }
+                                        if ($duplicadoQuery->exists()) {
+                                            $set('carnet_socio', '');
+                                            $set('id_tipo_socio', '');
+                                            $set('primer_nombre', '');
+                                            $set('segundo_nombre', '');
+                                            $set('primer_apellido', '');
+                                            $set('segundo_apellido', '');
+                                            $set('sexo', '');
+                                            $set('fecha_nacimiento', '');
+
+                                            // Forzamos el estado a null en el componente
+                                            $component->state(null);
+
+                                            // ✨ NUEVO: Notificación para avisar al usuario del duplicado
+                                            Notification::make()
+                                                ->title('Cédula duplicada')
+                                                ->body("La cédula {$cedula} ya se encuentra registrada en el sistema.")
+                                                ->icon('heroicon-c-exclamation-circle')
+                                                ->iconColor('danger') // Color rojo para diferenciarlo de la advertencia de socios
+                                                ->color('danger')
+                                                ->persistent()
+                                                ->send();
+
+                                            // ✨ EJECUCIÓN JAVASCRIPT DIRECTA: Resetea el input visual y destruye la opción virtual
+                                            $statePath = $component->getStatePath();
+                                            $livewire->js("
+                                                let el = document.querySelector('[data-id=\"{$statePath}\"] select') || document.getElementById('{$statePath}');
+                                                if (el && el.choices) {
+                                                    el.choices.removeActiveItems();
+                                                    el.choices.setChoiceByValue('');
+                                                }
+                                                @this.set('{$statePath}', null);
+                                            ");
+
+                                            $livewire->validateOnly($statePath);
+                                            return;
+                                        }
+
+                                        // 🔍 2. Consultamos en la tabla de socios
+                                        $existe = Socio::where('id_entidad', $id_entidad)->where('cedula', $cedula)->first();
+
+                                        // 🛡️ 3. CONTROL DE REGLA PERSONALIZADA (config('app.chequear_socios'))
+                                        $exigeSocio = config('app.chequear_socios') && auth()->user()->validar_socios && !auth()->user()->is_root;
+
+                                        if (!$existe && $exigeSocio) {
+                                            if (!$key) {
+                                                $set('carnet_socio', '');
+                                                $set('id_tipo_socio', '');
+                                                $set('primer_nombre', '');
+                                                $set('segundo_nombre', '');
+                                                $set('primer_apellido', '');
+                                                $set('segundo_apellido', '');
+                                                $set('sexo', '');
+                                                $set('fecha_nacimiento', '');
+                                            }
+
+                                            Notification::make()
+                                                ->title('La cédula ' . $cedula)
+                                                ->body('no está en el listado de Socios')
+                                                ->icon('heroicon-c-exclamation-circle')
+                                                ->iconColor('warning')
+                                                ->color('warning')
+                                                ->persistent()
+                                                ->send();
+
+                                            // Forzamos el estado a null en el componente
+                                            $component->state(null);
+
+                                            // ✨ EJECUCIÓN JAVASCRIPT DIRECTA: Resetea el input visual y destruye la opción virtual
+                                            $statePath = $component->getStatePath();
+                                            $livewire->js("
+                                                let el = document.querySelector('[data-id=\"{$statePath}\"] select') || document.getElementById('{$statePath}');
+                                                if (el && el.choices) {
+                                                    el.choices.removeActiveItems();
+                                                    el.choices.setChoiceByValue('');
+                                                }
+                                                @this.set('{$statePath}', null);
+                                            ");
+
+                                            $livewire->validateOnly($statePath);
+                                            return;
+                                        }
+
+                                        // 🚀 4. Si pasó con éxito
+                                        if ($existe) {
+                                            $set('carnet_socio', $existe->carnet);
+                                            $set('id_tipo_socio', $existe->tiposocio);
+                                            $set('primer_nombre', $existe->primer_nombre);
+                                            $set('segundo_nombre', $existe->segundo_nombre);
+                                            $set('primer_apellido', $existe->primer_apellido);
+                                            $set('segundo_apellido', $existe->segundo_apellido);
+                                            $set('sexo', $existe->sexo);
+                                            $set('fecha_nacimiento', $existe->fecha_nacimiento);
+                                        } else {
+                                            if (!$key) {
+                                                $set('carnet_socio', '');
+                                                $set('id_tipo_socio', '');
+                                                $set('primer_nombre', '');
+                                                $set('segundo_nombre', '');
+                                                $set('primer_apellido', '');
+                                                $set('segundo_apellido', '');
+                                                $set('sexo', '');
+                                                $set('fecha_nacimiento', '');
+                                            }
+                                            Notification::make()
+                                                ->title('La cédula ' . $cedula)
+                                                ->body('no está en el listado de Socios')
+                                                ->icon('heroicon-c-exclamation-circle')
+                                                ->iconColor('warning')
+                                                ->color('warning')
+                                                ->persistent()
+                                                ->send();
+                                        }
+
+                                        $livewire->validateOnly($component->getStatePath());
                                     }),
                                 Forms\Components\TextInput::make('carnet_socio')
                                     ->label('Carnet')
                                     ->integer()
                                     ->required()
-                                    ->maxLength(8),
+                                    ->maxLength(8)
+                                    ->minValue(1),
                                 Forms\Components\Select::make('id_tipo_socio')
                                     ->relationship('tipoSocio', 'tipo_socio')
                                     ->required()
