@@ -635,9 +635,30 @@ class ParticipanteResource extends Resource
             ->filters([
                 //
                 Tables\Filters\SelectFilter::make('Deporte')
-                    ->relationship('deporteinicial', 'deporte'),
+                    ->relationship('deporteinicial', 'deporte', fn(Builder $query) => $query->where('en_uso', 1)),
                 Tables\Filters\SelectFilter::make('Cargo')
-                    ->relationship('cargo', 'cargo'),
+                    ->relationship('cargo', 'cargo', function (Builder $query) {
+                        // 1. Obtener el usuario autenticado con sus relaciones cargadas
+                        $user = auth()->user()?->load('nivel.permiso');
+
+                        // 2. Si no hay usuario o no tiene permisos asignados, vaciamos el select por seguridad
+                        if (!$user || !$user->nivel || !$user->nivel->permiso || empty($user->nivel->permiso->cargos)) {
+                            return $query->whereRaw('1 = 0'); // Consulta que devuelve vacío
+                        }
+
+                        // 3. Limpiamos el string ("1, 2, , 3") y lo convertimos en un array limpio: [1, 2, 3]
+                        $cargoIds = array_filter(
+                            array_map('trim', explode(',', $user->nivel->permiso->cargos))
+                        );
+
+                        // Si después de limpiar el array quedó vacío, no mostramos nada
+                        if (empty($cargoIds)) {
+                            return $query->whereRaw('1 = 0');
+                        }
+
+                        // 4. Filtramos el listado del SELECT para que solo muestre esos IDs
+                        return $query->whereIn('id', $cargoIds);
+                    }),
                 Tables\Filters\SelectFilter::make('Entidad')
                     ->label('Club')
                     ->relationship('entidad', 'short_nombre')
