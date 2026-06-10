@@ -96,20 +96,12 @@ class ModalidadDeportivaWidget extends BaseWidget
             ->emptyStateIcon('heroicon-o-exclamation-circle');
     }
 
+
     #[On('updatePage')]
     public function updatePage(): void
     {
-        /*$id_participante = $this->record->id;
-        $atletas = Atleta::where('id_participante', $id_participante)->get();
-        foreach ($atletas as $atleta) {
-            $atleta->delete();
-        }
-        $this->resetPage();*/
-
-        // Optimización: Borrado directo en base de datos sin bucles foreach
-        Atleta::where('id_participante', $this->record->id)->delete();
-
-        // SOLUCIÓN AL CRASH: No tocamos la paginación de Livewire a mano.
-        // Despachamos un refresco limpio del componente.
+        // Forzamos al widget a olvidar cualquier caché de datos y volver a consultar la BD
+        $this->resetPage();
     }
+
 }

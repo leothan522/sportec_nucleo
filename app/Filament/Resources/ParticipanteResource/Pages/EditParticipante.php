@@ -32,8 +32,9 @@ class EditParticipante extends EditRecord
 
     protected function beforeSave(): void
     {
-        // Runs before the form fields are saved to the database.
+        // Solo le avisamos al widget que la página se va a guardar para que se prepare para refrescarse
         $this->dispatch('updatePage');
     }
+
 
 }
