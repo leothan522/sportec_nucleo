@@ -58,7 +58,7 @@
                         }
                     }*/
 
-                    $conteos = \App\Models\Atleta::query()
+                    /*$conteos = \App\Models\Atleta::query()
                     // Filtramos por el deporte y la modalidad de la FILA actual
                     ->where('id_deporte', $row->id_deporte)
                     ->where('id_modalidad', $row->id) // O $row->id_modalidad según tu base de datos
@@ -71,7 +71,23 @@
                         \Illuminate\Support\Facades\DB::raw("SUM(CASE WHEN participantes.sexo = '1' THEN 1 ELSE 0 END) as fem"),
                         \Illuminate\Support\Facades\DB::raw("SUM(CASE WHEN participantes.sexo = '0' THEN 1 ELSE 0 END) as masc")
                     )
-                    ->first();
+                    ->first();*/
+
+                    $conteos = \App\Models\Atleta::query()
+                        // Filtramos por el deporte y la modalidad de la FILA actual
+                        ->where('id_deporte', $row->id_deporte)
+                        ->where('id_modalidad', $row->id)
+                        // Hacemos el Join con participantes
+                        ->join('participantes', 'atletas.id_participante', '=', 'participantes.id')
+                        // Filtramos por la entidad del CLUB, que asista (asiste = 1) y manejamos el SoftDelete si aplica
+                        ->where('participantes.id_entidad', $club->id)
+                        ->where('participantes.asiste', 1)
+                        ->whereNull('participantes.deleted_at') // Importante ya que el modelo Participante usa SoftDeletes
+                        ->select(
+                            \Illuminate\Support\Facades\DB::raw("SUM(CASE WHEN participantes.sexo = '1' THEN 1 ELSE 0 END) as fem"),
+                            \Illuminate\Support\Facades\DB::raw("SUM(CASE WHEN participantes.sexo = '0' THEN 1 ELSE 0 END) as masc")
+                        )
+                        ->first();
 
                     $fem  = (int) ($conteos->fem ?? 0);
                     $masc = (int) ($conteos->masc ?? 0);
@@ -85,12 +101,14 @@
                 $masculino = \App\Models\ParticipacionClub::where('id_modalidad', $row->id)->sum('num_atl_mas');*/
                 $femenino = \App\Models\Atleta::where('id_modalidad', $row->id)
                 ->whereHas('participante', function ($query) {
-                    $query->where('sexo', '1');
+                    $query->where('sexo', '1')
+                    ->where('asiste', 1); // <-- Filtro de asistencia añadido
                 })->count();
 
                 $masculino = \App\Models\Atleta::where('id_modalidad', $row->id)
                     ->whereHas('participante', function ($query) {
-                        $query->where('sexo', '0');
+                        $query->where('sexo', '0')
+                        ->where('asiste', 1); // <-- Filtro de asistencia añadido
                     })->count();
                 $totalFemenino = $totalFemenino + $femenino;
                 $totalMasculino = $totalMasculino + $masculino;
@@ -109,11 +127,11 @@
                 /*$femenino = \App\Models\ParticipacionClub::where('id_entidad', $club->id)->sum('num_atl_fem');
                 $masculino = \App\Models\ParticipacionClub::where('id_entidad', $club->id)->sum('num_atl_mas');*/
             $femenino = \App\Models\Atleta::whereHas('participante', function ($query) use ($club) {
-                $query->where('id_entidad', $club->id)->where('sexo', '1');
+                $query->where('id_entidad', $club->id)->where('sexo', '1')->where('asiste', 1);
             })->count();
 
             $masculino = \App\Models\Atleta::whereHas('participante', function ($query) use ($club) {
-                $query->where('id_entidad', $club->id)->where('sexo', '0');
+                $query->where('id_entidad', $club->id)->where('sexo', '0')->where('asiste', 1);
             })->count();
             @endphp
             <td style="border: 1px solid #404040; vertical-align: center; text-align: center; font-weight: bold;">{{ $femenino }}</td>

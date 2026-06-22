@@ -26,12 +26,14 @@
                 $masculino = \App\Models\ParticipacionClub::where('id_modalidad', $row->id)->sum('num_atl_mas');*/
                 $femenino = \App\Models\Atleta::where('id_modalidad', $row->id)
                 ->whereHas('participante', function ($query) {
-                    $query->where('sexo', '1');
+                    $query->where('sexo', '1')
+                    ->where('asiste', 1); // <-- Filtro de asistencia añadido
                 })->count();
 
                 $masculino = \App\Models\Atleta::where('id_modalidad', $row->id)
                     ->whereHas('participante', function ($query) {
-                        $query->where('sexo', '0');
+                        $query->where('sexo', '0')
+                        ->where('asiste', 1); // <-- Filtro de asistencia añadido
                     })->count();
                 $totalFemenino = $totalFemenino + $femenino;
                 $totalMasculino = $totalMasculino + $masculino;
