@@ -669,6 +669,11 @@ class ParticipanteResource extends Resource
                         }
                         return false;
                     }),
+                Tables\Filters\SelectFilter::make('sexo')
+                    ->options([
+                        0 => __('Masculino'),
+                        1 => __('Femenino'),
+                    ]),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
