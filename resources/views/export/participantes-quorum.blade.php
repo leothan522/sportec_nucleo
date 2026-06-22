@@ -24,7 +24,7 @@
             @php
                /* $femenino = \App\Models\ParticipacionClub::where('id_modalidad', $row->id)->sum('num_atl_fem');
                 $masculino = \App\Models\ParticipacionClub::where('id_modalidad', $row->id)->sum('num_atl_mas');*/
-                $femenino = \App\Models\Atleta::where('id_modalidad', $row->id)
+                /*$femenino = \App\Models\Atleta::where('id_modalidad', $row->id)
                 ->whereHas('participante', function ($query) {
                     $query->where('sexo', '1')
                     ->where('asiste', 1); // <-- Filtro de asistencia añadido
@@ -38,7 +38,30 @@
                 $totalFemenino = $totalFemenino + $femenino;
                 $totalMasculino = $totalMasculino + $masculino;
                 $quorum_fem = $femenino < 4 ? 4 - $femenino : null;
-                $quorum_masc = $masculino < 4 ? 4 - $masculino : null;
+                $quorum_masc = $masculino < 4 ? 4 - $masculino : null;*/
+
+            $femenino = \App\Models\Atleta::where('id_modalidad', $row->id)
+                ->join('participantes', 'atletas.id_participante', '=', 'participantes.id')
+                ->where('participantes.sexo', '1')
+                ->where('participantes.asiste', 1)
+                ->whereNull('participantes.deleted_at') // Respetamos el SoftDelete por el join manual
+                ->distinct()
+                ->count('participantes.id_entidad'); // Cuenta clubes únicos
+
+            $masculino = \App\Models\Atleta::where('id_modalidad', $row->id)
+                ->join('participantes', 'atletas.id_participante', '=', 'participantes.id')
+                ->where('participantes.sexo', '0')
+                ->where('participantes.asiste', 1)
+                ->whereNull('participantes.deleted_at')
+                ->distinct()
+                ->count('participantes.id_entidad'); // Cuenta clubes únicos
+
+    $totalFemenino = $totalFemenino + $femenino;
+    $totalMasculino = $totalMasculino + $masculino;
+
+    // El quórum ahora evalúa la cantidad de clubes distintos
+    $quorum_fem = $femenino < 4 ? 4 - $femenino : null;
+    $quorum_masc = $masculino < 4 ? 4 - $masculino : null;
             @endphp
             <td style="border: 1px solid #404040; vertical-align: center; text-align: center; font-weight: bold;">{{ $femenino }}</td>
             <td style="border: 1px solid #404040; vertical-align: center; text-align: center; font-weight: bold;">{{ $masculino }}</td>
