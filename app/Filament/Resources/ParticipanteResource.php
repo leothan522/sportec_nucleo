@@ -415,8 +415,7 @@ class ParticipanteResource extends Resource
                                 Forms\Components\TextInput::make('carnet_socio')
                                     ->label('Carnet')
                                     ->required()
-                                    ->maxLength(10) // Actualizado a 10 para coincidir con el VARCHAR(10)
-                                    ->regex('/^[a-zA-Z0-9]+$/'), // Opcional: permite solo letras y números sin espacios,
+                                    ->maxLength(10), // Actualizado a 10 para coincidir con el VARCHAR(10)
                                 Forms\Components\Select::make('id_tipo_socio')
                                     ->relationship('tipoSocio', 'tipo_socio')
                                     ->required()
