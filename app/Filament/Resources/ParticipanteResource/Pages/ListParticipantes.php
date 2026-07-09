@@ -22,7 +22,7 @@ class ListParticipantes extends ListRecords
     {
         return [
             Actions\Action::make('exportarEstadistica')
-                ->label('Estadisticas Inscritos')
+                ->label('Estadistica Inscritos')
                 ->icon('heroicon-o-document-arrow-down')
                 ->color('success')
                 ->form([
@@ -42,38 +42,17 @@ class ListParticipantes extends ListRecords
                 ->modalWidth(MaxWidth::Small)
                 ->action(function (array $data) {
                     $entidadId = $data['entidad_id'];
-                    $dataGeneral = null;
-                    $reportePorClub = [];
 
-                    if ($entidadId === 'general') {
-                        // Caso 1: Consolidado General
-                        $dataGeneral = Cargo::select('id', 'cargo')
-                            ->whereHas('participantes')
-                            ->withCount([
-                                'participantes as fem_count' => fn($q) => $q->where('sexo', '0'),
-                                'participantes as mas_count' => fn($q) => $q->where('sexo', '1')
-                            ])->get();
-
-                        $nombreArchivo = 'estadistica_general_' . now()->format('Y-m-d') . '.xlsx';
-                    } else {
-                        // Caso 2: Un Club específico seleccionado
-                        $club = Entidad::findOrFail($entidadId);
-
-                        $reportePorClub[$club->short_nombre] = Cargo::select('id', 'cargo')
-                            ->whereHas('participantes', fn($q) => $q->where('id_entidad', $club->id))
-                            ->withCount([
-                                'participantes as fem_count' => fn($q) => $q->where('sexo', '0')->where('id_entidad', $club->id),
-                                'participantes as mas_count' => fn($q) => $q->where('sexo', '1')->where('id_entidad', $club->id)
-                            ])->get();
-
-                        $nombreArchivo = 'estadistica_' . Str::slug($club->short_nombre) . '_' . now()->format('Y-m-d') . '.xlsx';
-                    }
+                    $nombreArchivo = $entidadId === 'general'
+                        ? 'reporte_estadistico_general_' . now()->format('Y-m-d') . '.xlsx'
+                        : 'reporte_estadistico_club_' . now()->format('Y-m-d') . '.xlsx';
 
                     return Excel::download(
-                        new EstadisticaInscritosExport($dataGeneral, $reportePorClub),
+                        new EstadisticaInscritosExport($entidadId),
                         $nombreArchivo
                     );
-                }),
+                })
+                ->visible(fn(): bool => auth()->user()->id_nivel == 1 || auth()->user()->id_nivel == 6 || auth()->user()->is_root),
             Actions\Action::make('generar_excel')
                 ->label('Generar Reporte')
                 ->icon('heroicon-o-document-arrow-down')
