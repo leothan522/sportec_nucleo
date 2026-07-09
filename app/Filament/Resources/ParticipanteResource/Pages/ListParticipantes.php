@@ -24,7 +24,7 @@ class ListParticipantes extends ListRecords
             Actions\Action::make('exportarEstadistica')
                 ->label('Estadistica Inscritos')
                 ->icon('heroicon-o-document-arrow-down')
-                ->color('success')
+                ->color('info')
                 ->form([
                     Select::make('entidad_id')
                         ->label('Seleccione el Club')
